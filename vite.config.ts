@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: "/vue_dynamic-list-of-posts",
   plugins: [react()],
   resolve: {
     // alias: {
@@ -13,5 +14,4 @@ export default defineConfig({
     //   shared: path.resolve(__dirname, "./src/shared"),
     // },
   },
-  base: "/vue_dynamic-list-of-posts/",
 });
