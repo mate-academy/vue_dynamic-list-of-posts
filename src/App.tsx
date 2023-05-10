@@ -30,5 +30,5 @@ export const router = createBrowserRouter(
       },
     },
   ],
-  { basename: "/react-vite-gh-pages/" }
+  { basename: "/vue_dynamic-list-of-posts/" }
 );
