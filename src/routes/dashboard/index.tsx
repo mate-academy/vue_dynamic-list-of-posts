@@ -1,9 +1,9 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
 
-import { createPost, deletePost, getUserPosts, updatePost } from "api";
+import { createPost, deletePost, getUserPosts, updatePost } from "../../api";
 
-import { PostsList, Sidebar, AddPostForm, PostPreview } from "components";
-import { Header } from "shared/Header";
+import { PostsList, Sidebar, AddPostForm, PostPreview } from "../../components";
+import { Header } from "../../shared/Header";
 
 export const Dashboard = () => {
   const [openPostId, setOpenPostId] = useState<number | null>(null);

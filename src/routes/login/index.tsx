@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import classNames from "classnames";
 
-import { createUser, getUserByEmail } from "api";
+import { createUser, getUserByEmail } from "../../api";
 
 export const Login = () => {
   const navigate = useNavigate();
