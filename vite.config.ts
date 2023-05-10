@@ -14,4 +14,5 @@ export default defineConfig({
       shared: path.resolve(__dirname, "./src/shared"),
     },
   },
+  base: "/react_dynamic-lists-of-posts-v1/",
 });
