@@ -3,10 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://olezha0.github.io/vue_dynamic-list-of-posts/404.html",
+  "homepage": "https://olezha0.github.io/vue_dynamic-list-of-posts",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && cp 404.html dist/404.html",
+    "build": "vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "predeploy": "npm run build",
