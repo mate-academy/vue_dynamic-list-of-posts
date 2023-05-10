@@ -20,7 +20,7 @@ export const router = createBrowserRouter(
     },
     {
       path: "/",
-      children: [{ path: "/", element: <Dashboard /> }],
+      element: <Dashboard />,
       loader: () => {
         if (!getUserFromLS()) {
           return redirect("/login");
