@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://olezha0.github.io/vue_dynamic-list-of-posts/",
+  "homepage": "https://olezha0.github.io/vue_dynamic-list-of-posts",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
