@@ -12,7 +12,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "serve": "http-server dist",
-    "start": "serve dist"
+    "serve-heroku": "vite --host 0.0.0.0 --port $PORT preview"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.4.0",
