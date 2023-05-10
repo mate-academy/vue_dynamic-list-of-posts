@@ -1,10 +1,10 @@
-import { createBrowserRouter, redirect } from "react-router-dom";
+import { createHashRouter, redirect } from "react-router-dom";
 
 import { Login } from "./routes/login";
 import { Dashboard } from "./routes/dashboard";
 import { getUserFromLS } from "./utils/getUser";
 
-export const router = createBrowserRouter(
+export const router = createHashRouter(
   [
     {
       path: "/login",
