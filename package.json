@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://OlEzhA0.github.io/vue-list-of-posts",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
