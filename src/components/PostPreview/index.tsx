@@ -1,11 +1,11 @@
 import { useState, useEffect, FC, useCallback } from "react";
 
-import { addPostComment, getPostComments, removePostComment } from "../../api";
+import { addPostComment, getPostComments, removePostComment } from "api";
 
-import { InputField } from "../../components";
-import { TextAreaField } from "../../shared/TextAreaField";
-import { createInitErrors } from "../../utils/createInitErrors";
-import { Loader } from "../../shared/Loader";
+import { InputField } from "components";
+import { TextAreaField } from "shared/TextAreaField";
+import { createInitErrors } from "utils/createInitErrors";
+import { Loader } from "shared/Loader";
 
 interface Props {
   post: Posts.Data;

@@ -1,7 +1,7 @@
 import { FC, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getUserFromLS } from "../../utils/getUser";
+import { getUserFromLS } from "utils/getUser";
 
 export const Header: FC = () => {
   const user = getUserFromLS();

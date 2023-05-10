@@ -1,6 +1,7 @@
 import { FC } from "react";
 import cn from "classnames";
-import { Loader } from "../../shared/Loader";
+
+import { Loader } from "shared/Loader";
 
 interface Props {
   onOpenClosePost: (post: number) => () => void;

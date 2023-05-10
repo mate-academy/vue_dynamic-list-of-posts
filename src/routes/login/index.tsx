@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import classNames from "classnames";
+import cn from "classnames";
 
-import { createUser, getUserByEmail } from "../../api";
+import { createUser, getUserByEmail } from "api";
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -64,7 +64,7 @@ export const Login = () => {
           </label>
 
           <div
-            className={classNames("control has-icons-left", {
+            className={cn("control has-icons-left", {
               "is-loading": loading,
             })}
           >
@@ -72,7 +72,7 @@ export const Login = () => {
               type="email"
               id="user-email"
               name="email"
-              className={classNames("input", {
+              className={cn("input", {
                 "is-danger": !needToRegister && errorMessage,
               })}
               placeholder="Enter your email"
@@ -99,7 +99,7 @@ export const Login = () => {
             </label>
 
             <div
-              className={classNames("control has-icons-left", {
+              className={cn("control has-icons-left", {
                 "is-loading": loading,
               })}
             >
@@ -107,7 +107,7 @@ export const Login = () => {
                 type="text"
                 id="user-name"
                 name="name"
-                className={classNames("input", {
+                className={cn("input", {
                   "is-danger": needToRegister && errorMessage,
                 })}
                 placeholder="Enter your name"
@@ -132,7 +132,7 @@ export const Login = () => {
         <div className="field">
           <button
             type="submit"
-            className={classNames("button is-primary", {
+            className={cn("button is-primary", {
               "is-loading": loading,
             })}
           >

@@ -1,8 +1,8 @@
 import { useState, FC, useCallback } from "react";
 
-import { InputField } from "../../components";
-import { TextAreaField } from "../../shared/TextAreaField";
-import { createInitErrors } from "../../utils/createInitErrors";
+import { InputField } from "components";
+import { TextAreaField } from "shared/TextAreaField";
+import { createInitErrors } from "utils/createInitErrors";
 
 interface Props {
   onCancel: () => void;
