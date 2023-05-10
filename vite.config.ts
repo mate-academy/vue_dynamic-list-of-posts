@@ -6,6 +6,19 @@ import path from "path";
 export default defineConfig({
   base: "/vue_dynamic-list-of-posts",
   plugins: [react()],
+  build: {
+    outDir: "dist",
+    rollupOptions: {
+      input: {
+        main: "./index.html",
+      },
+      output: {
+        entryFileNames: "[name].js",
+        chunkFileNames: "assets/[name].js",
+        assetFileNames: "assets/[name].[ext]",
+      },
+    },
+  },
   resolve: {
     alias: {
       components: path.resolve(__dirname, "./src/components"),
