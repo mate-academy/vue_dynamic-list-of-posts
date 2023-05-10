@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://olEzhA0.github.io/vue-list-of-posts",
+  "homepage": "https://OlEzhA0.github.io/react_dynamic-lists-of-posts-v1/",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
