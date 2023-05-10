@@ -4,32 +4,29 @@ import { Login } from "./routes/login";
 import { Dashboard } from "./routes/dashboard";
 import { getUserFromLS } from "./utils/getUser";
 
-export const router = createHashRouter(
-  [
-    {
-      path: "/login",
+export const router = createHashRouter([
+  {
+    path: "/login",
 
-      element: <Login />,
+    element: <Login />,
 
-      loader: () => {
-        if (getUserFromLS()) {
-          return redirect("/");
-        }
+    loader: () => {
+      if (getUserFromLS()) {
+        return redirect("/");
+      }
 
-        return false;
-      },
+      return false;
     },
-    {
-      path: "/",
-      element: <Dashboard />,
-      loader: () => {
-        if (!getUserFromLS()) {
-          return redirect("/login");
-        }
+  },
+  {
+    path: "/",
+    element: <Dashboard />,
+    loader: () => {
+      if (!getUserFromLS()) {
+        return redirect("/login");
+      }
 
-        return true;
-      },
+      return true;
     },
-  ],
-  { basename: "/vue_dynamic-list-of-posts" }
-);
+  },
+]);
