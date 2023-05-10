@@ -40,7 +40,7 @@ export const PostsList: FC<Props> = ({
           <div className="is-flex is-justify-content-center is-align-items-center mt-2">
             <Loader />
           </div>
-        ) : (
+        ) : posts.length > 0 ? (
           <table className="table is-fullwidth is-striped is-hoverable is-narrow">
             <thead>
               <tr className="has-background-link-light">
@@ -69,6 +69,8 @@ export const PostsList: FC<Props> = ({
               ))}
             </tbody>
           </table>
+        ) : (
+          <h3 className="mt-2 has-text-centered">No posts yet.</h3>
         )}
       </div>
     </div>
