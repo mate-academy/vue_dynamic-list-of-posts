@@ -20,6 +20,12 @@ form to add new comments.
    - add validation to the fields;
    - when user click on `Create` component with post details and comments should be appear there immediately ;
 
+1. In the `Post preview` user should see `edit` and `delete` buttons;
+
+   - When user click on `Delete`, post should be deleted and sidebar close;
+   - When user click on `Edit` show edit post form;
+   - When user click on `Save` in edit mode - show post preview in the sidebar;
+
 1. Add the `Sidebar--open` class to the sidebar when a post is selected;
    - the post details should appear there immediately;
    - the post commnets should be loaded from the API;
