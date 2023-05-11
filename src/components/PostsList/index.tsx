@@ -26,7 +26,7 @@ export const PostsList: FC<Props> = ({
     <div className="tile is-child box is-success">
       <div className="block">
         <div className="block is-flex is-justify-content-space-between">
-          <p className="title">Posts</p>
+          <h2 className="title">Posts</h2>
           <button
             type="button"
             className={cn("button is-link", {

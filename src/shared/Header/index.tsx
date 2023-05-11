@@ -20,7 +20,7 @@ export const Header: FC = () => {
   return (
     <nav className="navbar" role="navigation" aria-label="main navigation">
       <div className="navbar-item">
-        <h2 className="is-size-4">Vue List Of Posts</h2>
+        <h1 className="title is-size-4">Vue List Of Posts</h1>
       </div>
       <div className="navbar-end">
         <div className="navbar-item">

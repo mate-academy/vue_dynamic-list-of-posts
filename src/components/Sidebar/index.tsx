@@ -15,9 +15,7 @@ export const Sidebar: FC<Props> = ({ Component }) => {
       })}
     >
       <div className="tile is-child box is-success ">
-        <div className="tile is-child box is-success ">
-          <div className="content">{Component}</div>
-        </div>
+        <div className="content">{Component}</div>
       </div>
     </div>
   );
