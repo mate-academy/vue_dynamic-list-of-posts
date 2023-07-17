@@ -1,6 +1,14 @@
 <script>
   export default {
     name: 'HeaderPage',
+    data() {
+      return {
+        user: {
+          id: 0,
+          name: 'Mykyta',
+        }
+      }
+    }
   }
 </script>
 
@@ -13,10 +21,10 @@
       <div className="navbar-item">
         <div className="buttons">
           <div className="mr-5 mb-2">
-            <p>User: {user.name}</p>
+            <p>User: {{ user.name }}</p>
           </div>
 
-          <a className="button is-light"> Logout </a>
+          <!-- <a className="button is-light"> Logout </a> -->
         </div>
       </div>
     </div>
