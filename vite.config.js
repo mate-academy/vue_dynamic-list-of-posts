@@ -8,6 +8,7 @@ export default defineConfig({
   plugins: [
     vue(),
   ],
+  base: process.env.NODE_ENV === 'production' ? '/vue_dynamic-list-of-posts/' : '/',
   // resolve: {
   //   alias: {
   //     '@': fileURLToPath(new URL('./src', import.meta.url))
