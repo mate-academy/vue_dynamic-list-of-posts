@@ -11,7 +11,6 @@ cd dist
 
 # if you are deploying to a custom domain
 # echo 'www.example.com' > CNAME
-echo > .nojekyll
 
 git init
 git add -A
