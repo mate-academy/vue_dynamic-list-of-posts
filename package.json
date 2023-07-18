@@ -9,6 +9,7 @@
     "deploy": "sh deploy.sh"
   },
   "dependencies": {
+    "bulma": "^0.9.4",
     "vue": "^3.3.4"
   },
   "devDependencies": {
