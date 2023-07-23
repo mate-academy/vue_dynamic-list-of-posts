@@ -3,8 +3,10 @@ import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base:'/vue_dynamic-list-of-posts/',
-  
+  publicPath: process.env.NODE_ENV === 'production'
+  ? '/vue_dynamic-list-of-posts/'
+  : '/',
+
   plugins: [
     vue(),
   ],

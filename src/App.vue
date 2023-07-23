@@ -1,48 +1,94 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+<script>
+  import Header from './components/Header.vue';
+  import PostsList from './components/PostsList.vue';
+  import Sidebar from './components/Sidebar.vue';
+
+  export default {
+    name: 'App',
+    data() {
+      return {
+        posts: [],
+        sidebarOpened: false,
+        previewPost: null,
+      }
+    },
+    components: {
+      Header,
+      PostsList,
+      Sidebar,
+    },
+    methods: {
+      handleCreating(post) {
+        const { title, body } = post;
+
+        const newPostid = this.posts.length 
+          ? Math.max(...this.posts.map(({ id }) => id)) + 1
+          : 1;
+
+        const newPost = {
+          id: newPostid,
+          title,
+          body,
+        }
+
+        this.posts.push(newPost);
+
+        this.previewPost = newPost;
+      },
+      handlePreviewToggle(post) {
+        console.log('toggle', !!post);
+
+        if (!post) {
+          this.sidebarOpened = false;
+          this.previewPost = null
+
+          return;
+        }
+
+        this.sidebarOpened = true;
+        this.previewPost = post; 
+      },
+      handlePostRemoving(postId) {
+        this.posts = this.posts.filter(({ id }) => id !== postId);
+
+        this.handlePreviewToggle();
+      },
+      handlePostUpdating(updatedPost) {
+        const updatedPostIndex = this.posts.findIndex((post) => post.id === updatedPost.id);
+        this.posts.splice(updatedPostIndex, 1, updatedPost);
+        this.previewPost = updatedPost;
+      }
+    },
+    updated() {
+      // const { sidebarOpened: postFormOpened, posts, previewPost } = this;
+      
+      // console.log(postFormOpened, posts, previewPost);
+    }
+  } 
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <Header />
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+  <main class="section">
+    <div class="container">
+      <div class="tile is-ancestor">
+        <PostsList 
+          :posts="this.posts"
+          :previewId="previewPost?.id"
+          @addNew="sidebarOpened = true; previewPost = null"
+          @togglePreview="handlePreviewToggle"
+        />
+
+        <Sidebar 
+          :isOpen="sidebarOpened" 
+          :previewPost="previewPost"
+          @close="sidebarOpened = false"
+          @postCreating="handleCreating"
+          @postRemoving="handlePostRemoving"
+          @postUpdating="handlePostUpdating"
+        />
+      </div>
     </div>
-  </header>
-
-  <main>
-    Hello world
-    <TheWelcome />
   </main>
 </template>
-
-<style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
-</style>
