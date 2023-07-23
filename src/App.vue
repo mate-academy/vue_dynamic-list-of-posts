@@ -29,6 +29,7 @@
           id: newPostid,
           title,
           body,
+          comments: [],
         }
 
         this.posts.push(newPost);
@@ -54,16 +55,11 @@
         this.handlePreviewToggle();
       },
       handlePostUpdating(updatedPost) {
-        const updatedPostIndex = this.posts.findIndex((post) => post.id === updatedPost.id);
-        this.posts.splice(updatedPostIndex, 1, updatedPost);
-        this.previewPost = updatedPost;
+        const post = this.posts.find(({ id }) => id === updatedPost.id);
+  
+        Object.assign(post, updatedPost);
       }
     },
-    updated() {
-      // const { sidebarOpened: postFormOpened, posts, previewPost } = this;
-      
-      // console.log(postFormOpened, posts, previewPost);
-    }
   } 
 </script>
 

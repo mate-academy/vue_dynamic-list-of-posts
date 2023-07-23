@@ -39,7 +39,6 @@
         this.bodyError = !isInputValid(post.body);
 
         if (this.titleError || this.bodyError) {
-          console.log(this.titleError,this.bodyError);
           return;
         }
       
@@ -70,6 +69,8 @@
     <form @submit.prevent="handleSubmit">
       <InputField 
         v-model="post.title"
+        type="text"
+        label="Title"
         :havingErrors="titleError"
         @update:modelValue="titleError = false"
       />
