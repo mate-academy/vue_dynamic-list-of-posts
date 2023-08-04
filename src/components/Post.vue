@@ -4,9 +4,8 @@
     props: {
       post: Object,
       previewId: Number,
-      isPreview: Boolean,
     },
-    emits: ['setPreviewId', 'setIsPreview'],
+    emits: ['update-preview-id'],
   }
 </script>
 
@@ -15,20 +14,22 @@
     <tr>
       <td>{{ post.id }}</td>
       <td>{{ post.title }}</td>
+
       <td class="has-text-right is-vcentered">
         <button
-          v-if="post.id === previewId && isPreview"
+          v-if="post.id === previewId"
           type="button"
           class="button is-link"
-          @click="$emit('setIsPreview', false)"
+          @click="$emit('update-preview-id', 0)"
         >
           Close
         </button>
+
         <button
           v-else
           type="button"
           class="button is-link is-light"
-          @click="$emit('setPreviewId', post.id); $emit('setIsPreview', true)"
+          @click="$emit('update-preview-id', post.id)"
         >
           Open
         </button>

@@ -1,10 +1,18 @@
 <script>
+import { removeComment } from '../api/comment';
+
   export default {
     name: 'Comment',
     props: {
       comment: Object,
     },
-    emits: ['deleteComment'],
+    methods: {
+      async remove(id) {
+        await removeComment(id);
+        this.$emit('update-comments');
+      }
+    },
+    emits: ['update-comments'],
   }
 </script>
 
@@ -16,15 +24,16 @@
       >
         {{ comment.name }}
       </a>
+
       <button
         type="button"
         className="delete is-small"
         aria-label="delete"
-        @click="$emit('deleteComment', comment.id)"
+        @click="remove(comment.id)"
       >
-        delete button
       </button>
     </div>
-    <div className="message-body">{{ comment.body }}</div>
+
+    <div className="message-body">{{ comment.message }}</div>
   </article>
 </template>

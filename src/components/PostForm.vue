@@ -1,16 +1,18 @@
 <script>
 import InputField from './InputField.vue';
 import TextareaField from './TextareaField.vue';
+import { textCheck } from '../utils/textCheck';
+import { createPost, updatePost } from '../api/post';
 
   export default {
     name: "PostForm",
     data() {
-      const { status, postPreview } = this;
+      const { status, post } = this;
 
       return {
-        title: (status === 'update') ? postPreview.title : '',
-        body: (status === 'update') ? postPreview.body : '',
-        textError: '',
+        title: (status === 'update') ? post.title : '',
+        body: (status === 'update') ? post.body : '',
+        titleError: '',
         bodyError: '',
       }
     },
@@ -20,41 +22,40 @@ import TextareaField from './TextareaField.vue';
     },
     props: {
       status: String,
-      postPreview: Object,
+      post: Object,
     },
-    emits: ['setStatusForm', 'setPosts', 'setPreviewId', 'setIsPreview'],
+    emits: ['update-status-form', 'update-posts', 'update-preview-id'],
     methods: {
-      handleSubmit() {
+      async handleSubmit() {
         const { status, title, body, $emit } = this;
 
-        if (title.trim() === '') {
-          this.textError = "Can't be empty";
+        this.titleError = textCheck(title, 'Title');
+        this.bodyError = textCheck(body, 'Body');
+
+        if (this.titleError || this.bodyError) {
           return;
-        };
+        }
 
-        this.textError = '';
-
-        if (body.trim() === '') {
-          this.bodyError = "Can't be empty";
-          return;
-        };
-
-        this.bodyError = '';
-
-        const newPost = {
-          id: Math.ceil(Math.random() * (1000 - 1) + 1),
-          title: title,
-          body: body,
-          comments: (status === 'update') ? this.postPreview.comments : [],
-        };
-
-        $emit('setPosts', newPost);
-        $emit('setStatusForm', 'off');
-        $emit('setIsPreview', true);
+        let post;
 
         if (status === 'create') {
-          $emit('setPreviewId', newPost.id);
+          post = await createPost({
+            title,
+            body,
+          });
         }
+
+        if (status === 'update') {
+          post = await updatePost({
+            id: this.post.id,
+            title,
+            body,
+          })
+        }
+
+        $emit('update-posts');
+        $emit('update-status-form', 'off');
+        $emit('update-preview-id', (status === 'create') ? post.data.id : this.post.id);
       },
     },
   }
@@ -70,8 +71,9 @@ import TextareaField from './TextareaField.vue';
         type="text"
         name="Title"
         placeholder="Post title"
-        :textError="textError"
+        :textError="titleError"
       />
+
       <TextareaField
         v-model="body"
         name="Write Post Body"
@@ -85,11 +87,12 @@ import TextareaField from './TextareaField.vue';
             {{ (status === 'create') ? 'Create' : 'Save'}}
           </button>
         </div>
+
         <div className="control">
           <button
             type="reset"
             className="button is-link is-light"
-            @click="$emit('setStatusForm', 'off'); (status === 'update') ? $emit('setIsPreview', true) : ''"
+            @click="$emit('update-status-form', 'off'); (status === 'update') ? $emit('update-preview-id', post.id) : ''"
           >
             Cancel
           </button>
@@ -98,11 +101,3 @@ import TextareaField from './TextareaField.vue';
     </form>
   </div>
 </template>
-[{
-  id: 2138471928
-  name: 'Misha'
-},{
-  name: 'Serafim'
-},{
- name: 'Nikita'
-}]

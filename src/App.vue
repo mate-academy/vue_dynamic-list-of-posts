@@ -3,24 +3,41 @@ import HeaderPage from './components/HeaderPage.vue';
 import PostsList from './components/PostsList.vue';
 import PostPreview from './components/PostPreview.vue';
 import PostForm from './components/PostForm.vue';
+import { getPosts } from './api/post';
 
 export default {
   name: 'App',
-  data() {
-    return {
-      previewId: 0,
-      isPreview: false,
-      statusForm: 'off',
-      posts: [],
-    }
-  },
-
   components: {
     HeaderPage,
     PostsList,
     PostPreview,
-    PostForm
+    PostForm,
   },
+  data() {
+    return {
+      previewId: 0,
+      statusForm: 'off',
+      posts: [],
+      updatePost: null,
+      isLoading: false,
+    }
+  },
+  mounted() {
+    this.getPostsData();
+  },
+  methods: {
+    async getPostsData() {
+      this.isLoading = true;
+      const { data } = await getPosts();
+      this.posts = data;
+      this.isLoading = false;
+    },
+    onUpdatingPost(post) {
+      this.updatePost = post;
+      this.statusForm = 'update';
+      this.previewId = 0;
+    },
+  }
 }
 </script>
 
@@ -35,46 +52,41 @@ export default {
           :statusForm="statusForm"
           :posts="posts"
           :previewId="previewId"
-          :isPreview="isPreview"
-          @setPreviewId="previewId = $event; statusForm = 'off'"
-          @setStatusForm="statusForm = $event; isPreview = false"
-          @setIsPreview="isPreview = $event"
+          :isLoading="isLoading"
+          @update-preview-id="previewId = $event; statusForm = 'off'"
+          @update-status-form="statusForm = $event; previewId = 0"
         />
 
         <div
           class="tile is-parent is-8-desktop Sidebar"
           :class="{
-            'Sidebar--open': isPreview || statusForm !== 'off',
+            'Sidebar--open': previewId !== 0 || statusForm !== 'off',
           }"
         >
           <div class="tile is-child box is-success">
             <div class="content">
               <PostPreview
-                v-if="isPreview"
-                :postPreview="posts.find(post => post.id === previewId)"
-                @setStatusForm="statusForm = $event; isPreview = false"
-                @deletePost="posts = posts.filter(post => post.id !== $event); isPreview = false"
-                @setPosts="posts = posts.map(post => (post.id === $event.id) ? $event : post);"
+                v-if="previewId !== 0 && posts.find(post => post.id === previewId)"
+                :post="posts.find(post => post.id === previewId)"
+                @on-updating-post="onUpdatingPost($event)"
+                @update-posts="getPostsData(); previewId = 0"
               />
+
               <PostForm
                 v-if="statusForm === 'create'"
                 :status="statusForm"
-                @setStatusForm="statusForm = $event"
-                @setPreviewId="previewId = $event; statusForm = 'off'"
-                @setIsPreview="isPreview = $event"
-                @setPosts="posts = [...posts, $event]"
-
+                @update-status-form="statusForm = $event"
+                @update-preview-id="previewId = $event; statusForm = 'off'"
+                @update-posts="getPostsData()"
               />
+
               <PostForm
                 v-if="statusForm === 'update'"
                 :status="statusForm"
-                :postPreview="posts.find(post => post.id === previewId)"
-                @setStatusForm="statusForm = $event"
-                @setPreviewId="previewId = $event; statusForm = 'off'"
-                @setIsPreview="isPreview = $event"
-                @setPosts="posts = posts.map(post => (post.id === previewId)
-                  ? { ...$event, id: previewId }
-                  : post)"
+                :post="updatePost"
+                @update-status-form="statusForm = $event"
+                @update-preview-id="previewId = $event; statusForm = 'off'"
+                @update-posts="getPostsData()"
               />
             </div>
           </div>

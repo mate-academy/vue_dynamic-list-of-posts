@@ -1,63 +1,54 @@
 <script>
 import InputField from './InputField.vue';
 import TextareaField from './TextareaField.vue';
+import { emailCheck, textCheck } from '../utils/textCheck';
+import { createComment } from '../api/comment';
 
   export default {
     name: 'WriteComment',
+    props: {
+      postId: Number,
+    },
     data() {
       return {
         isCommentForm: false,
         email: '',
         name: '',
-        body: '',
+        message: '',
         emailError: '',
         nameError: '',
-        bodyError: '',
+        messageError: '',
       }
     },
     components: {
       InputField,
       TextareaField
     },
-    emits: ['addComment'],
+    emits: ['update-comments'],
     methods: {
-      handleSubmit() {
-        const { email, name, body, $emit, closeForm } = this;
+      async handleSubmit() {
+        const { email, name, message, postId, $emit, closeForm } = this;
 
-        if (email.trim() === '') {
-          this.emailError = "Can't be empty";
+        this.nameError = textCheck(name, 'Name');
+        this.emailError = emailCheck(email);
+        this.messageError = textCheck(message, 'Comment');
+
+        if (this.nameError || this.emailError || this.messageError) {
           return;
-        };
+        }
 
-        this.emailError = '';
+        await createComment({
+          name,
+          email,
+          message,
+          postId,
+        });
 
-        if (name.trim() === '') {
-          this.nameError = "Can't be empty";
-          return;
-        };
-
-        this.nameError = '';
-
-        if (body.trim() === '') {
-          this.bodyError = "Can't be empty";
-          return;
-        };
-
-        this.bodyError = '';
-
-        const newComment = {
-          id: Math.ceil(Math.random() * (1000 - 1) + 1),
-          email: email,
-          name: name,
-          body: body,
-        };
-
-        $emit('addComment', newComment);
+        $emit('update-comments');
         closeForm();
-
       },
       closeForm() {
-        this.body = '';
+        this.message = '';
         this.isCommentForm = false;
       },
     }
@@ -76,6 +67,7 @@ import TextareaField from './TextareaField.vue';
       placeholder="Name"
       :textError="nameError"
     />
+
     <InputField
       v-model="email"
       type="email"
@@ -83,11 +75,12 @@ import TextareaField from './TextareaField.vue';
       placeholder="Email"
       :textError="emailError"
     />
+
     <TextareaField
-      v-model="body"
+      v-model="message"
       name="Write comment"
       placeholder="Comment"
-      :textError="bodyError"
+      :textError="messageError"
     />
 
     <div className="field is-grouped">
@@ -96,6 +89,7 @@ import TextareaField from './TextareaField.vue';
             Create
           </button>
         </div>
+
         <div className="control">
           <button
             type="reset"

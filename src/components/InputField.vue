@@ -17,6 +17,7 @@
     <label class="label" htmlFor="{`comment-author-name-${name}`}">
       {{ name }}
     </label>
+
     <div class="control has-icons-left has-icons-right">
       <input
         :type="type"
@@ -28,6 +29,7 @@
         :value="modelValue"
         @change="$emit('update:modelValue', $event.target.value)"
       />
+
       <span class="icon is-small is-left">
         <i class="fas fa-user"></i>
       </span>
