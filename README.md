@@ -46,3 +46,11 @@ form to add new comments.
 1. Implement comment deletion
    - Delete the commnet immediately not waiting for the server response to improve the UX.
 1. (\*) Handle `Add` and `Delete` errors so the user can retry
+
+
+<!-- 2 new post -> cancel -> post preview -> disappearing -->
+<!-- 4 лоадер глобально, як юі кнопки і тд? -->
+8 toggle
+9 open(
+
+1. (\*) Handle `Add` and `Delete` errors so the user can retry
