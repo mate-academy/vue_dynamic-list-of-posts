@@ -1,20 +1,31 @@
 
 <script setup>
-  import { onMounted, ref, provide } from 'vue';
+  import { onMounted, watch, ref, provide } from 'vue';
 
-  import { getPosts, getUser } from './api/posts';
-  import AddPost from './components/AddPost.vue';
-  import Loader from './ui/Loader.vue'
-  import PostPreview from './components/PostPreview.vue'
-  import PostEdit from './components/PostEdit.vue'
+  import { getPosts } from './api/posts';
+  import Loader from './ui/Loader.vue';
+  import Nav from './components/Nav.vue';
+  import PostTable from './components/PostsTable.vue';
+  import Sidebar from './components/Sidebar.vue';
+  import Login from './components/Login.vue';
+
+  const currentUser = ref(JSON.parse(localStorage.getItem("user")) || null);
 
   const posts = ref([]);
-  const userName = ref('');
+
   const sidebar = ref({state: 'closed', post: null});
-  const userId = ref(11250);
   const arePostLoading = ref(false);
   const errorLoading = ref(false);
   const newCommentOpened = ref(false);
+
+  const setCurrentUser = (user) => {
+    if (!user) {
+      currentUser.value = null;
+      return;
+    }
+    localStorage.setItem("user", JSON.stringify(user));
+    currentUser.value = user;
+  }
 
   const toggleNewCommentOpened = (newValue) => {
     newCommentOpened.value = newValue;
@@ -30,9 +41,9 @@
     }
   }
 
-  const updatePosts = () => {
+  const updatePosts = (id = currentUser.value.id) => {
     arePostLoading.value = true;
-    getPosts()
+    getPosts(id)
     .then(({ data }) => {
       posts.value = data;
     })
@@ -44,117 +55,71 @@
   };
 
   onMounted(() => {
-    getUser(userId.value)
-      .then(({data}) => {
-        userName.value = data.name;
-        updatePosts();
-      })
-    .catch((e) => console.log(e))
+    if (currentUser.value) {
+      updatePosts(currentUser.value.id);
+    }
   });
 
+  watch(currentUser, () => {
+    if (!currentUser.value) { return }
+    updatePosts(currentUser.value.id);
+    },
+    { deep: true }
+  );
+
   provide('newCommentOpened', {
-  newCommentOpened,
-  toggleNewCommentOpened,
+    newCommentOpened,
+    toggleNewCommentOpened,
+  })
+  
+  provide('sidebar', {
+    sidebar,
+    changeSidebar,
   })
 </script>
 
 <template>
-  <nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-item">
-      <h2 class="is-size-4">Vue List Of Posts</h2>
-    </div>
-    <div class="navbar-end">
-      <div class="navbar-item">
-        <div class="buttons">
-          <div class="mr-5 mb-2">
-            <p>User: {{ userName }}</p>
-          </div>
-
-          <a class="button is-light"> Logout </a>
-        </div>
-      </div>
-    </div>
-  </nav>
-  <div class="tile is-ancestor">
-    <div class="tile is-parent">
-      <div class="tile is-child box is-success">
-        <div class="block">
-          <div class="block is-flex is-justify-content-space-between">
-            <p class="title">Posts</p>
-            <button
-              type="button"
-              class="button is-link"
-              @click="changeSidebar('new')"
-              :disabled="sidebar.state === 'new'"
-            >
-              Add New Post
-            </button>
-          </div>
-          <Loader v-if="arePostLoading" />
-          <p v-else-if="errorLoading">Loading error, reload the page, please</p>
-          <p v-else-if="posts.length < 1">No posts yet</p>
-          <table
-            class="table is-fullwidth is-striped is-hoverable is-narrow"
-             v-else
-          >
-            <thead>
-              <tr class="has-background-link-light">
-                <th>ID</th>
-                <th>Title</th>
-                <th class="has-text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="post of posts" :key="post.id">
-                <td>{{ post.id }}</td>
-                <td>{{ post.title }}</td>
-                <td class="has-text-right is-vcentered">
-                  <button
-                    type="button"
-                    class="button is-link"
-                    :class="{'is-light': +sidebar.state !== post.id }"
-                    @click="changeSidebar(post.id)"
-                  >
-                    {{ +sidebar.state === post.id ? 'Close' : 'Open'}}
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          
-        </div>
-      </div>
-    </div>
-    <div
-      class="tile is-parent is-8-desktop Sidebar"
-      :class="{'Sidebar--open': sidebar.state !== 'closed'}"
-    >
-      <div class="tile is-child box is-success ">
-        <div class="tile is-child box is-success ">
-          <div class="content">
-            <AddPost
-              v-if="sidebar.state === 'new'"
-              :userId="userId"
-              @updatePosts="updatePosts"
-              @changeSidebar="changeSidebar"
-            />
-            <PostEdit
-              v-else-if="sidebar.post"
-              :post="sidebar.post"
-              @updatePosts="updatePosts"
-              @changeSidebar="changeSidebar"
-            />
-            <PostPreview
-              v-else-if="sidebar.state !== 'closed'"
-              @updatePosts="updatePosts"
-              :postId="+sidebar.state"
-              @changeSidebar="changeSidebar"
+  <Login
+    v-if="!currentUser"
+    @set-current-user="setCurrentUser"
+  />
+  <template v-if="currentUser">
+    <Nav
+      :user-name="currentUser.name"
+      @set-current-user="setCurrentUser"
+    />
+    <div class="tile is-ancestor">
+      <div class="tile is-parent">
+        <div class="tile is-child box is-success">
+          <div class="block">
+            <div class="block is-flex is-justify-content-space-between">
+              <p class="title">Posts</p>
+              <button
+                type="button"
+                class="button is-link"
+                @click="changeSidebar('new')"
+                :disabled="sidebar.state === 'new'"
+              >
+                Add New Post
+              </button>
+            </div>
+            <Loader v-if="arePostLoading" />
+            <p v-else-if="errorLoading">Loading error, reload the page, please</p>
+            <p v-else-if="posts.length < 1">No posts yet</p>
+            <PostTable
+              v-else
+              :posts="posts"
             />
           </div>
         </div>
       </div>
+      <Sidebar
+        :user-id="currentUser.id"
+        @update-posts="updatePosts"
+      />
+  
     </div>
-  </div>
+  </template>
 </template>
 
 <style>

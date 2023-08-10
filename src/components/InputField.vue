@@ -1,5 +1,6 @@
 <script setup>
   const props = defineProps({
+    disabled: Boolean,
     inputTitle: String,
     inputName: String,
     placeholder: String,
@@ -7,6 +8,7 @@
     inputType: String,
     modelValue: String,
     incorrectTitle: Boolean,
+    errorText: String,
   });
 </script>
 <template>
@@ -16,6 +18,7 @@
     </label>
     <div class="control has-icons-left has-icons-right">
       <input
+        :disabled="disabled"
         :type="inputType"
         :name="inputName"
         :id="`comment-author-name-${inputName}`"
@@ -43,7 +46,7 @@
       class="help is-danger"
       data-cy="ErrorMessage"
     >
-      error text
+      {{ errorText }}
     </p>
   </div>
 </template>

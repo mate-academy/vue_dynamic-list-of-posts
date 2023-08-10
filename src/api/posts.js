@@ -3,8 +3,8 @@ import { client } from "../utils/httpClient";
 const postAddress = '/posts';
 const commentAddress = '/comments';
 
-export const getPosts = () => {
-  return client.get(`${postAddress}?userId=11250`)
+export const getPosts = (id) => {
+  return client.get(`${postAddress}?userId=${id}`)
 };
 
 export const getPostsComments = (postId) => {
@@ -17,6 +17,18 @@ export const getPost = (postId) => {
 
 export const getUser = (userId) => {
   return client.get(`/users/${userId}`)
+};
+
+export const getUserByEmail = (email) => {
+  return client.get(`/users?email=${email}`)
+};
+
+
+export const createUser = (name, email) => {
+  return client.post('/users', {
+    name,
+    email,
+  })
 };
 
 export const createPost = (title, body, userId) => {

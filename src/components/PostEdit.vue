@@ -1,5 +1,5 @@
 <script setup>
-  import { computed, watch, ref } from 'vue';
+  import { watch, ref, inject } from 'vue';
 
   import InputField from './InputField.vue'
   import TextAreaField from './TextAreaField.vue'
@@ -7,7 +7,9 @@
   import { updatePost } from '../api/posts'
 
   const props = defineProps(['post']);
-  const emits = defineEmits(['updatePosts', 'changeSidebar']);
+  const emits = defineEmits(['updatePosts']);
+
+  const { changeSidebar } = inject('sidebar');
 
   const editableTitle = ref( props.post.title);
   const editableBody = ref(props.post.body);
@@ -30,10 +32,10 @@
     })
   
   const onSubmit = () => {
-    if (editableTitle.value === '') {
+    if (!editableTitle.value) {
       incorrectTitle.value = true
     }
-    if (editableBody.value === '') {
+    if (!editableBody.value) {
       incorrectBody.value = true
     }
 
@@ -43,7 +45,7 @@
           emits('updatePosts');
           editableTitle.value = '';
           editableBody.value = '';
-          emits('changeSidebar', data.id)
+          changeSidebar(data.id);
         })
     }
   };
@@ -55,20 +57,22 @@
 
       <form @submit.prevent="onSubmit">
         <InputField
-          inputTitle="Title"
-          inputName="new-post-title"
+          input-title="Title"
+          input-name="new-post-title"
           placeholder="Post title"
           icon="fa-user fa-heading"
-          inputType="text"
+          input-type="text"
+          error-text="incorrect title"
           v-model.trim="editableTitle"
-          :incorrectTitle="incorrectTitle"
+          :incorrect-title="incorrectTitle"
         />
         <TextAreaField
-          textareaTitle="Write Post Body"
-          textareaName="body"
+          textarea-title="Write Post Body"
+          textarea-name="body"
           placeholder="Post body"
+          error-text="incorrect post body"
           v-model.trim="editableBody"
-          :incorrectBody="incorrectBody"
+          :incorrect-body="incorrectBody"
         />
 
         <div className="field is-grouped">
@@ -79,7 +83,7 @@
             <button
               type="reset"
               className="button is-link is-light"
-              @click.prevent="$emit('changeSidebar', post.id)"
+              @click.prevent="changeSidebar(post.id)"
             >
               Cancel
             </button>

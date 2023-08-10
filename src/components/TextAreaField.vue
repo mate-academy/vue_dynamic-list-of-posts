@@ -5,6 +5,7 @@
       placeholder: String,
       modelValue: String,
       incorrectBody: Boolean,
+      errorText: String,
     });
 </script>
 <template>
@@ -22,6 +23,6 @@
       ></textarea>
     </div>
 
-    <p v-if="incorrectBody" class="help is-danger" data-cy="ErrorMessage">error text</p>
+    <p v-if="incorrectBody" class="help is-danger" data-cy="ErrorMessage">{{ errorText }}</p>
   </div>
 </template>

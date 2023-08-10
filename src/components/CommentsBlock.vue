@@ -69,7 +69,7 @@
     <AddComment
       v-show="newCommentOpened"
       :postId="postId"
-      @loadComments="loadComments"
+      @load-comments="loadComments"
     />
     <button
       v-if="!newCommentOpened"

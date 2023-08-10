@@ -1,5 +1,5 @@
 <script setup>
-  import { ref, watch } from 'vue';
+  import { ref, watch, inject } from 'vue';
 
   import InputField from './InputField.vue';
   import TextAreaField from './TextAreaField.vue';
@@ -7,7 +7,10 @@
   import { createPost } from '../api/posts';
 
   const props = defineProps(['userId']);
-  const emits = defineEmits(['updatePosts', 'changeSidebar']);
+  const emits = defineEmits(['updatePosts']);
+  
+  const { changeSidebar } = inject('sidebar');
+
   const postTitle = ref('');
   const postBody = ref('');
   const incorrectTitle = ref(false);
@@ -30,29 +33,28 @@
   })
 
   const onSubmit = () => {
-    if (postTitle.value === '') {
+    if (!postTitle.value) {
       incorrectTitle.value = true
     }
-    if (postBody.value === '') {
+    if (!postBody.value) {
       incorrectBody.value = true
     }
 
     const getWarning = () => {
-    createdFalse.value = true;
+      createdFalse.value = true;
 
-    setTimeout(() => createdFalse.value = false, 5000);
-  }
+      setTimeout(() => createdFalse.value = false, 5000);
+    }
 
     if (postTitle.value && postBody.value) {
       createPost(postTitle.value, postBody.value, props.userId)
       .then(({ data }) => {
-        emits('updatePosts');
+        emits('updatePosts', props.userId);
         postTitle.value = '';
         postBody.value = '';
-        emits('changeSidebar', data.id);
+        changeSidebar(data.id);
         createdFalse.value = true;
-        })
-      .catch(() => getWarning())
+        }).catch(() => getWarning())
     }
   };
 
@@ -65,31 +67,35 @@
 
     <form @submit.prevent="onSubmit">
       <InputField
-        inputTitle="Title"
-        inputName="new-post-title"
+        input-title="Title"
+        input-name="new-post-title"
         placeholder="Post title"
         icon="fa-user fa-heading"
-        inputType="text"
+        input-type="text"
+        error-text="incorrect title"
         v-model.trim="postTitle"
-        :incorrectTitle="incorrectTitle"
+        :incorrect-title="incorrectTitle"
       />
       <TextAreaField
-        textareaTitle="Write Post Body"
-        textareaName="body"
+        textarea-title="Write Post Body"
+        textarea-name="body"
         placeholder="Post body"
+        error-text="incorrect post body"
         v-model.trim="postBody"
-        :incorrectBody="incorrectBody"
+        :incorrect-body="incorrectBody"
       />
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link">Save</button>
+          <button type="submit" className="button is-link">
+            Save
+          </button>
         </div>
         <div className="control">
           <button
             type="reset"
             className="button is-link is-light"
-            @click="$emit('changeSidebar', 'closed')"
+            @click="changeSidebar('closed')"
           >
             Cancel
           </button>

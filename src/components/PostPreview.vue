@@ -1,5 +1,5 @@
 <script setup>
-  import { onMounted, ref, watch } from 'vue';
+  import { onMounted, ref, watch, inject } from 'vue';
 
   import Loader from '../ui/Loader.vue';
   import CommentsBlock from './CommentsBlock.vue';
@@ -8,8 +8,8 @@
 
   const props = defineProps(['postId']);
 
-  const emits = defineEmits(['changeSidebar', 'updatePosts'])
-  
+  const emits = defineEmits(['updatePosts'])
+  const { changeSidebar } = inject('sidebar');
 
   const post = ref(null);
   const postIsLoading = ref(false);
@@ -43,7 +43,7 @@
     deletePost(id)
       .then(() => {
         emits('updatePosts');
-        emits('changeSidebar', 'closed')
+        changeSidebar('closed');
       })
       .catch((e) => getWarning())
   }
@@ -60,7 +60,7 @@
       <h2>#{{ post?.id }}: {{ post?.title }}</h2>
       <div class="is-flex">
         <span
-        @click="$emit('changeSidebar', 'edit', post)"
+        @click="changeSidebar('edit', post)"
           class="icon is-small is-right is-clickable"
         >
           <i class="fas fa-pen-to-square"></i>
@@ -75,6 +75,6 @@
     </div>
     <p class="help is-danger" v-if="errorDelete">Error, please try again</p>
     <p data-cy="PostBody">{{ post?.body }}</p>
-    <CommentsBlock :postId="postId" />
+    <CommentsBlock :post-id="postId" />
   </div>
 </template>

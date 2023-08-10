@@ -24,15 +24,15 @@
   const props = defineProps(['postId']);
 
   const createReloadCom = () => {
-    if (authorNameInput.value === '') {
+    if (!authorNameInput.value) {
       incorrectName.value = true
     }
 
-    if (emailInput.value === '') {
+    if (!emailInput.value) {
       incorrectEmail.value = true
     }
     
-    if (commentBody.value === '') {
+    if (!commentBody.value) {
       incorrectBody.value = true
     }
    
@@ -82,29 +82,32 @@
 <template>
   <form @submit.prevent="createReloadCom()">
     <inputField
-      inputTitle="Author Name"
-      inputName="author-name"
+      input-title="Author Name"
+      input-name="author-name"
       placeholder="Name Surname"
       icon="fa-user fa-heading"
-      inputType="text"
+      input-type="text"
+      error-text="incorrect name"
       v-model.trim="authorNameInput"
-      :incorrectTitle="incorrectName"
+      :incorrect-title="incorrectName"
     />
     <inputField
-      inputTitle="Author Email"
-      inputName="author-email"
+      input-title="Author Email"
+      input-name="author-email"
       placeholder="Your Email"
       icon="fa-user fa-envelope"
-      inputType="email"
+      input-type="email"
+      error-text="incorrect email"
       v-model.trim="emailInput"
-      :incorrectTitle="incorrectEmail"
+      :incorrect-title="incorrectEmail"
     />
     <TextAreaField
-      textareaTitle="Write Post Body"
-      textareaName="comment-body"
+      textarea-title="Write Post Body"
+      textarea-name="comment-body"
       placeholder="Comment"
+      error-text="incorrect comment"
       v-model.trim="commentBody"
-      :incorrectBody="incorrectBody"
+      :incorrect-body="incorrectBody"
     />
     <div class="field is-grouped">
       <div class="control">
