@@ -34,7 +34,6 @@
         this.titleError = !isInputValid(post.title);
         this.bodyError = !isInputValid(post.body);
         if (this.titleError || this.bodyError) {
-          console.log(this.titleError,this.bodyError);
           return;
         }
       
@@ -54,32 +53,28 @@
     emits: ['close','postCreating', 'postUpdating'],
   }
 </script>
-
-
 <template>
   <div className="content">
   <h2>{{ postForUpdating? 'Post editing':'Create new post' }}</h2>
-
     <form @submit.prevent="handleSubmit">
       <InputField 
         v-model="post.title"
+        type="text"
+        label="Title"
         :havingErrors="titleError"
         @update:modelValue="titleError = false"
       />
-
       <TextAreaField 
         v-model="post.body"
         :havingErrors="bodyError"
         @update:modelValue="bodyError = false"
       /> 
-
       <div className="field is-grouped">
         <div className="control">
           <button type="submit" className="button is-link">
             Save
           </button>
         </div>
-
         <div className="control">
           <button 
             type="reset" 

@@ -1,28 +1,27 @@
+<!-- eslint-disable vue/require-prop-type-constructor -->
 <script>
 export default {
   name: 'InputField',
   props: {
+    type: 'text',
+    label: String,
     modelValue: String,
     havingErrors: Boolean,
   },
   emits: ['update:modelValue'],
-  mounted() {
-    console.log(this.modelValue);
-  },
 }
 </script>
-
 
 <template>
   <div class="field" data-cy="NameField">
 
     <label class="label" htmlFor="{`comment-author-name-${name}`}">
-      Title
+      {{ label }}
     </label>
 
     <div class="control has-icons-left has-icons-right">
       <input
-        type="text"
+        :type="type"
         name="{name}"
         id="{`comment-author-name-${name}`}"
         placeholder="Post title"
@@ -33,7 +32,10 @@ export default {
       />
 
       <span class="icon is-small is-left">
-        <i class="fas fa-user fa-heading"></i>
+        <i 
+          class="fas fa-user" 
+          :class="{ 'fa-envelope': type !== 'text', 'fa-heading': type === 'text' }"
+        ></i>
       </span>
 
       <span v-if="havingErrors"
@@ -43,7 +45,6 @@ export default {
         <i class="fas fa-exclamation-triangle"></i>
       </span>
     </div>
-
     <p 
       v-if="havingErrors"
       class="help is-danger" 

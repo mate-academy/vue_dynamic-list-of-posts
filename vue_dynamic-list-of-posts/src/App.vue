@@ -1,9 +1,8 @@
 <!-- eslint-disable vue/no-reserved-component-names -->
 <script>
-  import Header from './components/Header.vue'
+  import Header from './components/Header.vue';
   import PostsList from './components/PostList.vue';
-  import Sidebar from './components/Sidebar.vue'
-
+  import Sidebar from './components/Sdebar.vue'
   export default {
     name: 'App',
     data() {
@@ -28,6 +27,7 @@
           id: newPostid,
           title,
           body,
+          comments: [],
         }
         this.posts.push(newPost);
         this.previewPost = newPost;
@@ -47,34 +47,27 @@
         this.handlePreviewToggle();
       },
       handlePostUpdating(updatedPost) {
-        const updatedPostIndex = this.posts.findIndex((post) => post.id === updatedPost.id);
-        this.posts.splice(updatedPostIndex, 1, updatedPost);
-        this.previewPost = updatedPost;
+        const post = this.posts.find(({ id }) => id === updatedPost.id);
+  
+        Object.assign(post, updatedPost);
       }
     },
-    updated() {
-      // const { sidebarOpened: postFormOpened, posts, previewPost } = this;
-      
-      // console.log(postFormOpened, posts, previewPost);
-    }
   } 
 </script>
-
 
 <template>
   <Header />
   <main class="section">
     <div class="container">
-      <div class="tile is-ancestor">	
-
-	      <PostsList 
+      <div class="tile is-ancestor">
+        <PostsList 
           :posts="this.posts"
           :previewId="previewPost?.id"
           @addNew="sidebarOpened = true; previewPost = null"
           @togglePreview="handlePreviewToggle"
-        />	        
+        />
         <Sidebar 
-          :isOpen="sidebarOpened"	          
+          :isOpen="sidebarOpened" 
           :previewPost="previewPost"
           @close="sidebarOpened = false"
           @postCreating="handleCreating"
@@ -84,4 +77,4 @@
       </div>
     </div>
   </main>
-</template>	
+</template>
