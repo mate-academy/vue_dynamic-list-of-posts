@@ -1,5 +1,3 @@
-import { defineConfig } from '@vue/cli-service';
-
-export default defineConfig({
-  publicPath: '/vue_dynamic-list-of-posts/',
-});
+module.exports = {
+  publicPath: process.env.NODE_ENV === "production" ? "/vue_dynamic-list-of-posts/" : "/",
+};
