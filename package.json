@@ -2,6 +2,7 @@
   "name": "vue-dynamic-list-of-posts",
   "version": "0.0.0",
   "private": true,
+  "homepage": "https://artkas03.github.io/vue_dynamic-list-of-posts/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
