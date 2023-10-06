@@ -6,11 +6,14 @@ import AppPostsPage from './components/AppPostsPage.vue';
 export default {
   data() {
     return {
-      user: null,
+      user: JSON.parse(localStorage.getItem('user')) || null,
     }
   },
   methods: {
-
+    logout() {
+      this.user = null;
+      localStorage.removeItem('user');
+    }
   },
   components: {
     AppLogin,
@@ -28,7 +31,7 @@ export default {
 
   <span v-else>
     <AppHeader
-      @logout="this.user = null"
+      @logout="logout"
       :user="user"
     />
 

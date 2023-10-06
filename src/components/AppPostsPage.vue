@@ -70,6 +70,7 @@ export default {
     },
     loadPosts() {
       this.arePostsLoading = true;
+
       getUserPosts(this.user.id)
         .then(response => this.posts = response)
         .finally(() => this.arePostsLoading = false);

@@ -24,7 +24,8 @@ export default {
               this.isNeedToRegister = true;
             }
             else {
-              this.$emit('login', response)
+              this.$emit('login', response);
+              localStorage.setItem('user', JSON.stringify(response));
             }
           })
           .catch(() => this.errorMessage = 'Some error occured')
