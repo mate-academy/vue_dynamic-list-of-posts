@@ -1,5 +1,5 @@
 const { defineConfig } = require('@vue/cli-service');
 
 module.exports = defineConfig({
-  publicPath: '/vue-dynamic-list-of-posts/',
+  publicPath: '/vue_dynamic-list-of-posts/',
 });
