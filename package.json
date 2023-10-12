@@ -1,0 +1,35 @@
+{
+  "name": "vue-dynamic-list-of-posts",
+  "version": "0.0.0",
+  "private": true,
+  "homepage": "https://artkas03.github.io/vue_dynamic-list-of-posts/",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "vue-cli-service build && gh-pages -d dist",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "format": "prettier --write src/"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.4.2",
+    "@vue/cli-service": "^5.0.8",
+    "axios": "^1.5.1",
+    "bulma": "^0.9.4",
+    "sass": "^1.68.0",
+    "vue": "^3.3.4"
+  },
+  "devDependencies": {
+    "@linthtml/linthtml": "^0.9.5",
+    "@rushstack/eslint-patch": "^1.3.3",
+    "@vitejs/plugin-vue": "^4.3.4",
+    "@vue/eslint-config-prettier": "^8.0.0",
+    "eslint": "^8.49.0",
+    "eslint-plugin-vue": "^9.17.0",
+    "gh-pages": "^6.0.0",
+    "prettier": "^3.0.3",
+    "sass-loader": "^13.3.2",
+    "vite": "^4.4.9"
+  }
+}
