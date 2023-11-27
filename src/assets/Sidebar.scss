@@ -8,12 +8,12 @@
   @media (min-width: 769px) {
     max-width: 0;
   }
-}
 
-.Sidebar--open {
-  opacity: 1;
+  &--open {
+    opacity: 1;
 
-  @media (min-width: 769px) {
-    max-width: 50%;
+    @media (min-width: 769px) {
+      max-width: 50%;
+    }
   }
 }
