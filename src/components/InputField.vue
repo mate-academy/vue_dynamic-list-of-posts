@@ -1,56 +1,52 @@
-<!-- eslint-disable vue/require-prop-type-constructor -->
-<script>
-export default {
-  name: 'InputField',
-  props: {
-    type: 'text',
-    label: String,
+<script setup>
+  const props = defineProps({
+    disabled: Boolean,
+    inputTitle: String,
+    inputName: String,
+    placeholder: String,
+    icon: String,
+    inputType: String,
     modelValue: String,
-    havingErrors: Boolean,
-  },
-  emits: ['update:modelValue'],
-}
+    incorrectTitle: Boolean,
+    errorText: String,
+  });
 </script>
-
 <template>
   <div class="field" data-cy="NameField">
-
-    <label class="label" htmlFor="{`comment-author-name-${name}`}">
-      {{ label }}
+    <label class="label" :htmlFor="`comment-author-name-${inputName}`">
+      {{ inputTitle }}
     </label>
-
     <div class="control has-icons-left has-icons-right">
       <input
-        :type="type"
-        name="{name}"
-        id="{`comment-author-name-${name}`}"
-        placeholder="Post title"
-        class="input"
-        :class="{ 'is-danger': havingErrors }"
-        @input="$emit('update:modelValue', $event.target.value)"
+        :disabled="disabled"
+        :type="inputType"
+        :name="inputName"
+        :id="`comment-author-name-${inputName}`"
+        :placeholder="placeholder"
         :value="modelValue"
+        @input="$emit('update:modelValue', $event.target.value)"
+        class="input"
+        :class="{ 'is-danger': incorrectTitle}"
       />
-
       <span class="icon is-small is-left">
-        <i 
-          class="fas fa-user" 
-          :class="{ 'fa-envelope': type !== 'text', 'fa-heading': type === 'text' }"
-        ></i>
+        <i class="fas" :class="icon"></i>
       </span>
 
-      <span v-if="havingErrors"
+      <span
+        v-if="incorrectTitle"
         class="icon is-small is-right has-text-danger"
         data-cy="ErrorIcon"
       >
         <i class="fas fa-exclamation-triangle"></i>
       </span>
     </div>
-    <p 
-      v-if="havingErrors"
-      class="help is-danger" 
+
+    <p
+      v-if="incorrectTitle"
+      class="help is-danger"
       data-cy="ErrorMessage"
     >
-      Title is required
+      {{ errorText }}
     </p>
   </div>
 </template>

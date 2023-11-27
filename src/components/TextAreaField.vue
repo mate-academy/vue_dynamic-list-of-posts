@@ -1,35 +1,28 @@
-<script>
-export default {
-  name: 'TextAreaField',
-  props: {
-    modelValue: String,
-    havingErrors: Boolean,
-  },
-  emits: ['update:modelValue'],
-}
+<script setup>
+  const props = defineProps({
+      textareaTitle: String,
+      textareaName: String,
+      placeholder: String,
+      modelValue: String,
+      incorrectBody: Boolean,
+      errorText: String,
+    });
 </script>
-
 <template>
   <div class="field" data-cy="BodyField">
-    <label class="label" htmlFor="{`comment-${name}`}"> Write Post Body </label>
+    <label class="label" :htmlFor="`comment-${textareaName}`"> {{ textareaTitle }} </label>
     <div class="control">
       <textarea
-        id="{`comment-${name}`}"
-        name="name"
-        placeholder="Post body"
+        :id="`comment-${textareaName}`"
+        :name="textareaName"
+        :placeholder="placeholder"
         class="textarea"
-        :class="{ 'is-danger': havingErrors }"
-        @input="$emit('update:modelValue', $event.target.value)"
+        :class="{ 'is-danger': incorrectBody }"
         :value="modelValue"
+        @input="$emit('update:modelValue', $event.target.value)"
       ></textarea>
     </div>
 
-    <p 
-      v-if="havingErrors"
-      class="help is-danger" 
-      data-cy="ErrorMessage"
-    >
-      Body is required
-    </p>
+    <p v-if="incorrectBody" class="help is-danger" data-cy="ErrorMessage">{{ errorText }}</p>
   </div>
 </template>
