@@ -1,6 +1,6 @@
 set -e
 
-npm run build
+npm run build-only
 
 cd dist
 
