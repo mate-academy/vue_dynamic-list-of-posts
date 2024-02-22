@@ -4,7 +4,7 @@ import { client } from '@/utils/httpClient';
 import type { User } from '@/types/User';
 
 export class UserApi {
-  static async findUser(email: User['email']): AxiosPromise<User | []> {
+  static async findUser(email: User['email']): AxiosPromise<User[]> {
     return client.get(`/users?email=${email}`);
   }
 

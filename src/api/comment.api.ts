@@ -10,9 +10,7 @@ export class CommentApi {
   };
 
   static async create(newComment: Omit<Comment, 'id'>): AxiosPromise<Comment> {
-    const body = JSON.stringify(newComment);
-
-    return client.post('/comments/', body);
+    return client.post('/comments/', newComment);
   };
 
   static async delete(commentId: Comment['id']): AxiosPromise<void> {

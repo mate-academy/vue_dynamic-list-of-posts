@@ -10,18 +10,11 @@ export class PostsApi {
   };
 
   static async create(newPost: Omit<Post, 'id'>): AxiosPromise<Post> {
-    const body = JSON.stringify(newPost);
-
-    return client.post('/posts', body);
+    return client.post('/posts', newPost);
   }
 
   static async update(updatedPost: Omit<Post, 'userId'>): AxiosPromise<Post> {
-    const body = JSON.stringify({
-      title: updatedPost.title,
-      body: updatedPost.body,
-    });
-
-    return client.patch(`/posts/${updatedPost.id}`, body);
+    return client.patch(`/posts/${updatedPost.id}`, updatedPost);
   }
 
   static async delete(postId: Post['id']): AxiosPromise<void> {
