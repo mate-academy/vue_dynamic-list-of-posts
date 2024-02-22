@@ -6,7 +6,7 @@ import type { Comment } from '@/types/Comment'
 
 export class CommentApi {
   static async getAll(postId: Post['id']): AxiosPromise<Comment[]> {
-    return client.get(`/comments/postId=${postId}`);
+    return client.get(`/comments/?postId=${postId}`);
   };
 
   static async create(newComment: Omit<Comment, 'id'>): AxiosPromise<Comment> {
@@ -14,6 +14,6 @@ export class CommentApi {
   };
 
   static async delete(commentId: Comment['id']): AxiosPromise<void> {
-    return client.delete(`/comments/${commentId}}`);
+    return client.delete(`/comments/${commentId}`);
   };
 }

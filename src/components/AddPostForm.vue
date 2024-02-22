@@ -2,14 +2,19 @@
   import { defineComponent } from 'vue';
 
   export default defineComponent({
-    emits: ['titleChange', 'bodyChange', 'createPost', 'closeForm']
+    emits: ['titleChange', 'bodyChange', 'postEvent', 'closeForm'],
+    props: {
+      title: String,
+      postTitle: String,
+      postBody: String,
+    }
   })
 </script>
 
 <template>
-  <h2>Create new post</h2>
+  <h2>{{ title }}</h2>
 
-  <form @submit="$emit('createPost', $event)">
+  <form @submit="$emit('postEvent', $event)">
     <div class="field" data-cy="NameField">
       <label class="label" for="comment-author-name-title">
         Title
@@ -23,6 +28,7 @@
           placeholder="Post title"
           class="input"
           @input="$emit('titleChange', $event)"
+          :value="postTitle"
           required
         >
         <span class="icon is-small is-left">
@@ -41,6 +47,7 @@
           placeholder="Post body"
           class="textarea"
           @input="$emit('bodyChange', $event)"
+          :value="postBody"
           required
         />
       </div>

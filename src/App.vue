@@ -1,12 +1,12 @@
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import { LocalStorage } from '@/utils/LocalStorage'
-  import Login from '@/components/Login.vue'
+  import { LocalStorage } from '@/utils/LocalStorage';
+  import Login from '@/components/Login.vue';
   import 'bulma';
-  import '@fortawesome/fontawesome-free/css/all.css'
-  import Header from '@/components/Header.vue'
-  import { UserApi } from '@/api/user.api'
-  import PostsList from '@/components/PostsList.vue'
+  import '@fortawesome/fontawesome-free/css/all.css';
+  import Header from '@/components/Header.vue';
+  import { UserApi } from '@/api/user.api';
+  import PostsList from '@/components/PostsList.vue';
 
 
   export default defineComponent({

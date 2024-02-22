@@ -1,12 +1,15 @@
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import Post from '@/components/Post.vue'
-  import { PostsApi } from '@/api/post.api'
-  import AddPostForm from '@/components/AddPostForm.vue'
   import Sidebar from '@/UI/Sidebar.vue'
 
+  import { PostsApi } from '@/api/post.api'
+
+  import Post from '@/components/Post.vue'
+  import AddPostForm from '@/components/AddPostForm.vue'
+  import PostPreview from '@/components/PostPreview.vue'
+
   export default defineComponent({
-    components: { Sidebar, AddPostForm, Post },
+    components: { PostPreview, Sidebar, PostForm: AddPostForm, Post },
     props: {
       userId: Number,
     },
@@ -14,10 +17,17 @@
       return {
         posts: [] as typeof Post[],
         addPostFormOpened: false,
+        editPostFormOpened: false,
+        currentPostId: 0,
         newPost: {
           title: '',
           body: '',
           userId: this.userId,
+        },
+        postToUpdate: {
+          title: this.currentPostId ? this.posts().find(post => post.id === this.currentPostId) : '',
+          body: this.currentPostId ? this.posts().find(post => post.id === this.currentPostId) : '',
+          id: 0,
         }
       }
     },
@@ -32,11 +42,21 @@
 
         this.newPost.title = input.value;
       },
-
       changeBodyNewPostHandler($event: InputEvent) {
         const input = $event.target as HTMLInputElement;
 
         this.newPost.body = input.value;
+      },
+
+      changeTitlePostUpdateHandler($event: InputEvent) {
+        const input = $event.target as HTMLInputElement;
+
+        this.postToUpdate.title = input.value;
+      },
+      changeBodyPostUpdateHandler($event: InputEvent) {
+        const input = $event.target as HTMLInputElement;
+
+        this.postToUpdate.body = input.value;
       },
 
       createPostHandler($event: SubmitEvent) {
@@ -47,6 +67,52 @@
         })
 
         this.addPostFormOpened = false;
+      },
+      addPostFormOpenHandler() {
+        this.addPostFormOpened = true;
+        this.editPostFormOpened = false;
+      },
+      setCurrentPostHandler(postId: number) {
+        if (this.currentPostId === postId && !this.editPostFormOpened) {
+          this.currentPostId = 0;
+
+          return;
+        }
+
+        this.addPostFormOpened = false;
+        this.editPostFormOpened = false;
+        this.currentPostId = postId;
+      },
+      deletePostHandler() {
+        if (this.currentPostId === 0) {
+          return;
+        }
+
+        PostsApi.delete(this.currentPostId)
+          .then(() => {
+            this.posts = this.posts.filter(post => post.id !== this.currentPostId);
+
+            this.currentPostId = 0;
+          })
+      },
+      editPostFormOpenHandler(postId: number) {
+        this.postToUpdate.title = this.currentPostId ? this.posts.find(post => post.id === this.currentPostId)?.title : '';
+        this.postToUpdate.body = this.currentPostId ? this.posts.find(post => post.id === this.currentPostId)?.body : '';
+        this.postToUpdate.id = postId;
+
+        this.editPostFormOpened = true;
+      },
+      updatePostHandler($event: SubmitEvent) {
+        $event.preventDefault()
+
+        PostsApi.update(this.postToUpdate)
+          .then(() => {
+            this.editPostFormOpened = false;
+
+            PostsApi.getAll(this.userId).then(res => {
+              this.posts = res.data;
+            })
+          })
       }
     }
   })
@@ -61,7 +127,7 @@
           <button
             type="button"
             class="button is-link"
-            @click="addPostFormOpened = !addPostFormOpened"
+            @click="addPostFormOpenHandler"
           >
             Add New Post
           </button>
@@ -76,20 +142,44 @@
           </tr>
           </thead>
           <tbody>
-            <Post v-for="post of posts" :post="post" />
+            <Post
+              v-for="post of posts"
+              :post="post"
+              :postId="currentPostId"
+              @choosePost="setCurrentPostHandler"
+            />
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <Sidebar :class="{'Sidebar--open': addPostFormOpened}">
-    <AddPostForm
+  <Sidebar :class="{'Sidebar--open': addPostFormOpened || !!currentPostId}">
+    <PostForm
       v-if="addPostFormOpened"
-      @close-form="addPostFormOpened = !addPostFormOpened"
+      title="Create new post"
+      @close-form="addPostFormOpened = false"
       @title-change="changeTitleNewPostHandler"
       @body-change="changeBodyNewPostHandler"
-      @create-post="createPostHandler"
+      @postEvent="createPostHandler"
+    />
+
+    <PostForm
+      v-if="editPostFormOpened"
+      title="Edit the post"
+      :postTitle="postToUpdate.title"
+      :postBody="postToUpdate.body"
+      @close-form="editPostFormOpened = false"
+      @title-change="changeTitlePostUpdateHandler"
+      @body-change="changeBodyPostUpdateHandler"
+      @postEvent="updatePostHandler"
+    />
+
+    <PostPreview
+      v-if="!!currentPostId && !editPostFormOpened && !addPostFormOpened"
+      :post="posts.find(post => post.id === currentPostId)"
+      @deletePost="deletePostHandler"
+      @edit-post-open="editPostFormOpenHandler"
     />
   </Sidebar>
 </template>
