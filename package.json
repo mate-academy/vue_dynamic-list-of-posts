@@ -11,12 +11,12 @@
     "type-check": "vue-tsc --build --force",
     "lint": "eslint vue_dynamic-list-of-posts --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "format": "prettier --write src",
-
     "prepare-to-deploy": "chmod +x deploy.sh",
     "run-deploy-script": "deploy.sh",
     "deploy": "npm run prepare-to-deploy && npm run run-deploy-script"
   },
   "dependencies": {
+    "axios": "^1.6.7",
     "sass": "^1.71.1",
     "vue": "^3.4.15"
   },
