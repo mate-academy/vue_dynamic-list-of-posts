@@ -8,7 +8,6 @@
   import { UserApi } from '@/api/user.api';
   import PostsList from '@/components/PostsList.vue';
 
-
   export default defineComponent({
     components: { PostsList, Header, Login },
     data() {
@@ -17,11 +16,23 @@
         authorized: !!LocalStorage.user.get().id,
         submitted: false,
         email: '',
+        name: '',
       }
     },
     methods: {
       login($event: SubmitEvent) {
         $event.preventDefault();
+
+        if (this.submitted && !this.authorized) {
+          UserApi.register(this.email, this.name)
+            .then(response => {
+              this.user = response.data;
+              LocalStorage.user.set(this.user);
+              this.authorized = true;
+            })
+
+          return;
+        }
 
         UserApi.findUser(this.email)
           .then(response => {
@@ -43,6 +54,9 @@
 
         this.email = eventTarget.value;
       },
+      changeNameHandler(newValue: string) {
+        this.name = newValue;
+      },
       logoutHandler() {
         this.authorized = false;
         this.submitted = false;
@@ -58,6 +72,7 @@
     v-if="!authorized"
     @handleSubmit="login"
     @changeHandler="changeHandler"
+    @changeName="changeNameHandler"
     :authorized="authorized"
     :submitted="submitted"
   />

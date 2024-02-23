@@ -4,10 +4,17 @@
 
   export default defineComponent({
     components: { Registration },
-    emits: ['handleSubmit', 'changeHandler'],
+    emits: ['handleSubmit', 'changeHandler', 'changeName'],
     props: {
       authorized: Boolean,
       submitted: Boolean,
+    },
+    methods: {
+      changeNameHandler($event: InputEvent) {
+        const eventTarget = $event.target as HTMLInputElement;
+
+        this.$emit('changeName', eventTarget.value)
+      }
     }
   })
 </script>
@@ -35,11 +42,9 @@
           <i class="fas fa-envelope" />
         </span>
         </div>
-
-<!--        <p class="help is-danger">error message</p>-->
       </div>
 
-      <Registration v-if="!authorized && submitted"/>
+      <Registration v-if="!authorized && submitted" @change-name-handler="changeNameHandler"/>
 
       <div class="field">
         <button type="submit" class="button is-primary">Login</button>

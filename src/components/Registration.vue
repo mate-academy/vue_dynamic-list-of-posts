@@ -2,6 +2,7 @@
   import { defineComponent } from 'vue';
 
   export default defineComponent({
+    emits: ['changeNameHandler'],
   })
 </script>
 
@@ -17,13 +18,12 @@
         class="input"
         placeholder="Enter your name"
         required
+        @input="$emit('changeNameHandler', $event)"
       />
 
       <span class="icon is-small is-left">
       <i class="fas fa-user" />
     </span>
     </div>
-
-<!--    <p class="help is-danger">error message</p>-->
   </div>
 </template>

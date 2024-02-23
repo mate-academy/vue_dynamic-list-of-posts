@@ -11,6 +11,6 @@ export class UserApi {
   static async register(email: User['email'], name: User['name']): AxiosPromise<User> {
     const body = { email, name };
 
-    return client.post(`/users?email=${email}`, JSON.stringify(body));
+    return client.post(`/users?email=${email}`, body);
   }
 }
