@@ -1,7 +1,8 @@
 const { defineConfig } = require('@vue/cli-service');
 const { DefinePlugin } = require('webpack');
 
-module.exports = defineConfig({
+module.exports = {
+  publicPath: '/vue_dynamic-list-of-posts/',
   transpileDependencies: true,
   chainWebpack: (config) => {
     config.plugin('define').tap((args) => {
@@ -9,4 +10,4 @@ module.exports = defineConfig({
       return args;
     });
   },
-});
+};
