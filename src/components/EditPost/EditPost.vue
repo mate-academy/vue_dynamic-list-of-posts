@@ -10,29 +10,27 @@ export default {
 
   methods: {
     handleUpdatePost() {
-      this.$emit('updatePost', {
+      this.$emit("updatePost", {
         title: this.title,
         body: this.body,
-        postId: this.post.id
-      })
-    }
+        postId: this.post.id,
+      });
+    },
   },
-  
+
   props: {
     post: Object,
-  }
+  },
 };
 </script>
 
 <template>
   <div className="tile is-child box is-success ">
     <div className="content">
-      <!-- Content here -->
       <div className="content">
         <h2>Post editing</h2>
 
         <form>
-          <!-- inputs... -->
           <div className="field" data-cy="NameField">
             <label className="label" htmlFor="{`comment-author-name-${name}`}">
               Title

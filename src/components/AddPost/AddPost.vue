@@ -31,19 +31,17 @@ export default {
     toggleChangeAddStatus() {
       this.$emit("handleChangeAddStatus");
     },
-  }
+  },
 };
 </script>
 
 <template>
-  <div className="tile is-child box is-success ">
+  <div className="tile is-child box is-succes">
     <div className="content">
-      <!-- Content here -->
       <div className="content">
         <h2>Create new post</h2>
 
         <form>
-          <!-- inputs... -->
           <div className="field" data-cy="NameField">
             <label className="label" htmlFor="{`comment-author-name-${name}`}">
               Title

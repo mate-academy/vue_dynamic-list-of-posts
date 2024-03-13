@@ -2,7 +2,7 @@
 import AddPost from "../AddPost/AddPost";
 import PostComments from "../PostComments/PostComments";
 import EditPost from "../EditPost/EditPost";
-import PostLoader from '../Loader/PostLoader';
+import PostLoader from "../Loader/PostLoader";
 import { getPosts, createPost, removePost, updatePost } from "../../api/Posts";
 import { getComment, createComment, removeComment } from "../../api/Comments";
 
@@ -182,8 +182,8 @@ export default {
 </script>
 
 <template>
-
-  <div className="tile is-parent">
+  <div class="tile.is-ancesto" style="display: flex;">
+    <div className="tile is-parent">
     <div className="tile is-child box is-success">
       <div className="block">
         <div className="block is-flex is-justify-content-space-between">
@@ -198,9 +198,12 @@ export default {
           </button>
         </div>
 
-        <PostLoader v-if="isLoading"/>
+        <PostLoader v-if="isLoading" />
 
-        <table v-else className="table is-fullwidth is-striped is-hoverable is-narrow">
+        <table
+          v-else
+          className="table is-fullwidth is-striped is-hoverable is-narrow"
+        >
           <thead>
             <tr className="has-background-link-light">
               <th>ID</th>
@@ -227,32 +230,33 @@ export default {
         </table>
       </div>
     </div>
-    <div
-      class="tile is-parent is-8-desktop Sidebar"
-      :class="{ 'Sidebar--open': isAddPost || isOpenedPost || isEditedPost }"
-    >
-      <AddPost
-        @handleSubmit="handleSubmitPost"
-        @handleChangeAddStatus="handleChangeAddStatus()"
-        v-if="isAddPost"
-      />
+  </div>
+  <div
+    class="tile is-parent is-8-desktop Sidebar"
+    :class="{ 'Sidebar--open': isAddPost || isOpenedPost || isEditedPost }"
+  >
+    <AddPost
+      @handleSubmit="handleSubmitPost"
+      @handleChangeAddStatus="handleChangeAddStatus()"
+      v-if="isAddPost"
+    />
 
-      <EditPost
-        v-if="isEditedPost"
-        :post="currentOpenedPost()"
-        @updatePost="handleUpdatePost"
-      />
+    <EditPost
+      v-if="isEditedPost"
+      :post="currentOpenedPost()"
+      @updatePost="handleUpdatePost"
+    />
 
-      <PostComments
-        :post="currentOpenedPost()"
-        :comments="comments"
-        v-if="isOpenedPost"
-        @editPost="handleEditPost"
-        @handleAddComment="handleAddComment"
-        @handleRemovePost="handleRemovePost"
-        @handleRemoveComment="handleRemoveComment"
-      />
-    </div>
+    <PostComments
+      :post="currentOpenedPost()"
+      :comments="comments"
+      v-if="isOpenedPost"
+      @editPost="handleEditPost"
+      @handleAddComment="handleAddComment"
+      @handleRemovePost="handleRemovePost"
+      @handleRemoveComment="handleRemoveComment"
+    />
+  </div>
   </div>
 </template>
 

@@ -22,7 +22,9 @@
           </span>
         </div>
 
-        <p className="help is-danger">error message</p>
+        <p v-if="this.email.length === 0" className="help is-danger">
+          error message
+        </p>
       </div>
 
       <div className="field">
@@ -42,12 +44,15 @@
 export default {
   data() {
     return {
-      email: "",
+      email: "asd@sad",
     };
   },
 
   methods: {
     appLoginByEmail() {
+      if (this.email.length === 0) {
+        return;
+      }
       this.$emit("handleGetUser", this.email);
     },
   },

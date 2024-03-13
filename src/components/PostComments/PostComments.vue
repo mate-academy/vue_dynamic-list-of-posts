@@ -9,7 +9,7 @@ export default {
       name: "",
       email: "",
       body: "",
-      errorText: '',
+      errorText: "",
     };
   },
 
@@ -40,10 +40,9 @@ export default {
 
       this.$emit("handleAddComment", newComment);
       this.toggleAddComment();
-        this.postId = this.post.id,
-        this.name = '';
-        this.email = '';
-        this.body = '';
+      (this.postId = this.post.id), (this.name = "");
+      this.email = "";
+      this.body = "";
     },
 
     toggleAddComment() {
@@ -51,8 +50,8 @@ export default {
     },
 
     toggleEditPost() {
-      this.$emit('editPost')
-    }
+      this.$emit("editPost");
+    },
   },
   props: {
     post: Object,
@@ -115,7 +114,7 @@ export default {
           id="{`comment-author-name-${name}`}"
           placeholder="Name Surmane"
           class="input"
-          :class="{'is-danger': errorText}"
+          :class="{ 'is-danger': errorText }"
         />
         <span className="icon is-small is-left">
           <i className="fas fa-user"></i>
@@ -130,11 +129,7 @@ export default {
         </span>
       </div>
 
-      <p 
-        className="help is-danger" 
-        data-cy="ErrorMessage"
-        v-if="errorText"
-      >
+      <p className="help is-danger" data-cy="ErrorMessage" v-if="errorText">
         error text
       </p>
 
@@ -148,7 +143,7 @@ export default {
           name="email"
           class="input"
           placeholder="Your Email"
-          :class="{'is-danger': errorText}"
+          :class="{ 'is-danger': errorText }"
           required
         />
 
@@ -169,15 +164,11 @@ export default {
           name="name"
           placeholder="Comment"
           class="textarea"
-          :class="{'is-danger': errorText}"
+          :class="{ 'is-danger': errorText }"
         ></textarea>
       </div>
 
-      <p 
-        className="help is-danger" 
-        data-cy="ErrorMessage"
-        v-if="errorText"
-      >
+      <p className="help is-danger" data-cy="ErrorMessage" v-if="errorText">
         error text
       </p>
 
