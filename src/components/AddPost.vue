@@ -27,7 +27,13 @@
         postBody: this.postToEdit ? this.postToEdit.body : '',
         errorMessage: '',
         loading: false,
+        
       };
+    },
+    computed: {
+      buttonText() {
+        return this.postToEdit ? 'Save' : 'Create';
+      }
     },
     watch: {
       newTitle: {
@@ -128,7 +134,7 @@
       <div class="field is-grouped">
         <div class="control">
           <button type="submit" class="button is-link">
-            {{ postToEdit ? 'Save' : 'Create' }}
+            {{ buttonText }}
           </button>
         </div>
         <div class="control">

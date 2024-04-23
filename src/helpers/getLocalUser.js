@@ -1,6 +1,6 @@
 export const getLocalUser = () => {
-  let user = {};
-  const jsonData = localStorage.getItem('user') || '{}';
+  let user = null;
+  const jsonData = localStorage.getItem('user') || null;
 
   try {
     user = JSON.parse(jsonData);

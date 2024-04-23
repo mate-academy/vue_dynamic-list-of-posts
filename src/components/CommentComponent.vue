@@ -5,6 +5,11 @@
     props: {
       comment: Object,
     },
+    computed: {
+      mailto() {
+        return `mailto:${this.comment.email}`;
+      }
+    },
     methods: {
       handlerDeleteComment(commentId) {
         this.$emit('delete', commentId);
@@ -16,7 +21,7 @@
 <template>
   <article class="message is-small">
     <div class="message-header">
-      <a :href="`mailto:${comment.email}`">{{ comment.name }}</a>
+      <a :href="mailto">{{ comment.name }}</a>
       <button 
         type="button" 
         class="delete is-small" 

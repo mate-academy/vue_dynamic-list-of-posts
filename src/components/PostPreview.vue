@@ -33,6 +33,7 @@
     mounted() {
       this.errorMessage = '';
       this.loading = true;
+      
       getComments(this.post.id)
         .then(({ data }) => {
           this.comments = data;
@@ -59,6 +60,7 @@
         this.errorMessage = '';
         this.visibleComments = this.comments
           .filter(comment => comment.id !== commentId);
+
         deleteComment(commentId)
           .then(() => {
             this.comments = this.visibleComments;

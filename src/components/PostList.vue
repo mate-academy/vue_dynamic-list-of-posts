@@ -10,6 +10,9 @@
       toggleOpenSidebar(postId) {
         this.$emit('set-opened-post-id', postId);
       },
+      buttonText(id) {
+        return this.openedPostId === id ? 'Close' : 'Open';
+      }
     },
   }
 </script>
@@ -24,17 +27,17 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="post of posts" :key="post.id">
-        <td>{{ post.id }}</td>
-        <td>{{ post.title }}</td>
+      <tr v-for="{id, title} of posts" :key="id">
+        <td>{{ id }}</td>
+        <td>{{ title }}</td>
         <td class="has-text-right is-vcentered">
           <button 
             type="button" 
             class="button is-link"
-            :class="{'is-light' : openedPostId !== post.id}"
-            @click="toggleOpenSidebar(post.id)"
+            :class="{'is-light' : openedPostId !== id}"
+            @click="toggleOpenSidebar(id)"
           >
-            {{ openedPostId === post.id ? 'Close' : 'Open' }}
+            {{ buttonText(id) }}
           </button>
         </td>
       </tr>

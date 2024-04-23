@@ -23,7 +23,7 @@
       };
     },
     mounted() {
-      if (this.user.id) {
+      if (this.user) {
         this.errorMessage = '';
         this.preLoadingUser = true;
         getUser(this.user.id)
