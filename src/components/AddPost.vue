@@ -27,7 +27,6 @@
         postBody: this.postToEdit ? this.postToEdit.body : '',
         errorMessage: '',
         loading: false,
-        
       };
     },
     computed: {
