@@ -24,7 +24,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   if (to.meta.needsAuth) {
     const user = getLocalUser();
-    if (user.id) {
+    if (user) {
       next();
     } else {
       next("/login");
