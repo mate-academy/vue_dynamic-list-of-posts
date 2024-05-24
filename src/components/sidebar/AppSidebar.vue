@@ -44,7 +44,12 @@
         />
         <NoCommentsYet
           v-if="
-            !isLoading && !comments.length && !isEditing && !showNewPostForm && !showAddCommentForm
+            !isLoading &&
+            !comments.length &&
+            !isEditing &&
+            !showNewPostForm &&
+            !showAddCommentForm &&
+            showPostPreview
           "
         />
         <WriteCommentBtn
