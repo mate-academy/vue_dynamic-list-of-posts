@@ -10,6 +10,14 @@ export const getPosts = (userId) => {
   return postsClient.get(`?userId=${userId}`);
 };
 
+export const createPost = (title, body, userId) => {
+  return postsClient.post(``, {
+    userId,
+    title,
+    body,
+  });
+};
+
 const usersClient = axios.create({
   baseURL: "https://mate.academy/students-api/users",
 });

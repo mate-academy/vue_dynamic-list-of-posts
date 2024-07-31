@@ -26,6 +26,6 @@ git commit -m 'wdrożenie'
 
 # jeśli wdrażasz na https://<NAZWA_UŻYTKOWNIKA>.github.io/<REPO>
 # git push -f git@github.com:<NAZWA_UŻYTKOWNIKA>/<REPO>.git main:gh-pages
-git push -f git@github.com:olafchuszno/vue_dynamic-list-of-posts.git develop:gh-pages
+git push -f git@github.com:olafchuszno/vue_dynamic-list-of-posts.git main:gh-pages
 
 cd -

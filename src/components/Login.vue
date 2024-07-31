@@ -48,12 +48,15 @@ export default {
     async logUserIn() {
       if (this.userFound === null) {
         // Create the user
-        createUser(this.userName, this.email)
-          .then((response) => this.$emit("update:modelValue", response.data))
-          .catch((error) => console.log("Error:", error));
+        this.createNewUser();
       } else {
         this.$emit("update:modelValue", this.userFound);
       }
+    },
+    createNewUser() {
+      createUser(this.userName, this.email)
+        .then((response) => this.$emit("update:modelValue", response.data))
+        .catch((error) => console.log("Error:", error));
     },
   },
 };

@@ -1,19 +1,24 @@
 <script>
 export default {
   name: "InputField",
+  emits: ["update:modelValue"],
+  props: {
+    modelValue: String,
+  },
 };
 </script>
 
 <template>
   <div class="field" data-cy="NameField">
-    <label class="label" for="{`comment-author-name-${name}`}"> title </label>
+    <label class="label" for="{`comment-author-name-${name}`}"> Title </label>
     <div class="control has-icons-left has-icons-right">
       <input
         type="text"
         name="{name}"
         id="{`comment-author-name-${name}`}"
-        placeholder="Your name"
+        placeholder="Post title"
         class="input is-danger"
+        @change="(event) => $emit('update:modelValue', event.target.value)"
       />
       <span class="icon is-small is-left">
         <i class="fas fa-user"></i>

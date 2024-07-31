@@ -2,7 +2,6 @@
 import AppHeader from "./components/AppHeader.vue";
 import Login from "./components/Login.vue";
 import PostsList from "./components/PostsList.vue";
-import { getPosts } from "./http-client.js";
 
 export default {
   data() {
