@@ -21,14 +21,9 @@ export default {
       if (this.user) {
         getPosts(this.user.id).then((response) => {
           this.posts = response.data;
-          // console.log(response.data);
         });
       }
     },
-    //   currentPost() {
-    //     console.log("currentPost:", this.currentPost);
-    //     this.$nextTick(() => console.log("isSidebarOpen:", this.isSidebarOpen));
-    //   },
   },
 };
 </script>
