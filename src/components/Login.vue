@@ -56,7 +56,6 @@ export default {
           .then((response) => this.$emit("update:modelValue", response.data))
           .catch((error) => console.log("Error:", error));
       } else {
-        // this.user = this.userFound;
         this.$emit("update:modelValue", this.userFound);
       }
     },
