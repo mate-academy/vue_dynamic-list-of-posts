@@ -1,3 +1,9 @@
+<script>
+export default {
+  name: "WelcomeItem",
+};
+</script>
+
 <template>
   <div class="item">
     <i>
