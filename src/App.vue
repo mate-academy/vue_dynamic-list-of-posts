@@ -18,7 +18,7 @@ export default {
   },
   watch: {
     user() {
-      if (!!this.user) {
+      if (this.user) {
         getPosts(this.user.id).then((response) => {
           this.posts = response.data;
           // console.log(response.data);
