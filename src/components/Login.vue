@@ -21,11 +21,7 @@ export default {
       userFound: null,
     };
   },
-  watch: {
-    userName() {
-      console.log(this.userName);
-    },
-  },
+
   computed: {
     formText() {
       return this.userDoesNotExist === true
