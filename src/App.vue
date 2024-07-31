@@ -7,8 +7,9 @@ import { getPosts } from "./http-client.js";
 export default {
   data() {
     return {
-      user: null,
-      posts: [],
+      user: localStorage.getItem("user")
+        ? JSON.parse(localStorage.getItem("user"))
+        : null,
     };
   },
   components: {
@@ -18,10 +19,8 @@ export default {
   },
   watch: {
     user() {
-      if (this.user) {
-        getPosts(this.user.id).then((response) => {
-          this.posts = response.data;
-        });
+      if (this.user !== null) {
+        localStorage.setItem("user", JSON.stringify(this.user));
       }
     },
   },
@@ -39,7 +38,7 @@ export default {
     <main class="section">
       <div class="container">
         <div class="tile is-ancestor">
-          <PostsList :posts="this.posts" />
+          <PostsList :user="this.user" />
         </div>
       </div>
     </main>
