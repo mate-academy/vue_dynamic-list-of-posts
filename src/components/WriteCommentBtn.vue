@@ -5,5 +5,5 @@ export default {
 </script>
 
 <template>
-  <button type="button" className="button is-link">Write a comment</button>
+  <button type="button" class="button is-link">Write a comment</button>
 </template>

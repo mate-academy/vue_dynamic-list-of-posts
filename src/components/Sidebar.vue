@@ -1,25 +1,15 @@
 <script>
+import "bulma";
 export default {
   name: "Sidebar",
-  props: {
-    isSidebarOpen: Boolean,
-  },
 };
 </script>
 
 <template>
-  <div
-    :className="
-      ('tile',
-      'is-parent',
-      'is-8-desktop',
-      'Sidebar',
-      { 'Sidebar--open': isSidebarOpen })
-    "
-  >
-    <div className="tile is-child box is-success ">
-      <div className="tile is-child box is-success ">
-        <div className="content">
+  <div class="tile is-parent is-8-desktop Sidebar">
+    <div class="tile is-child box is-success">
+      <div class="tile is-child box is-success">
+        <div class="content">
           <slot></slot>
         </div>
       </div>

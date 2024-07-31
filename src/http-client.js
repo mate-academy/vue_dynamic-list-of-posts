@@ -1,13 +1,13 @@
 import axios from "axios";
 
-const TEMP_USER_ID = 2;
+const TEMP_USER_ID = 1142;
 
 const postsClient = axios.create({
   baseURL: "https://mate.academy/students-api/posts",
 });
 
-export const getPosts = () => {
-  return postsClient.get(`?userId=${TEMP_USER_ID}`);
+export const getPosts = (userId) => {
+  return postsClient.get(`?userId=${userId}`);
 };
 
 const usersClient = axios.create({
@@ -24,4 +24,12 @@ export const createUser = (name, email) => {
     name,
     email,
   });
+};
+
+const commentsClient = axios.create({
+  baseURL: "https://mate.academy/students-api/comments",
+});
+
+export const getComments = (postId) => {
+  return commentsClient.get(`?postId=${postId}`);
 };

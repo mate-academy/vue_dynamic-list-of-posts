@@ -1,16 +1,13 @@
 <script>
 import AppHeader from "./components/AppHeader.vue";
 import Login from "./components/Login.vue";
-
 import PostsList from "./components/PostsList.vue";
 import { getPosts } from "./http-client.js";
+
 export default {
   data() {
     return {
-      // email: "",
       user: null,
-      // userId: null,
-      // isAuthenticated: false,
       posts: [],
     };
   },
@@ -19,11 +16,19 @@ export default {
     AppHeader,
     PostsList,
   },
-  mounted() {
-    getPosts().then((response) => {
-      this.posts = response.data;
-      // console.log(response.data);
-    });
+  watch: {
+    user() {
+      if (!!this.user) {
+        getPosts(this.user.id).then((response) => {
+          this.posts = response.data;
+          // console.log(response.data);
+        });
+      }
+    },
+    //   currentPost() {
+    //     console.log("currentPost:", this.currentPost);
+    //     this.$nextTick(() => console.log("isSidebarOpen:", this.isSidebarOpen));
+    //   },
   },
 };
 </script>
@@ -33,8 +38,15 @@ export default {
     <Login v-model="user" />
   </div>
 
-  <div v-else="true">
+  <template v-else="true">
     <AppHeader v-model="user" />
-    <PostsList :posts="this.posts" />
-  </div>
+
+    <main class="section">
+      <div class="container">
+        <div class="tile is-ancestor">
+          <PostsList :posts="this.posts" />
+        </div>
+      </div>
+    </main>
+  </template>
 </template>

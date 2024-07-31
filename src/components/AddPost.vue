@@ -1,24 +1,22 @@
 <script>
-  export default {
-    name: "AddPost",
-  };
+export default {
+  name: "AddPost",
+};
 </script>
 
 <template>
-  <div className="content">
+  <div class="content">
     <h2>title</h2>
 
     <form>
-      <!-- inputs... -->
+      <slot></slot>
 
-      <div className="field is-grouped">
-        <div className="control">
-          <button type="submit" className="button is-link">Save</button>
+      <div class="field is-grouped">
+        <div class="control">
+          <button type="submit" class="button is-link">Save</button>
         </div>
-        <div className="control">
-          <button type="reset" className="button is-link is-light">
-            Cancel
-          </button>
+        <div class="control">
+          <button type="reset" class="button is-link is-light">Cancel</button>
         </div>
       </div>
     </form>

@@ -65,36 +65,36 @@ export default {
 </script>
 
 <template>
-  <section className="container is-flex is-justify-content-center">
-    <form @:submit.prevent="handleSubmit" className="box mt-5">
-      <h1 className="title is-3">{{ formText }}</h1>
+  <section class="container is-flex is-justify-content-center">
+    <form @:submit.prevent="handleSubmit" class="box mt-5">
+      <h1 class="title is-3">{{ formText }}</h1>
 
-      <div className="field">
-        <label className="label" htmlFor="user-email"> Email </label>
+      <div class="field">
+        <label class="label" htmlFor="user-email"> Email </label>
 
-        <div className="control has-icons-left">
+        <div class="control has-icons-left">
           <input
             type="email"
             id="user-email"
             name="email"
-            className="input"
+            class="input"
             placeholder="Enter your email"
             v-model="this.email"
             required
           />
 
-          <span className="icon is-small is-left">
-            <i className="fas fa-envelope" />
+          <span class="icon is-small is-left">
+            <i class="fas fa-envelope" />
           </span>
         </div>
 
-        <p className="help is-danger">error message</p>
+        <p class="help is-danger">error message</p>
       </div>
 
       <NeedToRegister v-model="userName" v-if="this.userDoesNotExist" />
 
-      <div className="field">
-        <button type="submit" className="button is-primary">Login</button>
+      <div class="field">
+        <button type="submit" class="button is-primary">Login</button>
       </div>
     </form>
   </section>

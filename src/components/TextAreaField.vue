@@ -5,17 +5,17 @@ export default {
 </script>
 
 <template>
-  <div className="field" data-cy="BodyField">
-    <label className="label" htmlFor="{`comment-${name}`}"> title </label>
-    <div className="control">
+  <div class="field" data-cy="BodyField">
+    <label class="label" htmlFor="{`comment-${name}`}"> title </label>
+    <div class="control">
       <textarea
         id="{`comment-${name}`}"
         name="name"
         placeholder="{placeholder}"
-        className="textarea is-danger"
+        class="textarea is-danger"
       ></textarea>
     </div>
 
-    <p className="help is-danger" data-cy="ErrorMessage">error text</p>
+    <p class="help is-danger" data-cy="ErrorMessage">error text</p>
   </div>
 </template>
