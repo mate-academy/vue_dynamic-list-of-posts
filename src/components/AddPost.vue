@@ -6,7 +6,7 @@ export default {
 
 <template>
   <div class="content">
-    <h2>title</h2>
+    <h2>Create new post</h2>
 
     <form>
       <slot></slot>
