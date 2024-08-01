@@ -126,11 +126,9 @@ export default {
           this.posts = response.data;
         })
         .catch((error) => {
-          console.warn(error);
           alert("Error while fetching the posts", error);
         })
         .finally(() => {
-          console.log("------FINISH-----");
           this.isLoadingPosts = false;
         });
     }
@@ -148,9 +146,8 @@ export default {
         getComments(this.currentPost.id)
           .then((response) => {
             this.comments = response.data;
-            console.log("comments:", response.data);
           })
-          .catch((error) => console.log("Error:", error))
+          .catch((error) => console.log("Could not fetch the comments:", error))
           .finally(() => {
             this.areCommentsLoading = false;
           });

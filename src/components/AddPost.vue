@@ -27,16 +27,12 @@ export default {
   methods: {
     handleUpdatePost() {
       if (!this.validatePostData()) {
-        console.log("Post data not valid");
-        console.log("Errors:", this.errors);
         return;
       }
       this.updatePost();
     },
     handleCreatePost() {
       if (!this.validatePostData()) {
-        console.log("Post data not valid");
-        console.log("Errors:", this.errors);
         return;
       }
 
@@ -63,7 +59,7 @@ export default {
         .then((response) => {
           this.addPost(response.data);
         })
-        .catch((error) => console.log("Error:", error));
+        .catch((error) => console.log("Could not add the post:", error));
     },
     updatePost() {
       patchPost(this.post.id, this.title, this.body)
@@ -73,11 +69,9 @@ export default {
         .catch((error) => console.log("Could not update the post,", error));
     },
     clearErrorByField(field) {
-      console.log("Errors before:", this.errors);
       if (field in this.errors) {
         this.errors[field] = "";
       }
-      this.$nextTick(() => console.log("Errors after:", this.errors));
     },
   },
   watch: {},

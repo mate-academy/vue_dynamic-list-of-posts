@@ -44,7 +44,6 @@ export default {
         return false;
       }
       if (this.userDoesNotExist && this.userName.length < 4) {
-        console.log("----------");
         this.errors.userName = "Name has to be at least 4 characters long";
         return false;
       }
@@ -79,7 +78,7 @@ export default {
     createNewUser() {
       createUser(this.userName, this.email)
         .then((response) => this.$emit("update:modelValue", response.data))
-        .catch((error) => console.log("Error:", error));
+        .catch((error) => console.log("Could not create the account:", error));
     },
     validateEmail(email) {
       return String(email)
@@ -89,11 +88,9 @@ export default {
         );
     },
     clearErrorByField(field) {
-      console.log("Errors before:", this.errors);
       if (field in this.errors) {
         this.errors[field] = "";
       }
-      this.$nextTick(() => console.log("Errors after:", this.errors));
     },
   },
 };

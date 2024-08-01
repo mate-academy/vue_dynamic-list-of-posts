@@ -26,11 +26,7 @@ export default {
   },
   methods: {
     handleCreateComment() {
-      console.log("Entered handleCreateComment");
-
       if (!this.validateCommentData()) {
-        console.log("Comment data not valid");
-        console.log("Errors:", this.errors);
         return;
       }
 
@@ -49,7 +45,6 @@ export default {
         );
     },
     validateCommentData() {
-      console.log("Started validation");
       if (
         !this.name?.length ||
         !this.validateEmail(this.email) ||
@@ -82,30 +77,19 @@ export default {
       createComment(this.postId, this.name, this.email, this.body)
         .then((response) => {
           this.addComment(response.data);
-          console.log("close comment form");
+
           this.closeCommentForm();
         })
-        .catch((error) => console.log("Error:", error));
+        .catch((error) => console.log("Could not create the comment:", error));
     },
 
     clearErrorByField(field) {
-      console.log(`Clearing ${field} error`);
       if (field in this.errors) {
         this.errors[field] = "";
       }
     },
   },
-  watch: {
-    name() {
-      console.log("name:", this.name);
-    },
-    email() {
-      console.log("email:", this.email);
-    },
-    body() {
-      console.log("body:", this.body);
-    },
-  },
+
   components: {
     InputField,
     TextAreaField,
