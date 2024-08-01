@@ -45,10 +45,12 @@ export default {
 </template>
 
 <style>
-.is-ancestor {
-  display: flex;
-}
-.tile.is-parent {
-  flex-grow: 1;
+@media (min-width: 800px) {
+  .is-ancestor {
+    display: flex;
+  }
+  .tile.is-parent {
+    flex-grow: 1;
+  }
 }
 </style>

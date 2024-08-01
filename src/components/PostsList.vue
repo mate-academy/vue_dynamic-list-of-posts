@@ -27,6 +27,7 @@ export default {
       comments: [],
       areCommentsLoading: false,
       isWritingPost: false,
+      isEditingPost: false,
     };
   },
   methods: {
@@ -54,11 +55,25 @@ export default {
         })
         .catch((error) => console.log("Could not delete the post:", error));
     },
+    editPost(newPost) {
+      const index = this.posts.findIndex((post) => post.id === newPost.id);
+      this.posts[index] = newPost;
+    },
   },
   watch: {
     currentPost() {
       if (this.currentPost === null) {
         this.clearComments();
+      }
+    },
+    isEditingPost() {
+      if (this.isEditingPost) {
+        this.isWritingPost = false;
+      }
+    },
+    isWritingPost() {
+      if (this.isWritingPost) {
+        this.isEditingPost = false;
       }
     },
   },
@@ -70,9 +85,12 @@ export default {
         })
         .catch((error) => {
           console.warn(error);
-          alert(error);
+          alert("Error while fetching the posts", error);
         })
-        .finally(() => (this.isLoadingPosts = false));
+        .finally(() => {
+          console.log("------FINISH-----");
+          this.isLoadingPosts = false;
+        });
     }
   },
 
@@ -105,7 +123,9 @@ export default {
 
   computed: {
     isSidebarOpen() {
-      return this.currentPost !== null;
+      return (
+        this.currentPost !== null && !this.isEditingPost && !this.isWritingPost
+      );
     },
   },
 };
@@ -164,7 +184,11 @@ export default {
     class="Sidebar"
     :class="{ 'Sidebar--open': isSidebarOpen }"
   >
-    <PostPreview :post="this.currentPost" :deletePost="deletePost" />
+    <PostPreview
+      :post="this.currentPost"
+      :deletePost="deletePost"
+      v-model="this.isEditingPost"
+    />
     <Loader v-if="areCommentsLoading" />
     <Comment
       v-if="!areCommentsLoading"
@@ -174,10 +198,13 @@ export default {
   </Sidebar>
 
   <AddPost
-    v-if="this.isWritingPost"
+    v-if="this.isWritingPost || this.isEditingPost"
     v-model="isWritingPost"
     :user="user"
     :addPost="addPost"
+    :is-editing="isEditingPost"
+    :editPost="editPost"
+    :post="currentPost"
   />
 </template>
 

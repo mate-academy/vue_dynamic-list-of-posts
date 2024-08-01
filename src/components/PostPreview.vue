@@ -4,7 +4,9 @@ export default {
   props: {
     post: Object,
     deletePost: Function,
+    modelValue: Boolean,
   },
+  emits: ["update:modelValue"],
 };
 </script>
 
@@ -13,7 +15,10 @@ export default {
     <div class="is-flex is-justify-content-space-between is-align-items-center">
       <h2>#post {{ post.id }}: {{ post.title }}</h2>
       <div class="is-flex">
-        <span class="icon is-small is-right is-clickable">
+        <span
+          @click="$emit('update:modelValue', true)"
+          class="icon is-small is-right is-clickable"
+        >
           <i class="fas fa-pen-to-square"></i>
         </span>
         <span

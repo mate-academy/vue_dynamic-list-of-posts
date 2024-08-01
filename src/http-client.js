@@ -18,6 +18,13 @@ export const createPost = (title, body, userId) => {
   });
 };
 
+export const patchPost = (postId, title, body) => {
+  return postsClient.patch(`${postId}`, {
+    title,
+    body,
+  });
+};
+
 export const destroyPost = (postId) => {
   return postsClient.delete(`${postId}`);
 };
