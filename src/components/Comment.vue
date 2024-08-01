@@ -3,6 +3,7 @@ export default {
   name: "Comment",
   props: {
     comment: Object,
+    deleteComment: Function,
   },
 };
 </script>
@@ -15,6 +16,7 @@ export default {
         type="button"
         class="delete is-small"
         aria-label="delete"
+        @click="deleteComment(comment.id)"
       ></button>
     </div>
     <div class="message-body">{{ comment.body }}</div>

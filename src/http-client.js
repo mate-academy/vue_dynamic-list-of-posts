@@ -52,3 +52,16 @@ const commentsClient = axios.create({
 export const getComments = (postId) => {
   return commentsClient.get(`?postId=${postId}`);
 };
+
+export const createComment = (userId, name, email, body) => {
+  return commentsClient.post(``, {
+    userId,
+    name,
+    email,
+    body,
+  });
+};
+
+export const destroyComment = (commentId) => {
+  return commentsClient.delete(`${commentId}`);
+};

@@ -110,7 +110,7 @@ export default {
             type="submit"
             class="button is-link"
           >
-            Save
+            Create
           </button>
         </div>
         <div class="control">

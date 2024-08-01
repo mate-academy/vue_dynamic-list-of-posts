@@ -1,11 +1,17 @@
 <script>
-import { destroyPost, getComments, getPosts } from "@/http-client";
+import {
+  destroyComment,
+  destroyPost,
+  getComments,
+  getPosts,
+} from "@/http-client";
 import Comment from "./Comment.vue";
 import PostPreview from "./PostPreview.vue";
 import Sidebar from "./Sidebar.vue";
 import AddPost from "./AddPost.vue";
 
 import Loader from "./Loader.vue";
+import WriteCommentBtn from "./WriteCommentBtn.vue";
 
 export default {
   name: "PostsList",
@@ -15,6 +21,7 @@ export default {
     PostPreview,
     Comment,
     AddPost,
+    WriteCommentBtn,
   },
 
   props: ["user"],
@@ -28,6 +35,7 @@ export default {
       areCommentsLoading: false,
       isWritingPost: false,
       isEditingPost: false,
+      isWritingComment: false,
     };
   },
   methods: {
@@ -58,6 +66,20 @@ export default {
     editPost(newPost) {
       const index = this.posts.findIndex((post) => post.id === newPost.id);
       this.posts[index] = newPost;
+
+      this.isWritingPost = false;
+      this.isEditingPost = false;
+    },
+    addComment(comment) {
+      this.comments.push(comment);
+    },
+    deleteComment(commentId) {
+      destroyComment(commentId).then(() => {
+        const index = this.comments.findIndex(
+          (comment) => comment.id === commentId
+        );
+        this.comments.splice(index, 1);
+      });
     },
   },
   watch: {
@@ -189,12 +211,17 @@ export default {
       :deletePost="deletePost"
       v-model="this.isEditingPost"
     />
+
     <Loader v-if="areCommentsLoading" />
+
     <Comment
       v-if="!areCommentsLoading"
       v-for="comment of this.comments"
       :comment="comment"
+      :deleteComment="this.deleteComment"
     />
+
+    <WriteCommentBtn v-if="!this.isWritingComment" />
   </Sidebar>
 
   <AddPost
