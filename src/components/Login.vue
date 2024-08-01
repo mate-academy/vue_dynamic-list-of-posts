@@ -17,8 +17,12 @@ export default {
     return {
       email: "",
       userDoesNotExist: false,
-      userName: null,
+      userName: "",
       userFound: null,
+      errors: {
+        email: "",
+        userName: "",
+      },
     };
   },
 
@@ -30,7 +34,27 @@ export default {
     },
   },
   methods: {
+    validateData() {
+      if (!this.email.length) {
+        this.errors.email = "No email provided";
+        return false;
+      }
+      if (!this.validateEmail(this.email)) {
+        this.errors.email = "Invalid email";
+        return false;
+      }
+      if (this.userDoesNotExist && this.userName.length < 4) {
+        console.log("----------");
+        this.errors.userName = "Name has to be at least 4 characters long";
+        return false;
+      }
+      return true;
+    },
     handleSubmit() {
+      if (!this.validateData()) {
+        return;
+      }
+
       if (this.userDoesNotExist && this.userName?.length > 0) {
         this.logUserIn();
         return;
@@ -58,6 +82,20 @@ export default {
         .then((response) => this.$emit("update:modelValue", response.data))
         .catch((error) => console.log("Error:", error));
     },
+    validateEmail(email) {
+      return String(email)
+        .toLowerCase()
+        .match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
+    },
+    clearErrorByField(field) {
+      console.log("Errors before:", this.errors);
+      if (field in this.errors) {
+        this.errors[field] = "";
+      }
+      this.$nextTick(() => console.log("Errors after:", this.errors));
+    },
   },
 };
 </script>
@@ -72,13 +110,12 @@ export default {
 
         <div class="control has-icons-left">
           <input
-            type="email"
             id="user-email"
             name="email"
             class="input"
             placeholder="Enter your email"
             v-model="this.email"
-            required
+            @change="clearErrorByField('email')"
           />
 
           <span class="icon is-small is-left">
@@ -86,10 +123,18 @@ export default {
           </span>
         </div>
 
-        <p class="help is-danger">error message</p>
+        <p v-if="this.errors.email.length" class="help is-danger">
+          {{ this.errors.email }}
+        </p>
       </div>
 
-      <NeedToRegister v-model="userName" v-if="this.userDoesNotExist" />
+      <NeedToRegister
+        v-model="userName"
+        v-if="this.userDoesNotExist"
+        :clearErrorByField="clearErrorByField"
+        :error="this.errors.userName"
+        name="userName"
+      />
 
       <div class="field">
         <button type="submit" class="button is-primary">Login</button>

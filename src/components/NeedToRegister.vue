@@ -3,8 +3,17 @@ export default {
   name: "NeedToRegister",
   props: {
     modelValue: String,
+    clearErrorByField: Function,
+    name: String,
+    error: String,
   },
   emits: ["update:modelValue"],
+  methods: {
+    handleInputChange(event) {
+      this.$emit("update:modelValue", event.target.value);
+      this.clearErrorByField(this.name);
+    },
+  },
 };
 </script>
 
@@ -19,13 +28,8 @@ export default {
         name="name"
         class="input"
         placeholder="Enter your name"
-        required
         :minlength="4"
-        @change.prevent="
-          (event) => {
-            $emit('update:modelValue', event.target.value);
-          }
-        "
+        @change.prevent="handleInputChange"
       />
 
       <span class="icon is-small is-left">
@@ -33,6 +37,6 @@ export default {
       </span>
     </div>
 
-    <p class="help is-danger">error message</p>
+    <p v-if="error.length" class="help is-danger">{{ this.error }}</p>
   </div>
 </template>
