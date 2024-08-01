@@ -19,6 +19,8 @@ export default {
   methods: {
     handleSubmit() {
       if (!this.validatePostData()) {
+        console.log("Post data not valid");
+        console.log("Errors:", this.errors);
         return;
       }
 
@@ -29,7 +31,7 @@ export default {
       this.body = "";
     },
     validatePostData() {
-      if (!this.title?.length || !this.title?.body) {
+      if (!this.title?.length || !this.body?.length) {
         if (!this.title?.length) {
           this.errors.title = "Title is required.";
         }
@@ -41,18 +43,20 @@ export default {
       return true;
     },
     createNewPost() {
-      createPost(this.title, this.body, user.id)
-        .then((response) => addPost(response.data))
+      createPost(this.title, this.body, this.user.id)
+        .then((response) => {
+          this.addPost(response.data);
+        })
         .catch((error) => console.log("Error:", error));
     },
   },
   watch: {
-    title() {
-      console.log(this.title);
-    },
-    body() {
-      console.log(this.body);
-    },
+    // title() {
+    //   console.log(this.title);
+    // },
+    // body() {
+    //   console.log(this.body);
+    // },
   },
   components: {
     InputField,

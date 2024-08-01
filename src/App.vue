@@ -18,7 +18,7 @@ export default {
   },
   watch: {
     user() {
-      if (this.user !== null) {
+      if (this.user) {
         localStorage.setItem("user", JSON.stringify(this.user));
       }
     },
