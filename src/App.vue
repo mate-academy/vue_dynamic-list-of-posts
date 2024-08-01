@@ -20,6 +20,8 @@ export default {
     user() {
       if (this.user) {
         localStorage.setItem("user", JSON.stringify(this.user));
+      } else {
+        localStorage.clear("user");
       }
     },
   },
