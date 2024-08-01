@@ -43,3 +43,12 @@ export default {
     </main>
   </template>
 </template>
+
+<style>
+.is-ancestor {
+  display: flex;
+}
+.tile.is-parent {
+  flex-grow: 1;
+}
+</style>

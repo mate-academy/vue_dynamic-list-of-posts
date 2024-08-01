@@ -159,7 +159,11 @@ export default {
     </div>
   </div>
 
-  <Sidebar v-if="isSidebarOpen" :class="{ 'Sidebar--open': isSidebarOpen }">
+  <Sidebar
+    v-if="isSidebarOpen"
+    class="Sidebar"
+    :class="{ 'Sidebar--open': isSidebarOpen }"
+  >
     <PostPreview :post="this.currentPost" :deletePost="deletePost" />
     <Loader v-if="areCommentsLoading" />
     <Comment
