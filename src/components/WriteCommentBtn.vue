@@ -1,9 +1,19 @@
 <script>
 export default {
   name: "WriteCommentBtn",
+  emits: ["update:modelValue"],
+  props: {
+    modelValue: Boolean,
+  },
 };
 </script>
 
 <template>
-  <button type="button" class="button is-link">Write a comment</button>
+  <button
+    @click="$emit('update:modelValue', true)"
+    type="button"
+    class="button is-link"
+  >
+    Write a comment
+  </button>
 </template>

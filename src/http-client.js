@@ -53,9 +53,9 @@ export const getComments = (postId) => {
   return commentsClient.get(`?postId=${postId}`);
 };
 
-export const createComment = (userId, name, email, body) => {
+export const createComment = (postId, name, email, body) => {
   return commentsClient.post(``, {
-    userId,
+    postId,
     name,
     email,
     body,

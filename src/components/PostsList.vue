@@ -12,6 +12,7 @@ import AddPost from "./AddPost.vue";
 
 import Loader from "./Loader.vue";
 import WriteCommentBtn from "./WriteCommentBtn.vue";
+import CommentForm from "./CommentForm.vue";
 
 export default {
   name: "PostsList",
@@ -22,6 +23,7 @@ export default {
     Comment,
     AddPost,
     WriteCommentBtn,
+    CommentForm,
   },
 
   props: ["user"],
@@ -72,6 +74,7 @@ export default {
     },
     addComment(comment) {
       this.comments.push(comment);
+      this.isWritingComment = false;
     },
     deleteComment(commentId) {
       destroyComment(commentId).then(() => {
@@ -221,7 +224,13 @@ export default {
       :deleteComment="this.deleteComment"
     />
 
-    <WriteCommentBtn v-if="!this.isWritingComment" />
+    <WriteCommentBtn v-model="isWritingComment" v-if="!this.isWritingComment" />
+    <CommentForm
+      v-if="this.isWritingComment"
+      v-model="isWritingComment"
+      :addComment="addComment"
+      :postId="this.currentPost.id"
+    />
   </Sidebar>
 
   <AddPost

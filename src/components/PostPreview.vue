@@ -13,7 +13,7 @@ export default {
 <template>
   <div class="block">
     <div class="is-flex is-justify-content-space-between is-align-items-center">
-      <h2>#post {{ post.id }}: {{ post.title }}</h2>
+      <h2>#{{ post.id }}: {{ post.title }}</h2>
       <div class="is-flex">
         <span
           @click="$emit('update:modelValue', true)"
