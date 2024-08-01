@@ -59,7 +59,7 @@ export default {
         return;
       }
 
-      findUser(this.email).then((user) => {
+      findUser(this.email.toLowerCase()).then((user) => {
         if (user === null) {
           this.userDoesNotExist = true;
         } else {
@@ -76,7 +76,7 @@ export default {
       }
     },
     createNewUser() {
-      createUser(this.userName, this.email)
+      createUser(this.userName, this.email.toLowerCase())
         .then((response) => this.$emit("update:modelValue", response.data))
         .catch((error) => console.log("Could not create the account:", error));
     },
