@@ -19,12 +19,14 @@ export default {
 
 <template>
   <div class="field" data-cy="BodyField">
-    <label class="label" :for="`comment-${name}`"> Write Post Body </label>
+    <label class="label" :for="`comment-${name}`">
+      {{ this.name.charAt(0).toUpperCase() + this.name.slice(1) }}
+    </label>
     <div class="control">
       <textarea
         :id="`comment-${name}`"
         name="name"
-        placeholder="Post body"
+        :placeholder="name"
         class="textarea"
         :class="error.length ? 'is-danger' : ''"
         @change="handleChange"

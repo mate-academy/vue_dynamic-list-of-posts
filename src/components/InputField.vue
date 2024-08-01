@@ -27,7 +27,7 @@ export default {
         type="text"
         :name="name"
         :id="`comment-author-name-${name}`"
-        placeholder="Post title"
+        :placeholder="name"
         class="input"
         :class="error.length ? 'is-danger' : ''"
         @change="handleInputChange"
