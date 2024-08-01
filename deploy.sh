@@ -18,7 +18,7 @@ echo > .nojekyll
 git init
 git checkout -B main
 git add -A
-git commit -m 'wdrożenie'
+git commit -m 'deployment'
 
 
 # jeśli wdrażasz na https://<NAZWA_UŻYTKOWNIKA>.github.io

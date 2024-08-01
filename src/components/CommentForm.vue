@@ -86,7 +86,6 @@ export default {
           this.closeCommentForm();
         })
         .catch((error) => console.log("Error:", error));
-      // Finally is adding post = false - Mayve dodać stan ???
     },
 
     clearErrorByField(field) {
