@@ -9,9 +9,6 @@ export default {
     modelValue: Boolean,
     postId: Number,
     addComment: Function,
-    // isEditing: Boolean,
-    // editPost: Function,
-    // post: Object || null,
   },
   emits: ["update:modelValue"],
   data() {
@@ -19,11 +16,18 @@ export default {
       name: "",
       email: "",
       body: "",
-      errors: {},
+
+      errors: {
+        name: "",
+        email: "",
+        body: "",
+      },
     };
   },
   methods: {
     handleCreateComment() {
+      console.log("Entered handleCreateComment");
+
       if (!this.validateCommentData()) {
         console.log("Comment data not valid");
         console.log("Errors:", this.errors);
@@ -37,14 +41,31 @@ export default {
       this.email = "";
       this.body = "";
     },
+    validateEmail(email) {
+      return String(email)
+        .toLowerCase()
+        .match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
+    },
     validateCommentData() {
-      if (!this.name?.length || !this.email?.length || !this.body?.length) {
+      console.log("Started validation");
+      if (
+        !this.name?.length ||
+        !this.validateEmail(this.email) ||
+        !this.email?.length ||
+        !this.body?.length
+      ) {
         if (!this.name?.length) {
           this.errors.name = "Name and Surname are required.";
         }
-        if (!this.email?.length) {
+
+        if (!this.validateEmail(this.email)) {
+          this.errors.email = "Email is invalid.";
+        } else if (!this.email?.length) {
           this.errors.email = "Email is required.";
         }
+
         if (!this.body?.length) {
           this.errors.body = "Comment body is required.";
         }
@@ -66,6 +87,13 @@ export default {
         })
         .catch((error) => console.log("Error:", error));
       // Finally is adding post = false - Mayve dodać stan ???
+    },
+
+    clearErrorByField(field) {
+      console.log(`Clearing ${field} error`);
+      if (field in this.errors) {
+        this.errors[field] = "";
+      }
     },
   },
   watch: {
@@ -89,9 +117,24 @@ export default {
 <template>
   <div class="content">
     <form>
-      <InputField v-model="name" />
-      <InputField v-model="email" />
-      <TextAreaField v-model="body" />
+      <InputField
+        v-model="name"
+        :error="this.errors.name"
+        name="name"
+        :clearErrorByField="clearErrorByField"
+      />
+      <InputField
+        v-model="email"
+        :error="this.errors.email"
+        name="email"
+        :clearErrorByField="clearErrorByField"
+      />
+      <TextAreaField
+        v-model="body"
+        :error="this.errors.body"
+        name="body"
+        :clearErrorByField="clearErrorByField"
+      />
 
       <div class="field is-grouped">
         <div class="control">
