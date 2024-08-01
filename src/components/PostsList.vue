@@ -237,7 +237,7 @@ export default {
     <Loader v-if="areCommentsLoading" />
 
     <Comment
-      v-if="!areCommentsLoading"
+      v-if="!areCommentsLoading && !isEditingPost"
       v-for="comment of this.comments"
       :comment="comment"
       :deleteComment="this.deleteComment"
