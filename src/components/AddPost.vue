@@ -1,5 +1,5 @@
 <script>
-import { createPost, patchPost } from "@/http-client";
+import { createPost, patchPost } from "@/api/posts";
 import InputField from "./InputField.vue";
 import TextAreaField from "./TextAreaField.vue";
 
@@ -64,7 +64,6 @@ export default {
           this.addPost(response.data);
         })
         .catch((error) => console.log("Error:", error));
-      // Finally is adding post = false - Mayve dodać stan ???
     },
     updatePost() {
       patchPost(this.post.id, this.title, this.body)

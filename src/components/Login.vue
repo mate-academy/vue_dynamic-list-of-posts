@@ -1,5 +1,5 @@
 <script>
-import { createUser, findUser } from "@/http-client";
+import { createUser, findUser } from "@/api/users";
 import NeedToRegister from "./NeedToRegister.vue";
 
 export default {
@@ -71,7 +71,6 @@ export default {
     },
     async logUserIn() {
       if (this.userFound === null) {
-        // Create the user
         this.createNewUser();
       } else {
         this.$emit("update:modelValue", this.userFound);

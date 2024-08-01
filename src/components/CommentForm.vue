@@ -1,5 +1,5 @@
 <script>
-import { createComment } from "@/http-client";
+import { createComment } from "@/api/comments";
 import InputField from "./InputField.vue";
 import TextAreaField from "./TextAreaField.vue";
 

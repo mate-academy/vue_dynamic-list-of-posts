@@ -1,18 +1,13 @@
 <script>
-import {
-  destroyComment,
-  destroyPost,
-  getComments,
-  getPosts,
-} from "@/http-client";
 import Comment from "./Comment.vue";
 import PostPreview from "./PostPreview.vue";
 import Sidebar from "./Sidebar.vue";
 import AddPost from "./AddPost.vue";
-
 import Loader from "./Loader.vue";
 import WriteCommentBtn from "./WriteCommentBtn.vue";
 import CommentForm from "./CommentForm.vue";
+import { destroyComment, getComments } from "@/api/comments";
+import { destroyPost, getPosts } from "@/api/posts";
 
 export default {
   name: "PostsList",
@@ -56,10 +51,8 @@ export default {
       this.currentPost = post;
     },
     deletePost(postId) {
-      // Delete post from API
       destroyPost(postId)
         .then(() => {
-          // Delete post from posts list
           const index = this.posts.findIndex((post) => post.id === postId);
           this.posts.splice(index, 1);
           this.currentPost = null;
