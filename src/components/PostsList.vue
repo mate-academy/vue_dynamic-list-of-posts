@@ -163,11 +163,17 @@ export default {
           });
       }
     },
-    // isWritingPost() {
-    //   if (this.isWritingPost === true && this.currentPost !== null) {
-    //     this.currentPost = null;
-    //   }
-    // },
+    isWritingPost() {
+      if (this.isWritingPost) {
+        this.isWritingComment = false;
+        this.comments = [];
+      }
+    },
+    isWritingComment() {
+      if (this.isWritingComment) {
+        this.isWritingPost = false;
+      }
+    },
   },
 };
 </script>
