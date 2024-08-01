@@ -84,6 +84,12 @@ export default {
         this.comments.splice(index, 1);
       });
     },
+    showSidebar() {
+      this.isSidebarOpen = true;
+    },
+    hideSidebar() {
+      this.isSidebarOpen = false;
+    },
   },
   watch: {
     currentPost() {
@@ -100,6 +106,23 @@ export default {
       if (this.isWritingPost) {
         this.isEditingPost = false;
       }
+    },
+  },
+  computed: {
+    isSidebarOpen() {
+      return (
+        this.currentPost !== null ||
+        this.isEditingPost ||
+        this.isWritingComment ||
+        this.isWritingPost
+      );
+    },
+    isPostPreviewOpen() {
+      return (
+        this.currentPost !== null &&
+        this.isWritingPost === false &&
+        this.isEditingPost === false
+      );
     },
   },
   mounted() {
@@ -139,19 +162,11 @@ export default {
           });
       }
     },
-    isWritingPost() {
-      if (this.isWritingPost === true && this.currentPost !== null) {
-        this.currentPost = null;
-      }
-    },
-  },
-
-  computed: {
-    isSidebarOpen() {
-      return (
-        this.currentPost !== null && !this.isEditingPost && !this.isWritingPost
-      );
-    },
+    // isWritingPost() {
+    //   if (this.isWritingPost === true && this.currentPost !== null) {
+    //     this.currentPost = null;
+    //   }
+    // },
   },
 };
 </script>
@@ -165,9 +180,10 @@ export default {
         <div class="block is-flex is-justify-content-space-between">
           <p class="title">Posts</p>
           <button
-            @click="isWritingPost = true"
+            @click="this.isWritingPost = true"
             type="button"
             class="button is-link"
+            :class="this.isWritingPost ? 'is-light' : ' '"
           >
             Add New Post
           </button>
@@ -184,7 +200,7 @@ export default {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="post of posts">
+            <tr v-for="post of posts" :key="post.id">
               <td>{{ post.id }}</td>
               <td>{{ post.title }}</td>
               <td class="has-text-right is-vcentered">
@@ -193,7 +209,7 @@ export default {
                   class="button is-link"
                   @click="selectPost(post)"
                 >
-                  Open
+                  {{ post.id === currentPost?.id ? "Close" : "Open" }}
                 </button>
               </td>
             </tr>
@@ -210,6 +226,7 @@ export default {
     :class="{ 'Sidebar--open': isSidebarOpen }"
   >
     <PostPreview
+      v-if="isPostPreviewOpen"
       :post="this.currentPost"
       :deletePost="deletePost"
       v-model="this.isEditingPost"
@@ -224,24 +241,27 @@ export default {
       :deleteComment="this.deleteComment"
     />
 
-    <WriteCommentBtn v-model="isWritingComment" v-if="!this.isWritingComment" />
+    <WriteCommentBtn
+      v-model="isWritingComment"
+      v-if="isPostPreviewOpen && !this.isWritingComment"
+    />
     <CommentForm
       v-if="this.isWritingComment"
       v-model="isWritingComment"
       :addComment="addComment"
       :postId="this.currentPost.id"
     />
-  </Sidebar>
 
-  <AddPost
-    v-if="this.isWritingPost || this.isEditingPost"
-    v-model="isWritingPost"
-    :user="user"
-    :addPost="addPost"
-    :is-editing="isEditingPost"
-    :editPost="editPost"
-    :post="currentPost"
-  />
+    <AddPost
+      v-if="this.isWritingPost || this.isEditingPost"
+      v-model="isWritingPost"
+      :user="user"
+      :addPost="addPost"
+      :is-editing="isEditingPost"
+      :editPost="editPost"
+      :post="currentPost"
+    />
+  </Sidebar>
 </template>
 
 <style></style>
