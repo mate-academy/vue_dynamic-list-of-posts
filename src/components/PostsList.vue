@@ -1,5 +1,5 @@
 <script>
-import { getComments, getPosts } from "@/http-client";
+import { destroyPost, getComments, getPosts } from "@/http-client";
 import Comment from "./Comment.vue";
 import PostPreview from "./PostPreview.vue";
 import Sidebar from "./Sidebar.vue";
@@ -43,6 +43,17 @@ export default {
     addPost(post) {
       this.posts.push(post);
     },
+    deletePost(postId) {
+      // Delete post from API
+      destroyPost(postId)
+        .then(() => {
+          // Delete post from posts list
+          const index = this.posts.findIndex((post) => post.id === postId);
+          this.posts.splice(index, 1);
+          this.currentPost = null;
+        })
+        .catch((error) => console.log("Could not delete the post:", error));
+    },
   },
   watch: {
     currentPost() {
@@ -57,7 +68,10 @@ export default {
         .then((response) => {
           this.posts = response.data;
         })
-        .catch((error) => console.log(error))
+        .catch((error) => {
+          console.warn(error);
+          alert(error);
+        })
         .finally(() => (this.isLoadingPosts = false));
     }
   },
@@ -100,53 +114,67 @@ export default {
 <template>
   <Loader v-if="this.isLoadingPosts" />
 
-  <template v-else="true">
-    <div class="tile is-parent">
-      <div class="tile is-child box is-success">
-        <div class="block">
-          <div class="block is-flex is-justify-content-space-between">
-            <p class="title">Posts</p>
-            <button
-              @click="isWritingPost = true"
-              type="button"
-              class="button is-link"
-            >
-              Add New Post
-            </button>
-          </div>
-          <table class="table is-fullwidth is-striped is-hoverable is-narrow">
-            <thead>
-              <tr class="has-background-link-light">
-                <th>ID</th>
-                <th>Title</th>
-                <th class="has-text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="post of posts">
-                <td>{{ post.id }}</td>
-                <td>{{ post.title }}</td>
-                <td class="has-text-right is-vcentered">
-                  <button
-                    type="button"
-                    class="button is-link"
-                    @click="selectPost(post)"
-                  >
-                    Open
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+  <div v-else="true" class="tile is-parent">
+    <div class="tile is-child box is-success">
+      <div class="block">
+        <div class="block is-flex is-justify-content-space-between">
+          <p class="title">Posts</p>
+          <button
+            @click="isWritingPost = true"
+            type="button"
+            class="button is-link"
+          >
+            Add New Post
+          </button>
         </div>
+        <table
+          v-if="!!this.posts.length"
+          class="table is-fullwidth is-striped is-hoverable is-narrow"
+        >
+          <thead>
+            <tr class="has-background-link-light">
+              <th>ID</th>
+              <th>Title</th>
+              <th class="has-text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="post of posts">
+              <td>{{ post.id }}</td>
+              <td>{{ post.title }}</td>
+              <td class="has-text-right is-vcentered">
+                <button
+                  type="button"
+                  class="button is-link"
+                  @click="selectPost(post)"
+                >
+                  Open
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p v-if="!this.posts.length"></p>
       </div>
     </div>
-  </template>
+  </div>
 
   <Sidebar v-if="isSidebarOpen" :class="{ 'Sidebar--open': isSidebarOpen }">
-    <PostPreview :post="this.currentPost" />
-    <Comment v-for="comment of this.comments" :comment="comment" />
+    <PostPreview :post="this.currentPost" :deletePost="deletePost" />
+    <Loader v-if="areCommentsLoading" />
+    <Comment
+      v-if="!areCommentsLoading"
+      v-for="comment of this.comments"
+      :comment="comment"
+    />
   </Sidebar>
 
-  <AddPost v-if="this.isWritingPost" :user="user" :addPost="addPost" />
+  <AddPost
+    v-if="this.isWritingPost"
+    v-model="isWritingPost"
+    :user="user"
+    :addPost="addPost"
+  />
 </template>
+
+<style></style>

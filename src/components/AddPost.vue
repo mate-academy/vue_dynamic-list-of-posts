@@ -6,9 +6,11 @@ import TextAreaField from "./TextAreaField.vue";
 export default {
   name: "AddPost",
   props: {
+    modelValue: Boolean,
     user: Object,
     addPost: Function,
   },
+  emits: ["update:modelValue"],
   data() {
     return {
       title: "",
@@ -78,7 +80,13 @@ export default {
           <button type="submit" class="button is-link">Save</button>
         </div>
         <div class="control">
-          <button type="reset" class="button is-link is-light">Cancel</button>
+          <button
+            @click="$emit('update:modelValue', false)"
+            type="reset"
+            class="button is-link is-light"
+          >
+            Cancel
+          </button>
         </div>
       </div>
     </form>

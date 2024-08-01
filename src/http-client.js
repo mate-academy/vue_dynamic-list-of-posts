@@ -18,6 +18,10 @@ export const createPost = (title, body, userId) => {
   });
 };
 
+export const destroyPost = (postId) => {
+  return postsClient.delete(`${postId}`);
+};
+
 const usersClient = axios.create({
   baseURL: "https://mate.academy/students-api/users",
 });

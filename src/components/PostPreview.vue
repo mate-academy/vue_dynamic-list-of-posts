@@ -3,6 +3,7 @@ export default {
   name: "PostPreview",
   props: {
     post: Object,
+    deletePost: Function,
   },
 };
 </script>
@@ -15,7 +16,10 @@ export default {
         <span class="icon is-small is-right is-clickable">
           <i class="fas fa-pen-to-square"></i>
         </span>
-        <span class="icon is-small is-right has-text-danger is-clickable ml-3">
+        <span
+          @click="deletePost(post.id)"
+          class="icon is-small is-right has-text-danger is-clickable ml-3"
+        >
           <i class="fas fa-trash"></i>
         </span>
       </div>
