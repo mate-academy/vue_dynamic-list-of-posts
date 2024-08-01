@@ -53,6 +53,7 @@ export default {
     },
     addPost(post) {
       this.posts.push(post);
+      this.currentPost = post;
     },
     deletePost(postId) {
       // Delete post from API

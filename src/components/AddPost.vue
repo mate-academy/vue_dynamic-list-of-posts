@@ -18,7 +18,10 @@ export default {
     return {
       title: "",
       body: "",
-      errors: {},
+      errors: {
+        title: "",
+        body: "",
+      },
     };
   },
   methods: {
@@ -70,15 +73,15 @@ export default {
         })
         .catch((error) => console.log("Could not update the post,", error));
     },
+    clearErrorByField(field) {
+      console.log("Errors before:", this.errors);
+      if (field in this.errors) {
+        this.errors[field] = "";
+      }
+      this.$nextTick(() => console.log("Errors after:", this.errors));
+    },
   },
-  watch: {
-    // title() {
-    //   console.log(this.title);
-    // },
-    // body() {
-    //   console.log(this.body);
-    // },
-  },
+  watch: {},
   components: {
     InputField,
     TextAreaField,
@@ -91,8 +94,18 @@ export default {
     <h2>{{ this.isEditing ? "Update post" : "Create new post" }}</h2>
 
     <form>
-      <InputField v-model="title" />
-      <TextAreaField v-model="body" />
+      <InputField
+        :error="this.errors.title"
+        v-model="title"
+        name="title"
+        :clearErrorByField="clearErrorByField"
+      />
+      <TextAreaField
+        :error="this.errors.body"
+        v-model="body"
+        name="body"
+        :clearErrorByField="clearErrorByField"
+      />
 
       <div class="field is-grouped">
         <div class="control">
