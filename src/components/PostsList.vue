@@ -207,6 +207,7 @@ export default {
                 <button
                   type="button"
                   class="button is-link"
+                  :class="post.id !== currentPost?.id ? 'is-light' : ''"
                   @click="selectPost(post)"
                 >
                   {{ post.id === currentPost?.id ? "Close" : "Open" }}
