@@ -8,6 +8,10 @@ export const getPosts = (userId) => {
   return postsClient.get(`?userId=${userId}`);
 };
 
+export const getPostById = (postId) => {
+  return postsClient.get(`${postId}`);
+};
+
 export const createPost = (title, body, userId) => {
   return postsClient.post(``, {
     userId,
