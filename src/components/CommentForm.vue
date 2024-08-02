@@ -22,6 +22,8 @@ export default {
         email: "",
         body: "",
       },
+
+      isSendingRequest: false,
     };
   },
   methods: {
@@ -72,13 +74,18 @@ export default {
     },
 
     createNewComment() {
+      this.isSendingRequest = true;
+
       createComment(this.postId, this.name, this.email, this.body)
         .then((response) => {
           this.addComment(response.data);
 
           this.closeCommentForm();
         })
-        .catch((error) => console.log("Could not create the comment:", error));
+        .catch((error) => console.log("Could not create the comment:", error))
+        .finally(() => {
+          this.isSendingRequest = false;
+        });
     },
 
     clearErrorByField(field) {
@@ -119,7 +126,11 @@ export default {
 
       <div class="field is-grouped">
         <div class="control">
-          <button @click.prevent="handleCreateComment" class="button is-link">
+          <button
+            @click.prevent="handleCreateComment"
+            class="button is-link"
+            :class="isSendingRequest ? 'is-loading' : ''"
+          >
             Create
           </button>
         </div>

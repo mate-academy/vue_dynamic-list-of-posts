@@ -69,6 +69,7 @@ export default {
     },
     updatePost() {
       this.isSendingRequest = true;
+
       patchPost(this.post.id, this.title, this.body)
         .then((response) => {
           this.editPost(response.data);
