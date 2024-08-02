@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     selectPost(post) {
-      if (this.currentPost !== null) {
+      if (post === this.currentPost) {
         this.currentPost = null;
         return;
       }
