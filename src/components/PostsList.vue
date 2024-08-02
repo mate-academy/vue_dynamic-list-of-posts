@@ -256,7 +256,11 @@ export default {
 
     <PostLoader v-if="isLoadingCurrentPost || areCommentsLoading" />
 
-    <template v-else>
+    <template
+      v-else-if="
+        !this.isWritingComment && !this.isWritingPost && !this.isEditingPost
+      "
+    >
       <!-- <Loader v-if="areCommentsLoading" /> -->
       <NoCommentsYet v-if="!this.comments.length" />
       <Comment
