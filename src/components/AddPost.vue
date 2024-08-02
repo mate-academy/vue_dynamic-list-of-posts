@@ -22,6 +22,7 @@ export default {
         title: "",
         body: "",
       },
+      isUpdatingPost: false,
     };
   },
   methods: {
@@ -62,11 +63,15 @@ export default {
         .catch((error) => console.log("Could not add the post:", error));
     },
     updatePost() {
+      this.isUpdatingPost = true;
       patchPost(this.post.id, this.title, this.body)
         .then((response) => {
           this.editPost(response.data);
         })
-        .catch((error) => console.log("Could not update the post,", error));
+        .catch((error) => console.log("Could not update the post,", error))
+        .finally(() => {
+          this.isUpdatingPost = false;
+        });
     },
     clearErrorByField(field) {
       if (field in this.errors) {
@@ -120,6 +125,7 @@ export default {
             v-if="this.isEditing"
             type="submit"
             class="button is-link"
+            :class="isUpdatingPost ? 'is-loading' : ''"
           >
             Save
           </button>
