@@ -6,6 +6,7 @@ import AddPost from "./AddPost.vue";
 import Loader from "./Loader.vue";
 import WriteCommentBtn from "./WriteCommentBtn.vue";
 import CommentForm from "./CommentForm.vue";
+import NoCommentsYet from "./NoCommentsYet.vue";
 import PostLoader from "./PostLoader.vue";
 import { destroyComment, getComments } from "@/api/comments";
 import { destroyPost, getPostById, getPosts } from "@/api/posts";
@@ -21,6 +22,7 @@ export default {
     WriteCommentBtn,
     CommentForm,
     PostLoader,
+    NoCommentsYet,
   },
 
   props: ["user"],
@@ -256,7 +258,9 @@ export default {
 
     <template v-else>
       <!-- <Loader v-if="areCommentsLoading" /> -->
+      <NoCommentsYet v-if="!this.comments.length" />
       <Comment
+        v-else
         v-if="!isEditingPost"
         v-for="comment of this.comments"
         :comment="comment"
