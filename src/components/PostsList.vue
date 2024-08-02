@@ -42,7 +42,7 @@ export default {
   },
   methods: {
     selectPost(post) {
-      if (post === this.currentPost) {
+      if (this.currentPost && post.id === this.currentPost.id) {
         this.currentPost = null;
         return;
       }
