@@ -252,12 +252,12 @@ export default {
       v-model="this.isEditingPost"
     />
 
-    <PostLoader v-if="isLoadingCurrentPost" />
+    <PostLoader v-if="isLoadingCurrentPost || areCommentsLoading" />
 
     <template v-else>
-      <Loader v-if="areCommentsLoading" />
+      <!-- <Loader v-if="areCommentsLoading" /> -->
       <Comment
-        v-if="!areCommentsLoading && !isEditingPost"
+        v-if="!isEditingPost"
         v-for="comment of this.comments"
         :comment="comment"
         :deleteComment="this.deleteComment"
