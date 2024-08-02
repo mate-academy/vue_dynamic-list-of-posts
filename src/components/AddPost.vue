@@ -12,6 +12,7 @@ export default {
     isEditing: Boolean,
     editPost: Function,
     post: Object || null,
+    cancelEditing: Function,
   },
   emits: ["update:modelValue"],
   data() {
@@ -62,7 +63,7 @@ export default {
         .then((response) => {
           this.addPost(response.data);
         })
-        .catch((error) => console.log("Could not add the post:", error))
+        .catch(() => console.log("Could not add the post"))
         .finally(() => {
           this.isSendingRequest = false;
         });
@@ -74,7 +75,7 @@ export default {
         .then((response) => {
           this.editPost(response.data);
         })
-        .catch((error) => console.log("Could not update the post,", error))
+        .catch(() => console.log("Could not update the post"))
         .finally(() => {
           this.isSendingRequest = false;
         });
@@ -96,6 +97,7 @@ export default {
       this.$emit("update:modelValue", false);
       this.clearErrors();
       this.clearFields();
+      this.cancelEditing();
     },
   },
   watch: {},
@@ -147,7 +149,7 @@ export default {
         </div>
         <div class="control">
           <button
-            @click="$emit('update:modelValue', false)"
+            @click="handleCancel"
             type="reset"
             class="button is-link is-light"
           >

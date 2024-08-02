@@ -80,7 +80,7 @@ export default {
           this.posts.splice(index, 1);
           this.currentPost = null;
         })
-        .catch((error) => console.log("Could not delete the post:", error));
+        .catch(() => console.log("Could not delete the post"));
     },
     editPost(newPost) {
       const index = this.posts.findIndex((post) => post.id === newPost.id);
@@ -107,6 +107,9 @@ export default {
     },
     hideSidebar() {
       this.isSidebarOpen = false;
+    },
+    cancelEditing() {
+      this.isEditingPost = false;
     },
   },
   watch: {
@@ -171,7 +174,7 @@ export default {
           .then((response) => {
             this.comments = response.data;
           })
-          .catch((error) => console.log("Could not fetch the comments:", error))
+          .catch(() => console.log("Could not fetch the comments"))
           .finally(() => {
             this.areCommentsLoading = false;
           });
@@ -291,6 +294,7 @@ export default {
       :user="user"
       :addPost="addPost"
       :is-editing="isEditingPost"
+      :cancelEditing="cancelEditing"
       :editPost="editPost"
       :post="currentPost"
     />

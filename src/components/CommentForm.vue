@@ -82,7 +82,7 @@ export default {
 
           this.closeCommentForm();
         })
-        .catch((error) => console.log("Could not create the comment:", error))
+        .catch(() => console.log("Could not create the comment"))
         .finally(() => {
           this.isSendingRequest = false;
         });

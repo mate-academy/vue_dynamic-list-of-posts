@@ -109,7 +109,7 @@ export default {
 
       createUser(this.userName, this.email.toLowerCase())
         .then((response) => this.$emit("update:modelValue", response.data))
-        .catch((error) => console.log("Could not create the account:", error))
+        .catch(() => console.log("Could not create the account"))
         .finally(() => {
           this.hideLoader();
         });
