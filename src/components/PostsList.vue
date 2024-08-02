@@ -6,8 +6,9 @@ import AddPost from "./AddPost.vue";
 import Loader from "./Loader.vue";
 import WriteCommentBtn from "./WriteCommentBtn.vue";
 import CommentForm from "./CommentForm.vue";
+import PostLoader from "./PostLoader.vue";
 import { destroyComment, getComments } from "@/api/comments";
-import { destroyPost, getPosts } from "@/api/posts";
+import { destroyPost, getPostById, getPosts } from "@/api/posts";
 
 export default {
   name: "PostsList",
@@ -19,12 +20,14 @@ export default {
     AddPost,
     WriteCommentBtn,
     CommentForm,
+    PostLoader,
   },
 
   props: ["user"],
 
   data() {
     return {
+      isLoadingCurrentPost: false,
       isLoadingPosts: true,
       posts: [],
       currentPost: null,
@@ -41,14 +44,32 @@ export default {
         this.currentPost = null;
         return;
       }
-      this.currentPost = post;
+
+      this.isLoadingCurrentPost = true;
+
+      this.findAndSetPost(post.id);
     },
+
     clearComments() {
       this.comments = [];
     },
+
+    findAndSetPost(postId) {
+      getPostById(postId)
+        .then((response) => {
+          this.currentPost = response.data;
+        })
+        .catch(() => {
+          console.log("Could not fetch the post");
+        })
+        .finally(() => {
+          this.isLoadingCurrentPost = false;
+        });
+    },
+
     addPost(post) {
       this.posts.push(post);
-      this.currentPost = post;
+      this.findAndSetPost(post.id);
     },
     deletePost(postId) {
       destroyPost(postId)
@@ -62,7 +83,7 @@ export default {
     editPost(newPost) {
       const index = this.posts.findIndex((post) => post.id === newPost.id);
       this.posts[index] = newPost;
-      this.currentPost = newPost;
+      this.findAndSetPost(newPost.id);
 
       this.isWritingPost = false;
       this.isEditingPost = false;
@@ -231,19 +252,21 @@ export default {
       v-model="this.isEditingPost"
     />
 
-    <Loader v-if="areCommentsLoading" />
+    <PostLoader v-if="isLoadingCurrentPost" />
 
-    <Comment
-      v-if="!areCommentsLoading && !isEditingPost"
-      v-for="comment of this.comments"
-      :comment="comment"
-      :deleteComment="this.deleteComment"
-    />
-
-    <WriteCommentBtn
-      v-model="isWritingComment"
-      v-if="isPostPreviewOpen && !this.isWritingComment"
-    />
+    <template v-else>
+      <Loader v-if="areCommentsLoading" />
+      <Comment
+        v-if="!areCommentsLoading && !isEditingPost"
+        v-for="comment of this.comments"
+        :comment="comment"
+        :deleteComment="this.deleteComment"
+      />
+      <WriteCommentBtn
+        v-model="isWritingComment"
+        v-if="isPostPreviewOpen && !this.isWritingComment"
+      />
+    </template>
     <CommentForm
       v-if="this.isWritingComment"
       v-model="isWritingComment"
