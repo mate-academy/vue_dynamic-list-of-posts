@@ -62,6 +62,7 @@ export default {
     editPost(newPost) {
       const index = this.posts.findIndex((post) => post.id === newPost.id);
       this.posts[index] = newPost;
+      this.currentPost = newPost;
 
       this.isWritingPost = false;
       this.isEditingPost = false;
