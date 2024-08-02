@@ -22,7 +22,7 @@ export default {
         title: "",
         body: "",
       },
-      isUpdatingPost: false,
+      isSendingRequest: false,
     };
   },
   methods: {
@@ -56,21 +56,26 @@ export default {
       return true;
     },
     createNewPost() {
+      this.isSendingRequest = true;
+
       createPost(this.title, this.body, this.user.id)
         .then((response) => {
           this.addPost(response.data);
         })
-        .catch((error) => console.log("Could not add the post:", error));
+        .catch((error) => console.log("Could not add the post:", error))
+        .finally(() => {
+          this.isSendingRequest = false;
+        });
     },
     updatePost() {
-      this.isUpdatingPost = true;
+      this.isSendingRequest = true;
       patchPost(this.post.id, this.title, this.body)
         .then((response) => {
           this.editPost(response.data);
         })
         .catch((error) => console.log("Could not update the post,", error))
         .finally(() => {
-          this.isUpdatingPost = false;
+          this.isSendingRequest = false;
         });
     },
     clearErrorByField(field) {
@@ -125,7 +130,7 @@ export default {
             v-if="this.isEditing"
             type="submit"
             class="button is-link"
-            :class="isUpdatingPost ? 'is-loading' : ''"
+            :class="isSendingRequest ? 'is-loading' : ''"
           >
             Save
           </button>
@@ -134,6 +139,7 @@ export default {
             v-else="true"
             type="submit"
             class="button is-link"
+            :class="isSendingRequest ? 'is-loading' : ''"
           >
             Create
           </button>
