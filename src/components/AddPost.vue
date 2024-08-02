@@ -73,6 +73,19 @@ export default {
         this.errors[field] = "";
       }
     },
+    clearErrors() {
+      this.errors.body = "";
+      this.errors.title = "";
+    },
+    clearFields() {
+      this.body = "";
+      this.title = "";
+    },
+    handleCancel() {
+      this.$emit("update:modelValue", false);
+      this.clearErrors();
+      this.clearFields();
+    },
   },
   watch: {},
   components: {
