@@ -198,9 +198,7 @@ export default {
 </script>
 
 <template>
-  <Loader v-if="this.isLoadingPosts" />
-
-  <div v-else="true" class="tile is-parent">
+  <div class="tile is-parent">
     <div class="tile is-child box is-success">
       <div class="block">
         <div class="block is-flex is-justify-content-space-between">
@@ -214,8 +212,9 @@ export default {
             Add New Post
           </button>
         </div>
+        <PostLoader class="is-parent" v-if="this.isLoadingPosts" />
         <table
-          v-if="this.posts.length"
+          v-if="this.posts.length && !this.isLoadingPosts"
           class="table is-fullwidth is-striped is-hoverable is-narrow"
         >
           <thead>
@@ -242,7 +241,10 @@ export default {
             </tr>
           </tbody>
         </table>
-        <h3 class="mt-2 has-text-centered" v-if="!this.posts.length">
+        <h3
+          class="mt-2 has-text-centered"
+          v-if="!this.posts.length && !this.isLoadingPosts"
+        >
           No posts yet.
         </h3>
       </div>
