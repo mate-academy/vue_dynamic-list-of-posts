@@ -16,13 +16,17 @@ export default {
   data() {
     return {
       email: "",
-      userDoesNotExist: false,
       userName: "",
-      userFound: null,
+
       errors: {
         email: "",
         userName: "",
       },
+
+      userFound: null,
+      userDoesNotExist: false,
+
+      isSendingRequest: false,
     };
   },
 
@@ -33,6 +37,13 @@ export default {
         : "Get your userId";
     },
   },
+
+  watch: {
+    isSendingRequest() {
+      console.log("isSendingRequest:", this.isSendingRequest);
+    },
+  },
+
   methods: {
     validateData() {
       if (!this.email.length) {
@@ -49,36 +60,59 @@ export default {
       }
       return true;
     },
-    handleSubmit() {
+    async handleSubmit() {
+      this.showLoader();
+
       if (!this.validateData()) {
+        this.hideLoader();
         return;
       }
 
       if (this.userDoesNotExist && this.userName?.length > 0) {
-        this.logUserIn();
+        await this.logInOrCreateAccount();
         return;
       }
 
-      findUser(this.email.toLowerCase()).then((user) => {
-        if (user === null) {
-          this.userDoesNotExist = true;
-        } else {
-          this.userFound = user;
-          this.logUserIn();
-        }
-      });
+      findUser(this.email.toLowerCase())
+        .then((user) => {
+          if (user === null) {
+            this.userDoesNotExist = true;
+          } else {
+            this.userFound = user;
+            this.logInOrCreateAccount();
+          }
+        })
+        .catch(() => console.log("Could not find the user"))
+        .finally(() => {
+          this.hideLoader();
+        });
     },
-    async logUserIn() {
+
+    showLoader() {
+      this.isSendingRequest = true;
+    },
+    hideLoader() {
+      this.isSendingRequest = false;
+    },
+
+    async logInOrCreateAccount() {
       if (this.userFound === null) {
         this.createNewUser();
       } else {
+        // Log the user in
         this.$emit("update:modelValue", this.userFound);
       }
     },
+
     createNewUser() {
+      this.showLoader();
+
       createUser(this.userName, this.email.toLowerCase())
         .then((response) => this.$emit("update:modelValue", response.data))
-        .catch((error) => console.log("Could not create the account:", error));
+        .catch((error) => console.log("Could not create the account:", error))
+        .finally(() => {
+          this.hideLoader();
+        });
     },
     validateEmail(email) {
       return String(email)
@@ -133,7 +167,13 @@ export default {
       />
 
       <div class="field">
-        <button type="submit" class="button is-primary">Login</button>
+        <button
+          type="submit"
+          class="button is-primary"
+          :class="this.isSendingRequest ? 'is-loading' : ''"
+        >
+          {{ this.userDoesNotExist ? "Register" : "Login" }}
+        </button>
       </div>
     </form>
   </section>
