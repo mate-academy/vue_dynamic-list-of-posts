@@ -42,6 +42,8 @@ export default {
   },
   methods: {
     selectPost(post) {
+      this.cancelEditing();
+
       if (this.currentPost && post.id === this.currentPost.id) {
         this.currentPost = null;
         return;
