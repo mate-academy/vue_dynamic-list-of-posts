@@ -210,7 +210,7 @@ export default {
           </button>
         </div>
         <table
-          v-if="!!this.posts.length"
+          v-if="this.posts.length"
           class="table is-fullwidth is-striped is-hoverable is-narrow"
         >
           <thead>
@@ -237,7 +237,9 @@ export default {
             </tr>
           </tbody>
         </table>
-        <p v-if="!this.posts.length"></p>
+        <h3 class="mt-2 has-text-centered" v-if="!this.posts.length">
+          No posts yet.
+        </h3>
       </div>
     </div>
   </div>
@@ -263,6 +265,7 @@ export default {
     >
       <!-- <Loader v-if="areCommentsLoading" /> -->
       <NoCommentsYet v-if="!this.comments.length" />
+
       <Comment
         v-else
         v-if="!isEditingPost"
