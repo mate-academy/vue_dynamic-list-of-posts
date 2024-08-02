@@ -33,8 +33,6 @@ export default {
       this.createNewComment();
     },
     clearInputs() {
-      this.name = "";
-      this.email = "";
       this.body = "";
     },
     validateEmail(email) {
