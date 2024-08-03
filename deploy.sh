@@ -11,6 +11,6 @@ git checkout -B main
 git add -A
 git commit -m 'deploy'
 
-git push -f git@github.com:YuriiHlushenko/vue_dynamic-list-of-posts.git main:gh-pages
+git push -f git@github.com:yuriihlushenko/vue_dynamic-list-of-posts.git main:gh-pages
 
 cd-
