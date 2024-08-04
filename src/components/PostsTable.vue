@@ -8,8 +8,8 @@ export default {
     LoaderSpinner
   },
   props: {
-    sidebar: Sidebar, 
-    isLoading: Boolean, 
+    sidebar: Sidebar,
+    isLoading: Boolean,
     posts: Array,
     currentPost: Object
   },
@@ -17,11 +17,11 @@ export default {
   methods: {
     sidebarSetAddPost() {
       this.$emit('sidebarSetAddPost')
-    },
+    }
   },
   data() {
     return {
-      Sidebar,
+      Sidebar
     }
   }
 }
@@ -31,6 +31,7 @@ export default {
   <div class="block">
     <div class="block is-flex is-justify-content-space-between">
       <p class="title">Posts</p>
+
       <button
         type="button"
         class="button is-link"
@@ -51,27 +52,34 @@ export default {
           <th class="has-text-right">Actions</th>
         </tr>
       </thead>
-      <tbody v-for="post of posts" :key="post.id">
+      <tbody
+        v-for="{ id, title, ...rest } in posts"
+        :key="id"
+      >
         <tr>
-          <td>{{ post.id }}</td>
-          <td>{{ post.title }}</td>
+          <td>{{ id }}</td>
+          <td>{{ title }}</td>
           <td class="has-text-right is-vcentered">
             <button
               type="button"
               class="button is-link"
-              :class="{ 'is-light': currentPost.id !== post.id }"
-              @click="$emit('openPost', post)"
+              :class="{ 'is-light': currentPost.id !== id }"
+              @click="$emit('openPost', { id, title, rest })"
             >
-              {{ currentPost.id === post.id ? 'Close' : 'Open' }}
+              {{ currentPost.id === id ? 'Close' : 'Open' }}
             </button>
           </td>
         </tr>
       </tbody>
     </table>
 
-    <h3 v-if="!isLoading && !posts.length" class="mt-2 has-text-centered">No posts yet.</h3>
+    <h3
+      v-if="!isLoading && !posts.length"
+      class="mt-2 has-text-centered"
+    >
+      No posts yet.
+    </h3>
   </div>
 </template>
 
-<style>
-</style>
+<style></style>
