@@ -30,15 +30,8 @@ const body = defineModel('body')
 <template>
   <div class="block">
     <form @submit.prevent="$emit('submitAddComment')">
-      <div
-        class="field"
-        data-cy="NameField"
-      >
-        <label
-          class="label"
-          for="comment-author-name-name"
-          >Author Name
-        </label>
+      <div class="field" data-cy="NameField">
+        <label class="label" for="comment-author-name-name">Author Name </label>
 
         <div class="control has-icons-left has-icons-right">
           <input
@@ -55,13 +48,8 @@ const body = defineModel('body')
           </span>
         </div>
       </div>
-      <div
-        class="field"
-        data-cy="NameField"
-      >
-        <label
-          class="label"
-          for="comment-author-name-email"
+      <div class="field" data-cy="NameField">
+        <label class="label" for="comment-author-name-email"
           >Author Email</label
         >
         <div class="control has-icons-left has-icons-right">
@@ -79,15 +67,8 @@ const body = defineModel('body')
           </span>
         </div>
       </div>
-      <div
-        class="field"
-        data-cy="BodyField"
-      >
-        <label
-          class="label"
-          for="comment-body"
-          >Write Post Body</label
-        >
+      <div class="field" data-cy="BodyField">
+        <label class="label" for="comment-body">Write Post Body</label>
         <div class="control">
           <textarea
             id="comment-body"
@@ -102,20 +83,12 @@ const body = defineModel('body')
 
       <div class="field is-grouped">
         <div class="control">
-          <button
-            type="submit"
-            class="button is-link"
-          >
-            Add Comment
-          </button>
-          <p
-            v-if="errorMessage !== ''"
-            class="help is-danger"
-          >
+          <button type="submit" class="button is-link">Add Comment</button>
+          <p v-if="errorMessage !== ''" class="help is-danger">
             {{ errorMessage }}
           </p>
         </div>
-        
+
         <div class="control">
           <button
             @click="$emit('sidebarSetShowPost')"

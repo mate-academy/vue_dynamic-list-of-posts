@@ -189,8 +189,8 @@ export default {
       this.newComment.postId = this.currentPost.id
       this.commentsIsLoading = true
       creareUserComment(this.newComment)
-        .then(() => {
-          this.comments.push(this.newComment)
+        .then(({ data }) => {
+          this.comments.push(data)
           this.sidebar = Sidebar.showPost
         })
         .catch(() => (this.errorMessage = 'Can`t create comment'))
@@ -209,10 +209,7 @@ export default {
 <template>
   <template v-if="this.stage !== Stage.isLoggedin">
     <section class="container is-flex is-justify-content-center">
-      <form
-        @submit.prevent="handleSubmit"
-        class="box mt-5"
-      >
+      <form @submit.prevent="handleSubmit" class="box mt-5">
         <h1 class="title is-3">
           {{
             this.stage === Stage.isLogin
@@ -222,12 +219,7 @@ export default {
         </h1>
 
         <div class="field">
-          <label
-            class="label"
-            htmlFor="user-email"
-          >
-            Email
-          </label>
+          <label class="label" htmlFor="user-email"> Email </label>
 
           <div
             class="control has-icons-left"
@@ -253,24 +245,13 @@ export default {
             </span>
           </div>
 
-          <p
-            v-if="this.errorMessage !== ''"
-            class="help is-danger"
-          >
+          <p v-if="this.errorMessage !== ''" class="help is-danger">
             {{ this.errorMessage }}
           </p>
         </div>
 
-        <div
-          v-if="this.stage === Stage.isRegister"
-          class="field"
-        >
-          <label
-            class="label"
-            htmlFor="user-name"
-          >
-            Your Name
-          </label>
+        <div v-if="this.stage === Stage.isRegister" class="field">
+          <label class="label" htmlFor="user-name"> Your Name </label>
 
           <div class="control has-icons-left">
             <input
@@ -285,14 +266,11 @@ export default {
             />
 
             <span class="icon is-small is-left">
-              <i class="fas fa-user" />
+              <i class="fas fa-user" ></i>
             </span>
           </div>
 
-          <p
-            v-if="this.errorMessage !== ''"
-            class="help is-danger"
-          >
+          <p v-if="this.errorMessage !== ''" class="help is-danger">
             {{ this.errorMessage }}
           </p>
         </div>
@@ -311,11 +289,7 @@ export default {
   </template>
 
   <template v-else>
-    <nav
-      class="navbar"
-      role="navigation"
-      aria-label="main navigation"
-    >
+    <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="navbar-item">
         <h2 class="is-size-4">Vue List Of Posts</h2>
       </div>
@@ -327,12 +301,7 @@ export default {
               <p>User: {{ this.user.name }}</p>
             </div>
 
-            <a
-              class="button is-light"
-              @click="logOut"
-            >
-              Logout
-            </a>
+            <a class="button is-light" @click="logOut"> Logout </a>
           </div>
         </div>
       </div>
@@ -379,13 +348,8 @@ export default {
                   </h2>
 
                   <form @submit.prevent="submitAddPost">
-                    <div
-                      class="field"
-                      data-cy="NameField"
-                    >
-                      <label
-                        class="label"
-                        for="comment-author-name-title"
+                    <div class="field" data-cy="NameField">
+                      <label class="label" for="comment-author-name-title"
                         >Title</label
                       >
                       <div class="control has-icons-left has-icons-right">
@@ -405,13 +369,8 @@ export default {
                       </div>
                     </div>
 
-                    <div
-                      class="field"
-                      data-cy="BodyField"
-                    >
-                      <label
-                        class="label"
-                        for="comment-body"
+                    <div class="field" data-cy="BodyField">
+                      <label class="label" for="comment-body"
                         >Write Post Body</label
                       >
                       <div class="control">
@@ -428,10 +387,7 @@ export default {
 
                     <div class="field is-grouped">
                       <div class="control">
-                        <button
-                          type="submit"
-                          class="button is-link"
-                        >
+                        <button type="submit" class="button is-link">
                           {{
                             this.sidebar === Sidebar.editPost
                               ? 'Save'
@@ -496,38 +452,33 @@ export default {
                   >
                     <template v-if="this.comments.length > 0">
                       <article
-                        v-for="comment of this.comments"
-                        :key="comment.id"
+                        v-for="{ id, name, email, body } of this.comments"
+                        :key="id"
                         class="message is-small"
                         data-cy="Comment"
                       >
                         <div class="message-header">
                           <a
-                            href="mailto:dfg"
+                            :href="`mailto:${email}`"
                             data-cy="CommentAuthor"
-                          >{{ comment.name }}
+                            >{{ name }}
                           </a>
+
                           <button
                             data-cy="CommentDelete"
                             type="button"
                             class="delete is-small"
                             aria-label="delete"
-                            @click="deleteComment(comment.id)"
+                            @click="deleteComment(id)"
                           ></button>
                         </div>
 
-                        <div
-                          class="message-body"
-                          data-cy="CommentBody"
-                        >
-                          {{ comment.body }}
+                        <div class="message-body" data-cy="CommentBody">
+                          {{ body }}
                         </div>
                       </article>
                     </template>
-                    <div
-                      v-else
-                      class="block"
-                    >
+                    <div v-else class="block">
                       <p class="title is-4">No comments yet</p>
                     </div>
 
