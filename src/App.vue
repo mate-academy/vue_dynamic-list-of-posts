@@ -11,6 +11,7 @@
                 onChangeSelectedUser="{handleSelectedUser}"
               />
             </div>
+            <p></p>
 
             <div class="block" data-cy="MainContent">
               {!selectedUser && (
