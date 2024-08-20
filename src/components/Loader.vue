@@ -1,3 +1,10 @@
+<template>
+  <div className="Loader">
+    <div className="Loader__content" />
+  </div>
+</template>
+
+<style>
 .Loader {
   display: flex;
   width: 100%;
@@ -23,3 +30,4 @@
     transform: rotate(360deg);
   }
 }
+</style>
