@@ -88,10 +88,8 @@ export default {
               </thead>
               <tbody>
                 <tr v-for="post of posts" :key="post.id">
-                  {{ { id, title } = post }}
-
-                  <td>{{ id }}</td>
-                  <td>{{ title }}</td>
+                  <td>{{ post.id }}</td>
+                  <td>{{ post.title }}</td>
                   <td class="has-text-right is-vcentered">
                     <button
                       type="button" 
