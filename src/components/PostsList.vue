@@ -87,17 +87,17 @@ export default {
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="post of posts" :key="post.id">
-                  <td>{{ post.id }}</td>
-                  <td>{{ post.title }}</td>
+                <tr v-for="({ id, title }, index) of posts" :key="id">
+                  <td>{{ id }}</td>
+                  <td>{{ title }}</td>
                   <td class="has-text-right is-vcentered">
                     <button
                       type="button" 
                       class="button" 
-                      :class="{'is-link' : isActive(post)}" 
-                      @click="openWithParam(post)"
+                      :class="{'is-link' : isActive(posts[index])}" 
+                      @click="openWithParam(posts[index])"
                     >
-                     {{ isActive(post) ? 'Close' : 'Open' }}
+                     {{ isActive(posts[index]) ? 'Close' : 'Open' }}
                     </button>
                   </td>
                 </tr>
