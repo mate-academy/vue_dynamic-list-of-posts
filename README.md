@@ -8,6 +8,7 @@ form to add new comments.
 > Here is [the working version](https://mate-academy.github.io/vue_dynamic-list-of-posts/#/)
 
 1. Learn the `.html` files to get all needed layouts;
+   - Bulma is required to have all styles
 1. Initially the `App` shows the `Posts table` and `Create new post` button
 
    - show the `<Loader>` while waiting for the API response;
