@@ -12,6 +12,7 @@ import EditPost from "./EditPost.vue";
 const postArr = ref<Post[] | null>(null);
 const selectedPost = ref<Post | null>(null);
 const postMode = ref<PostModeType | null>(null);
+const lodingError = ref(false);
 
 const props = defineProps<{
   userId: number;
@@ -20,11 +21,9 @@ const props = defineProps<{
 onMounted(() => {
   getPosts(props.userId)
     .then((res) => {
-      console.log(res);
-
       postArr.value = res;
     })
-    .catch(() => console.log("error"));
+    .catch(() => (lodingError.value = true));
 });
 
 const handleClosePost = () => {
@@ -103,8 +102,13 @@ const handleRemovePost = (postId: Number) => {
             </button>
           </div>
 
+          <div></div>
+
           <div v-if="!postArr" class="block is-flex is-justify-content-center">
-            <Loader />
+            <p class="has-text-danger is-size-4" v-if="lodingError">
+              Loading Error
+            </p>
+            <Loader v-else />
           </div>
 
           <div

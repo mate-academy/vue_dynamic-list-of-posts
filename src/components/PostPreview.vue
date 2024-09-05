@@ -15,6 +15,8 @@ const props = defineProps<{
 const addingComment = ref(false);
 const commentArr = ref<Comment[] | null>(null);
 
+const comment = ref({ name: "", email: "", body: "" });
+
 watch(
   () => props.post,
   (newPost) => {
@@ -48,12 +50,18 @@ const handleRemoveComment = (commentId: number) => {
   });
 };
 
-const handleAddComment = (name: string, email: string, body: string) => {
+// const handleAddComment = (name: string, email: string, body: string) => {
+const handleAddComment = () => {
   handleCloseAddComment();
 
   if (props.post?.id) {
-    const comment = { postId: props.post?.id, name, email, body };
-    addComment(comment).then((res) =>
+    const commentToSend = {
+      postId: props.post?.id,
+      name: comment.value.name,
+      email: comment.value.email,
+      body: comment.value.body,
+    };
+    addComment(commentToSend).then((res) =>
       commentArr.value ? commentArr.value.push(res) : null
     );
   }
@@ -94,6 +102,7 @@ const handleCloseAddComment = () => {
 
       <div class="block" v-if="addingComment">
         <AddComment
+          :comment="comment"
           :handleAddComment="handleAddComment"
           :handleClose="handleCloseAddComment"
         />

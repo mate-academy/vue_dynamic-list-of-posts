@@ -3,41 +3,31 @@ import { ref } from "vue";
 
 const props = defineProps<{
   handleClose: () => void;
-  handleAddComment: (name: string, email: string, body: string) => void;
+  handleAddComment: () => void;
+  comment: { name: string; email: string; body: string };
 }>();
-
-const name = ref("");
-const email = ref("");
-const body = ref("");
 
 const nameError = ref(false);
 const emailError = ref(false);
 const bodyError = ref(false);
 
 const handleValidate = () => {
-  if (name.value.length <= 0) {
+  if (props.comment.name.length <= 0) {
     nameError.value = true;
   }
-  if (email.value.length <= 0) {
+  if (props.comment.email.length <= 0) {
     emailError.value = true;
   }
-  if (body.value.length <= 0) {
+  if (props.comment.body.length <= 0) {
     bodyError.value = true;
   }
 
   if (!nameError.value && !emailError.value && !bodyError.value) {
-    props.handleAddComment(name.value, email.value, body.value);
+    props.handleAddComment();
   }
 };
 
 const handleCancel = () => {
-  name.value = "";
-  email.value = "";
-  body.value = "";
-
-  nameError.value = false;
-  emailError.value = false;
-  bodyError.value = false;
   props.handleClose();
 };
 
@@ -60,7 +50,7 @@ const handleResetErrors = () => {
               name="name"
               id="comment-name"
               placeholder="Name Surname"
-              v-model="name"
+              v-model="comment.name"
               class="input"
               :class="{ 'is-danger': nameError }"
               @input="handleResetErrors"
@@ -77,6 +67,9 @@ const handleResetErrors = () => {
               <i class="fas fa-exclamation-triangle" />
             </span>
           </div>
+          <p class="help is-danger" data-cy="ErrorMessage" v-if="nameError">
+            Name is required
+          </p>
         </div>
 
         <div class="field">
@@ -90,7 +83,7 @@ const handleResetErrors = () => {
               class="input"
               placeholder="Your email"
               :class="{ 'is-danger': emailError }"
-              v-model="email"
+              v-model="comment.email"
             />
 
             <span class="icon is-small is-left">
@@ -118,7 +111,7 @@ const handleResetErrors = () => {
               id="post-body"
               name="body"
               placeholder="Comment"
-              v-model="body"
+              v-model="comment.body"
               class="textarea"
               :class="{ 'is-danger': bodyError }"
               @input="handleResetErrors"
