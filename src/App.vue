@@ -43,16 +43,19 @@ const onLogin = (email: String) => {
       }
       loginError.value = false;
     })
-    .catch((err) => {
+    .catch(() => {
       loginError.value = true;
-      console.log(err);
     });
 };
 
 const onRegister = (email: String, name: String) => {
-  register(email, name).then((res) => {
-    saveUserToStorage(res);
-  });
+  register(email, name)
+    .then((res) => {
+      saveUserToStorage(res);
+    })
+    .catch(() => {
+      loginError.value = true;
+    });
 };
 </script>
 
@@ -68,9 +71,7 @@ const onRegister = (email: String, name: String) => {
     <Header :user="localUser" :handleLogOut="logOut" />
     <main class="section">
       <div class="container">
-        <div class="tile is-ancestor">
-          <PostList />
-        </div>
+        <PostList :userId="localUser.id" />
       </div>
     </main>
   </template>

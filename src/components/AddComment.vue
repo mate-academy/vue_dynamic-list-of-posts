@@ -3,59 +3,66 @@ import { ref } from "vue";
 
 const props = defineProps<{
   handleClose: () => void;
-  handleAddPost: (title: string, body: string) => void;
+  handleAddComment: (name: string, email: string, body: string) => void;
 }>();
 
-const title = ref("");
+const name = ref("");
+const email = ref("");
 const body = ref("");
 
-const titleError = ref(false);
+const nameError = ref(false);
+const emailError = ref(false);
 const bodyError = ref(false);
 
 const handleValidate = () => {
-  if (title.value.length <= 0) {
-    titleError.value = true;
+  if (name.value.length <= 0) {
+    nameError.value = true;
+  }
+  if (email.value.length <= 0) {
+    emailError.value = true;
   }
   if (body.value.length <= 0) {
     bodyError.value = true;
   }
 
-  if (!titleError.value && !bodyError.value) {
-    props.handleAddPost(title.value, body.value);
+  if (!nameError.value && !emailError.value && !bodyError.value) {
+    props.handleAddComment(name.value, email.value, body.value);
   }
 };
 
 const handleCancel = () => {
-  title.value = "";
+  name.value = "";
+  email.value = "";
   body.value = "";
-  titleError.value = false;
+
+  nameError.value = false;
+  emailError.value = false;
   bodyError.value = false;
   props.handleClose();
 };
 
 const handleResetErrors = () => {
-  titleError.value = false;
+  nameError.value = false;
+  emailError.value = false;
   bodyError.value = false;
 };
 </script>
 
 <template>
-  <div class="tile is-child box is-success flex-itemDown">
+  <div class="tile is-child is-success flex-itemDown">
     <div class="content">
-      <h2>Create new post</h2>
-
       <form @submit.prevent="handleValidate">
         <div class="field">
-          <label class="label" for="post-title"> Title </label>
+          <label class="label" for="post-title">Author Name</label>
           <div class="control has-icons-left has-icons-right">
             <input
               type="text"
-              name="title"
-              id="post-title"
-              placeholder="Post title"
-              v-model="title"
+              name="name"
+              id="comment-name"
+              placeholder="Name Surname"
+              v-model="name"
               class="input"
-              :class="{ 'is-danger': titleError }"
+              :class="{ 'is-danger': nameError }"
               @input="handleResetErrors"
             />
             <span class="icon is-small is-left">
@@ -65,14 +72,42 @@ const handleResetErrors = () => {
             <span
               class="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
-              v-if="titleError"
+              v-if="emailError"
+            >
+              <i class="fas fa-exclamation-triangle" />
+            </span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label" for="user-email">Author Email</label>
+
+          <div class="control has-icons-left has-icons-right">
+            <input
+              type="email"
+              id="user-email"
+              name="email"
+              class="input"
+              placeholder="Your email"
+              :class="{ 'is-danger': emailError }"
+              v-model="email"
+            />
+
+            <span class="icon is-small is-left">
+              <i class="fas fa-envelope" />
+            </span>
+
+            <span
+              class="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+              v-if="emailError"
             >
               <i class="fas fa-exclamation-triangle" />
             </span>
           </div>
 
-          <p class="help is-danger" data-cy="ErrorMessage" v-if="titleError">
-            Title is required
+          <p class="help is-danger" data-cy="ErrorMessage" v-if="emailError">
+            Email is required
           </p>
         </div>
 
@@ -82,7 +117,7 @@ const handleResetErrors = () => {
             <textarea
               id="post-body"
               name="body"
-              placeholder="Post Body"
+              placeholder="Comment"
               v-model="body"
               class="textarea"
               :class="{ 'is-danger': bodyError }"
@@ -91,13 +126,13 @@ const handleResetErrors = () => {
           </div>
 
           <p class="help is-danger" data-cy="ErrorMessage" v-if="bodyError">
-            Body is required
+            Comment is required
           </p>
         </div>
 
         <div class="field is-grouped">
           <div class="control">
-            <button type="submit" class="button is-link">Create</button>
+            <button type="submit" class="button is-link">Add Comment</button>
           </div>
           <div class="control">
             <button

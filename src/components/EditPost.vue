@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import type { Post } from "@/assets/types/Post";
 import { ref } from "vue";
 
 const props = defineProps<{
+  post: Post | null;
   handleClose: () => void;
-  handleAddPost: (title: string, body: string) => void;
+  handleUpdatePost: (title: string, body: string) => void;
 }>();
 
-const title = ref("");
-const body = ref("");
+const title = ref(props.post ? props.post.title : "");
+const body = ref(props.post ? props.post.body : "");
 
 const titleError = ref(false);
 const bodyError = ref(false);
@@ -21,7 +23,7 @@ const handleValidate = () => {
   }
 
   if (!titleError.value && !bodyError.value) {
-    props.handleAddPost(title.value, body.value);
+    props.handleUpdatePost(title.value, body.value);
   }
 };
 
@@ -42,7 +44,7 @@ const handleResetErrors = () => {
 <template>
   <div class="tile is-child box is-success flex-itemDown">
     <div class="content">
-      <h2>Create new post</h2>
+      <h2>Post editing</h2>
 
       <form @submit.prevent="handleValidate">
         <div class="field">
@@ -97,7 +99,7 @@ const handleResetErrors = () => {
 
         <div class="field is-grouped">
           <div class="control">
-            <button type="submit" class="button is-link">Create</button>
+            <button type="submit" class="button is-link">Save</button>
           </div>
           <div class="control">
             <button

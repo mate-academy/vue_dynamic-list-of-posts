@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { defineEmits } from "vue";
 
 const emit = defineEmits<{
-  (e: "handleLogin", email: string): void;
-  (e: "handleRegister", email: string, name: string): void;
+  (e: "handleLogin", email: String): void;
+  (e: "handleRegister", email: String, name: String): void;
 }>();
 
 const email = ref("");
 const name = ref("");
 
 const handleSubmit = () => {
+  console.log(name.value);
   if (name.value.length <= 0) {
     emit("handleLogin", email.value);
   } else {
@@ -61,6 +61,7 @@ defineProps<{
             class="input"
             placeholder="Enter your name"
             minlength="{4}"
+            v-model="name"
             required
           />
 
