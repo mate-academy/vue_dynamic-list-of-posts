@@ -16,7 +16,7 @@ const handleValidate = () => {
   if (props.comment.name.length <= 0) {
     nameError.value = true;
   }
-  if (props.comment.email.length <= 0) {
+  if (!isValidEmail(props.comment.email)) {
     emailError.value = true;
   }
   if (props.comment.body.length <= 0) {
@@ -48,12 +48,17 @@ const handleClearForm = () => {
   emailError.value = false;
   bodyError.value = false;
 };
+
+const isValidEmail = (email: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
 </script>
 
 <template>
   <div class="tile is-child is-success flex-itemDown">
     <div class="content">
-      <form @submit.prevent="handleValidate">
+      <form @submit.prevent="handleValidate" @input="handleResetErrors">
         <div class="field">
           <label class="label" for="post-title">Author Name</label>
           <div class="control has-icons-left has-icons-right">
@@ -65,7 +70,6 @@ const handleClearForm = () => {
               v-model="comment.name"
               class="input"
               :class="{ 'is-danger': nameError }"
-              @input="handleResetErrors"
             />
             <span class="icon is-small is-left">
               <i class="fas fa-user" />
@@ -89,7 +93,7 @@ const handleClearForm = () => {
 
           <div class="control has-icons-left has-icons-right">
             <input
-              type="email"
+              type="text"
               id="user-email"
               name="email"
               class="input"
@@ -126,7 +130,6 @@ const handleClearForm = () => {
               v-model="comment.body"
               class="textarea"
               :class="{ 'is-danger': bodyError }"
-              @input="handleResetErrors"
             ></textarea>
           </div>
 
