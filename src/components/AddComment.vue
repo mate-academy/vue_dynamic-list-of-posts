@@ -10,6 +10,7 @@ const props = defineProps<{
 const nameError = ref(false);
 const emailError = ref(false);
 const bodyError = ref(false);
+const sending = ref(false);
 
 const handleValidate = () => {
   if (props.comment.name.length <= 0) {
@@ -23,15 +24,26 @@ const handleValidate = () => {
   }
 
   if (!nameError.value && !emailError.value && !bodyError.value) {
+    sending.value = true;
     props.handleAddComment();
   }
 };
 
 const handleCancel = () => {
+  handleClearForm();
   props.handleClose();
 };
 
 const handleResetErrors = () => {
+  nameError.value = false;
+  emailError.value = false;
+  bodyError.value = false;
+};
+
+const handleClearForm = () => {
+  props.comment.name = "";
+  props.comment.email = "";
+  props.comment.body = "";
   nameError.value = false;
   emailError.value = false;
   bodyError.value = false;
@@ -125,7 +137,22 @@ const handleResetErrors = () => {
 
         <div class="field is-grouped">
           <div class="control">
-            <button type="submit" class="button is-link">Add Comment</button>
+            <button
+              type="submit"
+              class="button is-link"
+              :class="{ 'is-loading': sending }"
+            >
+              Add Comment
+            </button>
+          </div>
+          <div class="control">
+            <button
+              type="reset"
+              class="button is-link is-light"
+              @click="handleClearForm"
+            >
+              Clear
+            </button>
           </div>
           <div class="control">
             <button

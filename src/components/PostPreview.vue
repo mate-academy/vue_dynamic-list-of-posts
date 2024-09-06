@@ -13,6 +13,8 @@ const props = defineProps<{
 }>();
 
 const addingComment = ref(false);
+const loadingCommentsError = ref(false);
+
 const commentArr = ref<Comment[] | null>(null);
 
 const comment = ref({ name: "", email: "", body: "" });
@@ -21,10 +23,13 @@ watch(
   () => props.post,
   (newPost) => {
     commentArr.value = null;
+    loadingCommentsError.value = false;
     if (newPost?.id) {
-      getComments(newPost.id).then((res) => {
-        commentArr.value = res;
-      });
+      getComments(newPost.id)
+        .then((res) => {
+          commentArr.value = res;
+        })
+        .catch(() => (loadingCommentsError.value = true));
     }
   },
   { immediate: true }
@@ -43,17 +48,13 @@ const edit = () => {
 };
 
 const handleRemoveComment = (commentId: number) => {
-  removeComment(commentId).then(() => {
-    commentArr.value = commentArr.value
-      ? commentArr.value.filter((el) => el.id !== commentId)
-      : null;
-  });
+  commentArr.value = commentArr.value
+    ? commentArr.value.filter((el) => el.id !== commentId)
+    : null;
+  removeComment(commentId);
 };
 
-// const handleAddComment = (name: string, email: string, body: string) => {
 const handleAddComment = () => {
-  handleCloseAddComment();
-
   if (props.post?.id) {
     const commentToSend = {
       postId: props.post?.id,
@@ -61,9 +62,12 @@ const handleAddComment = () => {
       email: comment.value.email,
       body: comment.value.body,
     };
-    addComment(commentToSend).then((res) =>
-      commentArr.value ? commentArr.value.push(res) : null
-    );
+    addComment(commentToSend)
+      .then((res) => {
+        commentArr.value ? commentArr.value.push(res) : null;
+        comment.value.body = "";
+      })
+      .finally(() => handleCloseAddComment());
   }
 };
 
@@ -110,7 +114,10 @@ const handleCloseAddComment = () => {
 
       <div class="block" v-else>
         <div v-if="!commentArr" class="block is-flex is-justify-content-center">
-          <Loader />
+          <p class="has-text-danger is-size-4" v-if="loadingCommentsError">
+            Loading Error
+          </p>
+          <Loader v-else />
         </div>
 
         <p class="title is-4" v-else-if="commentArr?.length === 0">
