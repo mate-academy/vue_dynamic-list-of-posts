@@ -74,7 +74,7 @@ const handleClearForm = () => {
             <span
               class="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
-              v-if="emailError"
+              v-if="nameError"
             >
               <i class="fas fa-exclamation-triangle" />
             </span>
