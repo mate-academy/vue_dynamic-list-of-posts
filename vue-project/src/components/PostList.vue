@@ -1,22 +1,23 @@
 <script>
-  import Todo from '../components/Todo.vue';
+  import Post from './Post.vue';
   import Loader from '../components/Loader.vue';
 
   export default {
     props: {
-      posts: Object,
+      posts: Array,
       errorMessages: String,
       loader: Boolean,
+      selectedPost: Object,
     },
-    emits: ['sidebar:change'],
+    emits: ['sidebar:change', 'openPost', 'closePost'],
     components: {
-      Todo,
+      Post,
       Loader,
     }
   }
 </script>
 <template>
-  <div className="tile is-parent">
+  <div className="tile is-parent is-flex">
     <div className="tile is-child box is-success">
       <div className="block">
         <div className="block is-flex is-justify-content-space-between">
@@ -33,12 +34,12 @@
             </tr>
           </thead>
           <tbody>
-            <Todo v-for="post of posts" :post="post" />
+            <Post v-for="post of posts" :key="post.id" :post="post" :selectedPost="selectedPost" @openPost="$emit('openPost', post)" @closePost="$emit('closePost')"/>
           </tbody>
         </table>
         <h3 class="mt-2 has-text-centered" v-if="!errorMessages && posts.length === 0 && !loader">No posts yet.</h3>
         <h3 class="mt-2 has-text-centered has-text-danger" v-if="errorMessages && !loader">{{ errorMessages }}</h3>
-        <Loader v-if="loader"/>
+        <Loader v-if="loader && !selectedPost"/>
       </div>
     </div>
   </div>

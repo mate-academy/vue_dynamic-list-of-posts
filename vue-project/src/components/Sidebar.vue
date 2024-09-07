@@ -1,12 +1,17 @@
 <script>
+import PostForm from './PostForm.vue';
+
 export default {
+  components: {
+    PostForm,
+  },
   props: {
     sidebar: Boolean,
   }
 }
 </script>
 <template>
-  <div class="tile is-parent is-8-desktop Sidebar" :class="{ 'Sidebar--open': sidebar }">
+  <div class="tile is-parent is-8-desktop Sidebar is-flex" :class="{ 'Sidebar--open': sidebar }">
     <div class="tile is-child box is-success">
       <div class="content">
         <slot></slot>
