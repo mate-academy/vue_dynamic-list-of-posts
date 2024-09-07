@@ -31,16 +31,32 @@ export default {
       <div class="field" data-cy="NameField">
         <label class="label" for="comment-author-name-title">Title</label>
         <div class="control has-icons-left has-icons-right">
-          <input type="text" name="title" id="comment-author-name-title" placeholder="Post title" class="input"
-            v-model="title" required>
-          <span class="icon is-small is-left"><i class="fas fa-user fa-heading"></i></span>
+          <input 
+            type="text" 
+            name="title" 
+            id="comment-author-name-title" 
+            placeholder="Post title" 
+            class="input"
+            v-model="title" 
+            required
+          >
+          <span class="icon is-small is-left">
+            <i class="fas fa-user fa-heading"></i>
+          </span>
         </div>
       </div>
 
       <div class="field" data-cy="BodyField">
         <label class="label" for="comment-body">Write Post Body</label>
         <div class="control">
-          <textarea id="comment-body" name="body" placeholder="Post body" class="textarea" v-model="body" required></textarea>
+          <textarea 
+            id="comment-body" 
+            name="body" 
+            placeholder="Post body" 
+            class="textarea" 
+            v-model="body" 
+            required>
+          </textarea>
         </div>
       </div>
 
