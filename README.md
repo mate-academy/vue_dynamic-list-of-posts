@@ -5,7 +5,7 @@ The user should be able to create a new post with their userId. Each post can
 be opened in the sidebar with its comments, can be edited and deleted. There should delete a comment and a
 form to add new comments.
 
-> Here is [the working version](https://mate-academy.github.io/vue_dynamic-list-of-posts/#/)
+[DEMO LINK](https://volodymir-tymtsias.github.io/vue_dynamic-list-of-posts/)
 
 1. Learn the `.html` files to get all needed layouts;
    - Bulma is required to have all styles
