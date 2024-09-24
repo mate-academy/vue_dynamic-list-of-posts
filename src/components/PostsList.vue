@@ -11,6 +11,7 @@ const { user } = defineProps({
 })
 
 const posts = ref([])
+const selectedPost = ref({})
 const isLoading = ref(false)
 const isError = ref(false)
 
@@ -28,6 +29,14 @@ onMounted(() => {
       isLoading.value = false
     })
 })
+
+const handleSelectPost = (post) => {
+  selectedPost.value = post
+}
+
+const handeDeselectPost = () => {
+  selectedPost.value = {}
+}
 </script>
 <template>
   <div className="tile is-parent">
@@ -43,9 +52,15 @@ onMounted(() => {
         >
           <Loader />
         </div>
+        <div v-else-if="!isLoading && isError" class="has-text-centered has-text-danger">
+          Failed to load posts. Please reload the page.
+        </div>
+        <div v-else-if="!isLoading && !isError && !posts.length" class="has-text-centered">
+          No posts yet.
+        </div>
 
         <table
-          v-if="!isLoading && !isError"
+          v-if="!isLoading && !isError && posts.length"
           className="table is-fullwidth is-striped is-hoverable is-narrow"
         >
           <thead>
@@ -56,7 +71,14 @@ onMounted(() => {
             </tr>
           </thead>
           <tbody>
-            <PostsItem v-for="post in posts" :key="post.id" :post="post" />
+            <PostsItem
+              v-for="post in posts"
+              :key="post.id"
+              :post
+              :selectedPost
+              @selectPost="handleSelectPost"
+              @deselectPost="handeDeselectPost"
+            />
           </tbody>
         </table>
       </div>

@@ -31,8 +31,8 @@ onMounted(() => {
 <template>
   <LoginPage @login="handleLogin" v-if="isLoginPage" />
   <template v-else>
-    <Header :user="user" @logout="handleLogout" />
-    <PostsList :user="user" />
+    <Header :user @logout="handleLogout" />
+    <PostsList :user />
   </template>
 </template>
 
