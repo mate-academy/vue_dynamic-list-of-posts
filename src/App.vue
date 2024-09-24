@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import LoginPage from './components/LoginPage.vue'
 import Header from './components/Header.vue'
+import PostsList from './components/PostsList.vue'
 
 const user = ref({})
 const isLoginPage = ref(true)
@@ -31,6 +32,7 @@ onMounted(() => {
   <LoginPage @login="handleLogin" v-if="isLoginPage" />
   <template v-else>
     <Header :user="user" @logout="handleLogout" />
+    <PostsList />
   </template>
 </template>
 
