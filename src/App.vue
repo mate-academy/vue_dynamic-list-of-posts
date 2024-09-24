@@ -32,7 +32,7 @@ onMounted(() => {
   <LoginPage @login="handleLogin" v-if="isLoginPage" />
   <template v-else>
     <Header :user="user" @logout="handleLogout" />
-    <PostsList />
+    <PostsList :user="user" />
   </template>
 </template>
 
