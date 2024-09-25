@@ -94,5 +94,6 @@ const handleCloseSidebar = () => {
       </div>
     </div>
   </div>
+
   <SideBar :isSidebarOpen :selectedPost />
 </template>

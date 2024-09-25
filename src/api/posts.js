@@ -7,3 +7,7 @@ export const getPostsByUserId = (userId) => {
 export const addPost = ({ userId, title, body }) => {
   return client.post('/posts', { userId, title, body })
 }
+
+export const deletePost = (id) => {
+  return client.delete(`/posts/${id}`)
+}
