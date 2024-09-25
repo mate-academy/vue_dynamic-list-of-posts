@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import { getPostsByUserId } from '@/api/posts'
 import PostsItem from './PostsItem.vue'
 import Loader from './Loader.vue'
-import Sidebar from './Sidebar.vue'
+import SideBar from './SideBar.vue'
 
 const { userId } = defineProps({
   userId: {
@@ -60,39 +60,39 @@ const handleCloseSidebar = () => {
             Add New Post
           </button>
         </div>
-        <!-- <div class="is-flex is-justify-content-center is-align-items-center mt-2"> -->
-        <Loader v-if="isLoading" />
+        <div class="is-flex is-justify-content-center is-align-items-center mt-2">
+          <Loader v-if="isLoading" />
 
-        <div v-else-if="!isLoading && isError" class="notification is-danger">
-          Failed to load posts. Please reload the page.
+          <div v-else-if="!isLoading && isError" class="notification is-danger">
+            Failed to load posts. Please reload the page.
+          </div>
+          <div v-else-if="!isLoading && !isError && !posts.length" class="">No posts yet.</div>
+
+          <table
+            v-if="!isLoading && !isError && posts.length"
+            class="table is-fullwidth is-striped is-hoverable is-narrow"
+          >
+            <thead>
+              <tr class="has-background-link-light">
+                <th>ID</th>
+                <th>Title</th>
+                <th class="has-text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <PostsItem
+                v-for="post in posts"
+                :key="post.id"
+                :post
+                :selectedPost
+                @selectPost="handleSelectPost"
+                @deselectPost="handeDeselectPost"
+              />
+            </tbody>
+          </table>
         </div>
-        <div v-else-if="!isLoading && !isError && !posts.length" class="">No posts yet.</div>
-
-        <table
-          v-if="!isLoading && !isError && posts.length"
-          class="table is-fullwidth is-striped is-hoverable is-narrow"
-        >
-          <thead>
-            <tr class="has-background-link-light">
-              <th>ID</th>
-              <th>Title</th>
-              <th class="has-text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <PostsItem
-              v-for="post in posts"
-              :key="post.id"
-              :post
-              :selectedPost
-              @selectPost="handleSelectPost"
-              @deselectPost="handeDeselectPost"
-            />
-          </tbody>
-        </table>
       </div>
     </div>
   </div>
-  <!-- </div> -->
-  <Sidebar :isSidebarOpen :selectedPost />
+  <SideBar :isSidebarOpen :selectedPost />
 </template>
