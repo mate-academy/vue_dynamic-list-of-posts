@@ -8,13 +8,19 @@ const { isSidebarOpen, selectedPost } = defineProps({
     type: Object
   }
 })
+
+const emits = defineEmits(['deletePost'])
 </script>
 
 <template>
   <div class="tile is-parent is-8-desktop Sidebar" :class="{ 'Sidebar--open': isSidebarOpen }">
     <div class="tile is-child box is-success">
       <div class="content">
-        <PostPreview v-if="selectedPost.id" :selectedPost />
+        <PostPreview
+          v-if="selectedPost.id"
+          :selectedPost
+          @deletePost="emits('deletePost', $event)"
+        />
       </div>
     </div>
   </div>

@@ -4,7 +4,10 @@ const { selectedPost } = defineProps({
     type: Object
   }
 })
+
+const emits = defineEmits(['deletePost'])
 </script>
+
 <template>
   <div class="block">
     <div class="is-flex is-justify-content-space-between is-align-items-center">
@@ -13,7 +16,10 @@ const { selectedPost } = defineProps({
         <span class="icon is-small is-right is-clickable">
           <i class="fas fa-pen-to-square"></i>
         </span>
-        <span class="icon is-small is-right has-text-danger is-clickable ml-3">
+        <span
+          @click="emits('deletePost', selectedPost.id)"
+          class="icon is-small is-right has-text-danger is-clickable ml-3"
+        >
           <i class="fas fa-trash"></i>
         </span>
       </div>

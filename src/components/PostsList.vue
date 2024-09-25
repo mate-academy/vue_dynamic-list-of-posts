@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getPostsByUserId } from '@/api/posts'
+import { getPostsByUserId, deletePost } from '@/api/posts'
 import PostsItem from './PostsItem.vue'
 import Loader from './Loader.vue'
 import SideBar from './SideBar.vue'
@@ -40,6 +40,14 @@ const handleSelectPost = (post) => {
 const handeDeselectPost = () => {
   handleCloseSidebar()
   selectedPost.value = {}
+}
+
+const handleDeletePost = (postId) => {
+  deletePost(postId).then(() => {
+    posts.value = posts.value.filter((post) => post.id !== postId)
+
+    handeDeselectPost()
+  })
 }
 
 const handleOpenSidebar = () => {
@@ -95,5 +103,5 @@ const handleCloseSidebar = () => {
     </div>
   </div>
 
-  <SideBar :isSidebarOpen :selectedPost />
+  <SideBar :isSidebarOpen :selectedPost @deletePost="handleDeletePost" />
 </template>
