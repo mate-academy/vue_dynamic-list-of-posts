@@ -1,4 +1,5 @@
 <script setup>
+import CommentsSection from './CommentsSection.vue'
 const { selectedPost } = defineProps({
   selectedPost: {
     type: Object
@@ -26,4 +27,5 @@ const emits = defineEmits(['deletePost'])
     </div>
     <p data-cy="PostBody">{{ selectedPost.body }}</p>
   </div>
+  <CommentsSection :postId="selectedPost.id" />
 </template>

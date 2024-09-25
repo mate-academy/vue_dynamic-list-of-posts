@@ -68,37 +68,36 @@ const handleCloseSidebar = () => {
             Add New Post
           </button>
         </div>
-        <div class="is-flex is-justify-content-center is-align-items-center mt-2">
-          <Loader v-if="isLoading" />
 
-          <div v-else-if="!isLoading && isError" class="notification is-danger">
-            Failed to load posts. Please reload the page.
-          </div>
-          <div v-else-if="!isLoading && !isError && !posts.length" class="">No posts yet.</div>
+        <Loader v-if="isLoading" />
 
-          <table
-            v-if="!isLoading && !isError && posts.length"
-            class="table is-fullwidth is-striped is-hoverable is-narrow"
-          >
-            <thead>
-              <tr class="has-background-link-light">
-                <th>ID</th>
-                <th>Title</th>
-                <th class="has-text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <PostsItem
-                v-for="post in posts"
-                :key="post.id"
-                :post
-                :selectedPost
-                @selectPost="handleSelectPost"
-                @deselectPost="handeDeselectPost"
-              />
-            </tbody>
-          </table>
+        <div v-else-if="!isLoading && isError" class="notification is-danger">
+          Failed to load posts. Please reload the page.
         </div>
+        <div v-else-if="!isLoading && !isError && !posts.length" class="">No posts yet.</div>
+
+        <table
+          v-if="!isLoading && !isError && posts.length"
+          class="table is-fullwidth is-striped is-hoverable is-narrow"
+        >
+          <thead>
+            <tr class="has-background-link-light">
+              <th>ID</th>
+              <th>Title</th>
+              <th class="has-text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <PostsItem
+              v-for="post in posts"
+              :key="post.id"
+              :post
+              :selectedPost
+              @selectPost="handleSelectPost"
+              @deselectPost="handeDeselectPost"
+            />
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
