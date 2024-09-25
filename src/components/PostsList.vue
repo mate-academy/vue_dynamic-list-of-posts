@@ -3,10 +3,11 @@ import { ref, onMounted } from 'vue'
 import { getPostsByUserId } from '@/api/posts'
 import PostsItem from './PostsItem.vue'
 import Loader from './Loader.vue'
+import Sidebar from './Sidebar.vue'
 
-const { user } = defineProps({
-  user: {
-    type: Object
+const { userId } = defineProps({
+  userId: {
+    type: Number
   }
 })
 
@@ -14,11 +15,12 @@ const posts = ref([])
 const selectedPost = ref({})
 const isLoading = ref(false)
 const isError = ref(false)
+const isSidebarOpen = ref(false)
 
 onMounted(() => {
   isError.value = false
   isLoading.value = true
-  getPostsByUserId(user.id)
+  getPostsByUserId(userId)
     .then(({ data }) => {
       posts.value = data
     })
@@ -32,42 +34,49 @@ onMounted(() => {
 
 const handleSelectPost = (post) => {
   selectedPost.value = post
+  handleOpenSidebar()
 }
 
 const handeDeselectPost = () => {
+  handleCloseSidebar()
   selectedPost.value = {}
+}
+
+const handleOpenSidebar = () => {
+  isSidebarOpen.value = true
+}
+
+const handleCloseSidebar = () => {
+  isSidebarOpen.value = false
 }
 </script>
 <template>
-  <div className="tile is-parent">
-    <div className="tile is-child box is-success">
-      <div className="block">
-        <div className="block is-flex is-justify-content-space-between">
-          <p className="title">Posts</p>
-          <button type="button" className="button is-link">Add New Post</button>
+  <div class="tile is-parent">
+    <div class="tile is-child box is-success">
+      <div class="block">
+        <div class="block is-flex is-justify-content-space-between">
+          <p class="title">Posts</p>
+          <button type="button" class="button is-link" @click="handleOpenSidebar">
+            Add New Post
+          </button>
         </div>
-        <div
-          v-if="isLoading"
-          className="is-flex is-justify-content-center is-align-items-center mt-2"
-        >
-          <Loader />
-        </div>
-        <div v-else-if="!isLoading && isError" class="has-text-centered has-text-danger">
+        <!-- <div class="is-flex is-justify-content-center is-align-items-center mt-2"> -->
+        <Loader v-if="isLoading" />
+
+        <div v-else-if="!isLoading && isError" class="notification is-danger">
           Failed to load posts. Please reload the page.
         </div>
-        <div v-else-if="!isLoading && !isError && !posts.length" class="has-text-centered">
-          No posts yet.
-        </div>
+        <div v-else-if="!isLoading && !isError && !posts.length" class="">No posts yet.</div>
 
         <table
           v-if="!isLoading && !isError && posts.length"
-          className="table is-fullwidth is-striped is-hoverable is-narrow"
+          class="table is-fullwidth is-striped is-hoverable is-narrow"
         >
           <thead>
-            <tr className="has-background-link-light">
+            <tr class="has-background-link-light">
               <th>ID</th>
               <th>Title</th>
-              <th className="has-text-right">Actions</th>
+              <th class="has-text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -84,4 +93,6 @@ const handeDeselectPost = () => {
       </div>
     </div>
   </div>
+  <!-- </div> -->
+  <Sidebar :isSidebarOpen :selectedPost />
 </template>

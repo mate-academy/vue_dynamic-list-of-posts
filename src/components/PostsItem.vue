@@ -1,5 +1,5 @@
 <script setup>
-const props = defineProps({
+const { post, selectedPost } = defineProps({
   post: {
     type: Object
   },
@@ -13,20 +13,16 @@ const emits = defineEmits(['selectPost', 'deselectPost'])
 
 <template>
   <tr>
-    <td>{{ props.post.id }}</td>
-    <td>{{ props.post.title }}</td>
-    <td className="has-text-right is-vcentered">
+    <td>{{ post.id }}</td>
+    <td>{{ post.title }}</td>
+    <td class="has-text-right is-vcentered">
       <button
         type="button"
         class="button is-link"
-        :class="{ 'is-light': props.selectedPost.id !== props.post.id }"
-        @click="
-          props.selectedPost.id === props.post.id
-            ? emits('deselectPost')
-            : emits('selectPost', props.post)
-        "
+        :class="{ 'is-light': selectedPost.id !== post.id }"
+        @click="selectedPost.id === post.id ? emits('deselectPost') : emits('selectPost', post)"
       >
-        {{ props.selectedPost.id === props.post.id ? 'Close' : 'Open' }}
+        {{ selectedPost.id === post.id ? 'Close' : 'Open' }}
       </button>
     </td>
   </tr>

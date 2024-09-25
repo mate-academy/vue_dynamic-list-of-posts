@@ -50,27 +50,27 @@ const handleRegister = () => {
 }
 </script>
 <template>
-  <section className="container is-flex is-justify-content-center">
-    <form @submit.prevent="isRegister ? handleRegister() : handleLogin(email)" className="box mt-5">
-      <h1 className="title is-3">{{ isRegister ? 'You need to register' : 'Get your userId' }}</h1>
+  <section class="container is-flex is-justify-content-center">
+    <form @submit.prevent="isRegister ? handleRegister() : handleLogin(email)" class="box mt-5">
+      <h1 class="title is-3">{{ isRegister ? 'You need to register' : 'Get your userId' }}</h1>
 
-      <div className="field">
-        <label className="label" htmlFor="user-email"> Email </label>
+      <div class="field">
+        <label class="label" htmlFor="user-email"> Email </label>
 
-        <div className="control has-icons-left">
+        <div class="control has-icons-left">
           <input
             v-model="email"
             type="email"
             id="user-email"
             name="email"
-            className="input"
+            class="input"
             placeholder="Enter your email"
             :disabled="isRegister"
             required
           />
 
-          <span className="icon is-small is-left">
-            <i className="fas fa-envelope" />
+          <span class="icon is-small is-left">
+            <i class="fas fa-envelope" />
           </span>
         </div>
 
@@ -80,9 +80,9 @@ const handleRegister = () => {
       </div>
 
       <div v-if="isRegister" className="field">
-        <label className="label" htmlFor="user-name"> Your name </label>
+        <label class="label" htmlFor="user-name"> Your name </label>
 
-        <div className="control has-icons-left">
+        <div class="control has-icons-left">
           <input
             v-model="name"
             type="text"
@@ -94,13 +94,13 @@ const handleRegister = () => {
             required
           />
 
-          <span className="icon is-small is-left">
-            <i className="fas fa-user" />
+          <span class="icon is-small is-left">
+            <i class="fas fa-user" />
           </span>
         </div>
       </div>
 
-      <div className="field">
+      <div class="field">
         <button type="submit" class="button is-primary" :class="{ 'is-loading': isLoading }">
           {{ isRegister ? 'Register' : 'Login' }}
         </button>

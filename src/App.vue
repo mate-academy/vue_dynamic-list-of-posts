@@ -29,10 +29,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <LoginPage @login="handleLogin" v-if="isLoginPage" />
+  <LoginPage v-if="isLoginPage" @login="handleLogin" />
   <template v-else>
     <Header :user @logout="handleLogout" />
-    <PostsList :user />
+    <PostsList :userId="user.id" />
   </template>
 </template>
 
