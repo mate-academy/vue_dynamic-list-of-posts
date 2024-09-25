@@ -42,5 +42,3 @@ onMounted(() => {
     </main>
   </template>
 </template>
-
-<style></style>

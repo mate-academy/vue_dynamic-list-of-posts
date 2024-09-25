@@ -1,11 +1,7 @@
 <script setup>
 const { post, selectedPost } = defineProps({
-  post: {
-    type: Object
-  },
-  selectedPost: {
-    type: Object
-  }
+  post: Object,
+  selectedPost: Object
 })
 
 const emits = defineEmits(['selectPost', 'deselectPost'])

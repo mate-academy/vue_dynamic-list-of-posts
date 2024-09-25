@@ -1,9 +1,7 @@
 <script setup>
 import CommentsSection from './CommentsSection.vue'
 const { selectedPost } = defineProps({
-  selectedPost: {
-    type: Object
-  }
+  selectedPost: Object
 })
 
 const emits = defineEmits(['deletePost'])

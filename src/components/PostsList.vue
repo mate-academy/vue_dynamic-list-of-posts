@@ -6,9 +6,7 @@ import Loader from './Loader.vue'
 import SideBar from './SideBar.vue'
 
 const { userId } = defineProps({
-  userId: {
-    type: Number
-  }
+  userId: Number
 })
 
 const posts = ref([])

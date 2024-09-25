@@ -1,8 +1,6 @@
 <script setup>
 const props = defineProps({
-  user: {
-    type: Object
-  }
+  user: Object
 })
 
 defineEmits(['logout'])

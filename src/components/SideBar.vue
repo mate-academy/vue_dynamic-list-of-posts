@@ -1,12 +1,8 @@
 <script setup>
 import PostPreview from './PostPreview.vue'
 const { isSidebarOpen, selectedPost } = defineProps({
-  isSidebarOpen: {
-    type: Boolean
-  },
-  selectedPost: {
-    type: Object
-  }
+  isSidebarOpen: Boolean,
+  selectedPost: Object
 })
 
 const emits = defineEmits(['deletePost'])
@@ -26,7 +22,7 @@ const emits = defineEmits(['deletePost'])
   </div>
 </template>
 
-<style>
+<style scoped>
 .Sidebar {
   overflow: hidden;
   opacity: 0;
