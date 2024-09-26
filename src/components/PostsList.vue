@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getPostsByUserId, deletePost, addPost } from '@/api/posts'
+import { getPostsByUserId, deletePost, addPost, updatePost } from '@/api/posts'
 import PostsItem from './PostsItem.vue'
 import Loader from './Loader.vue'
 import SideBar from './SideBar.vue'
@@ -11,10 +11,12 @@ const { userId } = defineProps({
 
 const posts = ref([])
 const selectedPost = ref({})
+const editedPost = ref({})
 const isLoading = ref(false)
 const isError = ref(false)
 const isSidebarOpen = ref(false)
 const isFormOpen = ref(false)
+const formName = ref('')
 
 onMounted(() => {
   isError.value = false
@@ -65,7 +67,26 @@ const handleAddPost = ({ title, body }) => {
   })
 }
 
+const handleUpdatePost = ({ id, title, body }) => {
+  updatePost({ id, title, body }).then(({ data }) => {
+    posts.value = posts.value.map((post) => {
+      if (post.id === id) {
+        return data
+      }
+      return post
+    })
+    isFormOpen.value = false
+    handleSelectPost(data)
+  })
+}
+const handleOpenEditPostForm = () => {
+  editedPost.value = selectedPost.value
+  formName.value = 'editPost'
+  selectedPost.value = {}
+  isFormOpen.value = true
+}
 const handleOpenNewPostForm = () => {
+  formName.value = 'addPost'
   selectedPost.value = {}
   isFormOpen.value = true
   handleOpenSidebar()
@@ -128,9 +149,14 @@ const handleCloseForm = () => {
   <SideBar
     :isSidebarOpen
     :isFormOpen
+    :formName
+    :editedPost
     :selectedPost
     @deletePost="handleDeletePost"
+    @selectPost="handleSelectPost"
+    @openForm="handleOpenEditPostForm"
     @closeForm="handleCloseForm"
     @addPost="handleAddPost"
+    @updatePost="handleUpdatePost"
   />
 </template>

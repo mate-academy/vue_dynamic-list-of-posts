@@ -4,7 +4,7 @@ const { selectedPost } = defineProps({
   selectedPost: Object
 })
 
-const emits = defineEmits(['deletePost'])
+const emits = defineEmits(['deletePost', 'editPost'])
 </script>
 
 <template>
@@ -12,7 +12,7 @@ const emits = defineEmits(['deletePost'])
     <div class="is-flex is-justify-content-space-between is-align-items-center">
       <h2>{{ `#${selectedPost.id}: ${selectedPost.title}` }}</h2>
       <div class="is-flex">
-        <span class="icon is-small is-right is-clickable">
+        <span @click="emits('editPost')" class="icon is-small is-right is-clickable">
           <i class="fas fa-pen-to-square"></i>
         </span>
         <span

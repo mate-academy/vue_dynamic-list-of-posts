@@ -1,13 +1,22 @@
 <script setup>
 import PostPreview from './PostPreview.vue'
 import PostForm from './PostForm.vue'
-const { isSidebarOpen, selectedPost, isFormOpen } = defineProps({
+const { isSidebarOpen, selectedPost, isFormOpen, formName, editedPost } = defineProps({
   isSidebarOpen: Boolean,
   selectedPost: Object,
-  isFormOpen: Boolean
+  isFormOpen: Boolean,
+  formName: String,
+  editedPost: Object
 })
 
-const emits = defineEmits(['deletePost', 'closeForm', 'addPost'])
+const emits = defineEmits([
+  'deletePost',
+  'selectPost',
+  'openForm',
+  'closeForm',
+  'addPost',
+  'updatePost'
+])
 </script>
 
 <template>
@@ -17,14 +26,18 @@ const emits = defineEmits(['deletePost', 'closeForm', 'addPost'])
         <PostPreview
           v-if="selectedPost.id"
           :selectedPost
+          @editPost="emits('openForm')"
           @deletePost="emits('deletePost', $event)"
         />
 
         <PostForm
           v-else-if="!selectedPost.id && isFormOpen"
-          name="addPost"
+          :formName
+          :editedPost
           @closeForm="emits('closeForm')"
+          @selectPost="emits('selectPost', $event)"
           @addPost="emits('addPost', $event)"
+          @updatePost="emits('updatePost', $event)"
         />
       </div>
     </div>

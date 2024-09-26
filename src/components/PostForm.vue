@@ -1,17 +1,15 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, onUpdated, watch } from 'vue'
 import InputField from './InputField.vue'
 import TextAreaField from './TextAreaField.vue'
 
-const { name, postTitle, postBody } = defineProps({
-  name: String,
-  postTitle: String,
-  postBody: String
+const { formName, editedPost } = defineProps({
+  formName: String,
+  editedPost: Object
 })
 
-const emits = defineEmits(['closeForm', 'addPost'])
+const emits = defineEmits(['closeForm', 'addPost', 'updatePost', 'selectPost'])
 
-const formName = ref('')
 const title = ref('')
 const body = ref('')
 
@@ -21,15 +19,16 @@ const errors = ref({
 })
 
 onMounted(() => {
-  switch (name) {
-    case 'addPost':
-      formName.value = 'Create new post'
-      break
-    case 'editPost':
-      formName.value = 'Post editing'
-      title.value = postTitle
-      body.value = postBody
-      break
+  if (formName === 'editPost') {
+    title.value = editedPost.title
+    body.value = editedPost.body
+  }
+})
+
+onUpdated(() => {
+  if (formName === 'addPost') {
+    title.value = ''
+    body.value = ''
   }
 })
 
@@ -49,25 +48,42 @@ const handleSubmit = () => {
     return
   }
 
-  emits('addPost', { title: title.value, body: body.value })
+  if (formName === 'addPost') {
+    emits('addPost', { title: title.value, body: body.value })
+  }
+
+  if (formName === 'editPost') {
+    emits('updatePost', { id: editedPost.id, title: title.value, body: body.value })
+  }
+}
+
+const handleCloseForm = () => {
+  if (formName === 'addPost') {
+    emits('closeForm')
+  }
+  if (formName === 'editPost') {
+    emits('selectPost', editedPost)
+  }
 }
 </script>
 
 <template>
   <div className="content">
-    <h2>{{ formName }}</h2>
+    <h2>{{ formName === 'addPost' ? 'Create new post' : 'Post editing' }}</h2>
 
-    <form @submit.prevent="name === 'addPost' ? handleSubmit() : null">
+    <form @submit.prevent="handleSubmit()">
       <InputField v-model="title" name="title" :error="errors.title" />
 
       <TextAreaField v-model="body" name="body" :error="errors.body" />
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link">Save</button>
+          <button type="submit" className="button is-link">
+            {{ formName === 'addPost' ? 'Create' : 'Save' }}
+          </button>
         </div>
         <div className="control">
-          <button type="reset" className="button is-link is-light" @click="emits('closeForm')">
+          <button type="reset" className="button is-link is-light" @click="handleCloseForm">
             Cancel
           </button>
         </div>
