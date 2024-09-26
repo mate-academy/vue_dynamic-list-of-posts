@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getPostsByUserId, deletePost } from '@/api/posts'
+import { getPostsByUserId, deletePost, addPost } from '@/api/posts'
 import PostsItem from './PostsItem.vue'
 import Loader from './Loader.vue'
 import SideBar from './SideBar.vue'
@@ -14,6 +14,7 @@ const selectedPost = ref({})
 const isLoading = ref(false)
 const isError = ref(false)
 const isSidebarOpen = ref(false)
+const isFormOpen = ref(false)
 
 onMounted(() => {
   isError.value = false
@@ -29,6 +30,14 @@ onMounted(() => {
       isLoading.value = false
     })
 })
+
+const handleOpenSidebar = () => {
+  isSidebarOpen.value = true
+}
+
+const handleCloseSidebar = () => {
+  isSidebarOpen.value = false
+}
 
 const handleSelectPost = (post) => {
   selectedPost.value = post
@@ -48,12 +57,23 @@ const handleDeletePost = (postId) => {
   })
 }
 
-const handleOpenSidebar = () => {
-  isSidebarOpen.value = true
+const handleAddPost = ({ title, body }) => {
+  addPost({ userId, title, body }).then(({ data }) => {
+    isFormOpen.value = false
+    posts.value.push(data)
+    handleSelectPost(data)
+  })
 }
 
-const handleCloseSidebar = () => {
-  isSidebarOpen.value = false
+const handleOpenNewPostForm = () => {
+  selectedPost.value = {}
+  isFormOpen.value = true
+  handleOpenSidebar()
+}
+
+const handleCloseForm = () => {
+  isFormOpen.value = false
+  handeDeselectPost()
 }
 </script>
 <template>
@@ -62,7 +82,12 @@ const handleCloseSidebar = () => {
       <div class="block">
         <div class="block is-flex is-justify-content-space-between">
           <p class="title">Posts</p>
-          <button type="button" class="button is-link" @click="handleOpenSidebar">
+          <button
+            type="button"
+            class="button is-link"
+            :class="{ 'is-light': isSidebarOpen && !selectedPost.id }"
+            @click="handleOpenNewPostForm"
+          >
             Add New Post
           </button>
         </div>
@@ -100,5 +125,12 @@ const handleCloseSidebar = () => {
     </div>
   </div>
 
-  <SideBar :isSidebarOpen :selectedPost @deletePost="handleDeletePost" />
+  <SideBar
+    :isSidebarOpen
+    :isFormOpen
+    :selectedPost
+    @deletePost="handleDeletePost"
+    @closeForm="handleCloseForm"
+    @addPost="handleAddPost"
+  />
 </template>

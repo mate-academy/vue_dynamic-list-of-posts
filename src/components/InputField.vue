@@ -28,6 +28,13 @@ onMounted(() => {
       inputIcon.value = 'fa-envelope'
       break
 
+    case 'title':
+      inputLabel.value = 'Title'
+      inputType.value = 'text'
+      inputPlaceholder.value = 'Post Title'
+      inputIcon.value = 'fa-user'
+      break
+
     default:
       break
   }

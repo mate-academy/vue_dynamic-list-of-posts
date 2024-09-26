@@ -17,6 +17,9 @@ onMounted(() => {
       textAreaLabel.value = 'Write Comment'
       textAreaPlaceholder.value = 'Comment'
       break
+    case 'body':
+      textAreaLabel.value = 'Write Post Body'
+      textAreaPlaceholder.value = 'Post Body'
   }
 })
 </script>
