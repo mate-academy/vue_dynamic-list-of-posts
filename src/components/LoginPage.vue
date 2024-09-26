@@ -2,14 +2,14 @@
 import { getUser, registerUser } from '@/api/users'
 import { ref } from 'vue'
 
+const emit = defineEmits(['login'])
+
 const email = ref('')
 const name = ref('')
 
 const isRegister = ref(false)
 const isLoading = ref(false)
 const isError = ref(false)
-
-const emit = defineEmits(['login'])
 
 const handleLogin = (email) => {
   isError.value = false
@@ -49,6 +49,7 @@ const handleRegister = () => {
     })
 }
 </script>
+
 <template>
   <section class="container is-flex is-justify-content-center">
     <form @submit.prevent="isRegister ? handleRegister() : handleLogin(email)" class="box mt-5">
@@ -79,7 +80,7 @@ const handleRegister = () => {
         </p>
       </div>
 
-      <div v-if="isRegister" className="field">
+      <div v-if="isRegister" class="field">
         <label class="label" htmlFor="user-name"> Your name </label>
 
         <div class="control has-icons-left">

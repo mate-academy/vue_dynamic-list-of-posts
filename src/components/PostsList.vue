@@ -80,6 +80,7 @@ const handleUpdatePost = ({ id, title, body }) => {
     handleSelectPost(data)
   })
 }
+
 const handleOpenEditPostForm = () => {
   editedPost.value = selectedPost.value
   formName.value = 'editPost'
@@ -98,6 +99,7 @@ const handleCloseForm = () => {
   handeDeselectPost()
 }
 </script>
+
 <template>
   <div class="tile is-parent">
     <div class="tile is-child box is-success">

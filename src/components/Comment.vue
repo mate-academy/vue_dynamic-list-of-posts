@@ -5,6 +5,7 @@ const { comment } = defineProps({
 
 const emits = defineEmits(['deleteComment'])
 </script>
+
 <template>
   <article class="message is-small">
     <div class="message-header">

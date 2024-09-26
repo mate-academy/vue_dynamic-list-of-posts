@@ -68,7 +68,7 @@ const handleCloseForm = () => {
 </script>
 
 <template>
-  <div className="content">
+  <div class="content">
     <h2>{{ formName === 'addPost' ? 'Create new post' : 'Post editing' }}</h2>
 
     <form @submit.prevent="handleSubmit()">
@@ -76,14 +76,14 @@ const handleCloseForm = () => {
 
       <TextAreaField v-model="body" name="body" :error="errors.body" />
 
-      <div className="field is-grouped">
-        <div className="control">
-          <button type="submit" className="button is-link">
+      <div class="field is-grouped">
+        <div class="control">
+          <button type="submit" class="button is-link">
             {{ formName === 'addPost' ? 'Create' : 'Save' }}
           </button>
         </div>
-        <div className="control">
-          <button type="reset" className="button is-link is-light" @click="handleCloseForm">
+        <div class="control">
+          <button type="reset" class="button is-link is-light" @click="handleCloseForm">
             Cancel
           </button>
         </div>

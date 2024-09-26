@@ -1,5 +1,5 @@
 <script setup>
-const props = defineProps({
+const { user } = defineProps({
   user: Object
 })
 
@@ -15,7 +15,7 @@ defineEmits(['logout'])
       <div class="navbar-item">
         <div class="buttons">
           <div class="mr-5 mb-2">
-            <p>User: {{ props.user.name }}</p>
+            <p>User: {{ user.name }}</p>
           </div>
 
           <a class="button is-light" @click="$emit('logout')"> Logout </a>

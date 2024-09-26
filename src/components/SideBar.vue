@@ -1,6 +1,7 @@
 <script setup>
 import PostPreview from './PostPreview.vue'
 import PostForm from './PostForm.vue'
+
 const { isSidebarOpen, selectedPost, isFormOpen, formName, editedPost } = defineProps({
   isSidebarOpen: Boolean,
   selectedPost: Object,

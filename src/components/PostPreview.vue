@@ -1,5 +1,6 @@
 <script setup>
 import CommentsSection from './CommentsSection.vue'
+
 const { selectedPost } = defineProps({
   selectedPost: Object
 })
