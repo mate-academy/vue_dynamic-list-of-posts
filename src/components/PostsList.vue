@@ -43,6 +43,7 @@ const handleCloseSidebar = () => {
 
 const handleSelectPost = (post) => {
   selectedPost.value = post
+  isFormOpen.value = false
   handleOpenSidebar()
 }
 
