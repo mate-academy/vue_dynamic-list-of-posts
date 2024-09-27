@@ -11,9 +11,14 @@ const isRegister = ref(false)
 const isLoading = ref(false)
 const isError = ref(false)
 
-const handleLogin = (email) => {
+const startLoading = () => {
   isError.value = false
   isLoading.value = true
+}
+
+const handleLogin = (email) => {
+  startLoading()
+
   getUser(email)
     .then(({ data }) => {
       if (!data.length) {
@@ -38,8 +43,8 @@ const handleLogin = (email) => {
 }
 
 const handleRegister = () => {
-  isError.value = false
-  isLoading.value = true
+  startLoading()
+
   registerUser({ email: email.value, name: name.value })
     .then(() => {
       handleLogin(email.value)
