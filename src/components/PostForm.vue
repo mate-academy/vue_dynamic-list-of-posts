@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUpdated, watch } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import InputField from './InputField.vue'
 import TextAreaField from './TextAreaField.vue'
 
@@ -25,12 +25,15 @@ onMounted(() => {
   }
 })
 
-onUpdated(() => {
-  if (formName === 'addPost') {
-    title.value = ''
-    body.value = ''
+watch(
+  () => formName,
+  (newName, oldName) => {
+    if (newName === 'addPost' && newName !== oldName) {
+      title.value = ''
+      body.value = ''
+    }
   }
-})
+)
 
 watch(title, () => {
   errors.value.title = ''

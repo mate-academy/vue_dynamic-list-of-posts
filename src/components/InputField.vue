@@ -40,6 +40,7 @@ onMounted(() => {
   }
 })
 </script>
+
 <template>
   <div class="field" data-cy="NameField">
     <label class="label" :htmlFor="name"> {{ inputLabel }} </label>
