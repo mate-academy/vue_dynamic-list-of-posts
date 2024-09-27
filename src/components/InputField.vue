@@ -67,6 +67,6 @@ const input = computed(() => {
       </span>
     </div>
 
-    <p class="help is-danger" data-cy="ErrorMessage">{{ error }}</p>
+    <p v-if="error" class="help is-danger" data-cy="ErrorMessage">{{ error }}</p>
   </div>
 </template>
