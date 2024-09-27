@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { computed } from 'vue'
 
 const { name } = defineProps({
   name: String,
@@ -8,54 +8,58 @@ const { name } = defineProps({
 
 const model = defineModel()
 
-const inputLabel = ref('')
-const inputType = ref('')
-const inputPlaceholder = ref('')
-const inputIcon = ref('')
-
-onMounted(() => {
+const input = computed(() => {
   switch (name) {
     case 'name':
-      inputLabel.value = 'Author Name'
-      inputType.value = 'text'
-      inputPlaceholder.value = 'Name Surname'
-      inputIcon.value = 'fa-user'
-      break
+      return {
+        label: 'Author Name',
+        type: 'text',
+        placeholder: 'Name Surname',
+        icon: 'fa-user'
+      }
+
     case 'email':
-      inputLabel.value = 'Author Email'
-      inputType.value = 'email'
-      inputPlaceholder.value = 'Your Email'
-      inputIcon.value = 'fa-envelope'
-      break
+      return {
+        label: 'Author Email',
+        type: 'email',
+        placeholder: 'Your Email',
+        icon: 'fa-envelope'
+      }
 
     case 'title':
-      inputLabel.value = 'Title'
-      inputType.value = 'text'
-      inputPlaceholder.value = 'Post Title'
-      inputIcon.value = 'fa-user'
-      break
+      return {
+        label: 'Title',
+        type: 'text',
+        placeholder: 'Post Title',
+        icon: 'fa-user'
+      }
 
     default:
-      break
+      return {
+        label: '',
+        type: 'text',
+        placeholder: '',
+        icon: ''
+      }
   }
 })
 </script>
 
 <template>
   <div class="field" data-cy="NameField">
-    <label class="label" :htmlFor="name"> {{ inputLabel }} </label>
+    <label class="label" :htmlFor="name"> {{ input.label }} </label>
     <div class="control has-icons-left has-icons-right">
       <input
-        :type="inputType"
+        :type="input.type"
         :name="name"
         :id="name"
-        :placeholder="inputPlaceholder"
+        :placeholder="input.placeholder"
         class="input"
         :class="{ 'is-danger': error }"
         v-model.trim="model"
       />
       <span class="icon is-small is-left">
-        <i class="fas" :class="inputIcon"></i>
+        <i class="fas" :class="input.icon"></i>
       </span>
 
       <span v-if="error" class="icon is-small is-right has-text-danger" data-cy="ErrorIcon">

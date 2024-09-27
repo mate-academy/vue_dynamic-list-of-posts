@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { computed } from 'vue'
 
 const { name } = defineProps({
   name: String,
@@ -8,30 +8,28 @@ const { name } = defineProps({
 
 const model = defineModel()
 
-const textAreaLabel = ref('')
-const textAreaPlaceholder = ref('')
-
-onMounted(() => {
+const textArea = computed(() => {
   switch (name) {
     case 'comment':
-      textAreaLabel.value = 'Write Comment'
-      textAreaPlaceholder.value = 'Comment'
-      break
+      return { label: 'Write Comment', placeholder: 'Comment' }
+
     case 'body':
-      textAreaLabel.value = 'Write Post Body'
-      textAreaPlaceholder.value = 'Post Body'
+      return { label: 'Write Post Body', placeholder: 'Post Body' }
+
+    default:
+      return { label: '', placeholder: '' }
   }
 })
 </script>
 
 <template>
   <div class="field" data-cy="BodyField">
-    <label class="label" :htmlFor="name"> {{ textAreaLabel }} </label>
+    <label class="label" :htmlFor="name"> {{ textArea.label }} </label>
     <div class="control">
       <textarea
         :id="name"
         :name="name"
-        :placeholder="textAreaPlaceholder"
+        :placeholder="textArea.placeholder"
         class="textarea"
         :class="{ 'is-danger': error }"
         v-model.trim="model"
