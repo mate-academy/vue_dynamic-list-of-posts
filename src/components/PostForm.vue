@@ -25,22 +25,14 @@ onMounted(() => {
   }
 })
 
-watch(
-  () => formName,
-  (newName, oldName) => {
-    if (newName === 'addPost' && newName !== oldName) {
-      title.value = ''
-      body.value = ''
-    }
+watch([title, body, () => formName], ([newTitle, newBody, newFormName], [, , oldFormName]) => {
+  if (newTitle) errors.value.title = ''
+  if (newBody) errors.value.body = ''
+
+  if (newFormName === 'addPost' && newFormName !== oldFormName) {
+    title.value = ''
+    body.value = ''
   }
-)
-
-watch(title, () => {
-  errors.value.title = ''
-})
-
-watch(body, () => {
-  errors.value.body = ''
 })
 
 const handleSubmit = () => {

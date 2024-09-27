@@ -29,16 +29,10 @@ onMounted(() => {
   email.value = formEmail
 })
 
-watch(name, () => {
-  errors.value.name = ''
-})
-
-watch(email, () => {
-  errors.value.email = ''
-})
-
-watch(body, () => {
-  errors.value.body = ''
+watch([name, email, body], ([newName, newEmail, newBody]) => {
+  if (newName) errors.value.name = ''
+  if (newEmail) errors.value.email = ''
+  if (newBody) errors.value.body = ''
 })
 
 const handleCloseForm = () => {
