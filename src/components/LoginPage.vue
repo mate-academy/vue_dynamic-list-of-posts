@@ -8,16 +8,10 @@ const email = ref('')
 const name = ref('')
 
 const isRegister = ref(false)
-const isLoading = ref(false)
-const isError = ref(false)
-
-const startLoading = () => {
-  isError.value = false
-  isLoading.value = true
-}
+const state = ref('success')
 
 const handleLogin = (email) => {
-  startLoading()
+  state.value = 'loading'
 
   getUser(email)
     .then(({ data }) => {
@@ -31,26 +25,23 @@ const handleLogin = (email) => {
         emit('login', data[0])
       }
     })
-    .catch(() => {
-      isError.value = true
+    .then(() => {
+      state.value = 'success'
     })
-    .finally(() => {
-      isLoading.value = false
-      setTimeout(() => {
-        isError.value = false
-      }, 5000)
+    .catch(() => {
+      state.value = 'error'
     })
 }
 
 const handleRegister = () => {
-  startLoading()
+  state.value = 'loading'
 
   registerUser({ email: email.value, name: name.value })
     .then(() => {
       handleLogin(email.value)
     })
     .finally(() => {
-      isLoading.value = false
+      state.value = 'success'
     })
 }
 </script>
@@ -80,7 +71,7 @@ const handleRegister = () => {
           </span>
         </div>
 
-        <p class="help is-danger" :class="{ 'is-hidden': !isError }">
+        <p class="help is-danger" :class="{ 'is-hidden': state !== 'error' }">
           Login failed. Please try again.
         </p>
       </div>
@@ -107,7 +98,11 @@ const handleRegister = () => {
       </div>
 
       <div class="field">
-        <button type="submit" class="button is-primary" :class="{ 'is-loading': isLoading }">
+        <button
+          type="submit"
+          class="button is-primary"
+          :class="{ 'is-loading': state === 'loading' }"
+        >
           {{ isRegister ? 'Register' : 'Login' }}
         </button>
       </div>

@@ -14,25 +14,24 @@ const { postId } = defineProps({
 })
 
 const comments = ref([])
-const isLoading = ref(false)
-const isError = ref(false)
+const state = ref('success')
 const isFormVisible = ref(false)
 
 const formName = ref('')
 const formEmail = ref('')
 
 const loadComments = () => {
-  isError.value = false
-  isLoading.value = true
+  state.value = 'loading'
+
   getPostComments(postId)
     .then(({ data }) => {
       comments.value = data
     })
-    .catch(() => {
-      isError.value = true
+    .then(() => {
+      state.value = 'success'
     })
-    .finally(() => {
-      isLoading.value = false
+    .catch(() => {
+      state.value = 'error'
     })
 }
 
@@ -64,12 +63,12 @@ const handleCloseForm = ({ name, email }) => {
 </script>
 
 <template>
-  <Loader v-if="isLoading" />
-  <div v-else-if="!isLoading && isError" class="notification is-danger">
+  <Loader v-if="state === 'loading'" />
+  <div v-else-if="state === 'error'" class="notification is-danger">
     <p>Failed to load comments.</p>
     <button class="button is-danger is-light" @click="loadComments">Reload</button>
   </div>
-  <template v-else-if="!isLoading && !isError && !isFormVisible">
+  <template v-else-if="state === 'success' && !isFormVisible">
     <Comment
       v-for="comment in comments"
       :key="comment.id"

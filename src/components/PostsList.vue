@@ -16,24 +16,24 @@ const { userId } = defineProps({
 const posts = ref([])
 const selectedPost = ref({})
 const editedPost = ref({})
-const isLoading = ref(false)
-const isError = ref(false)
+const state = ref('success')
 const isSidebarOpen = ref(false)
 const isFormOpen = ref(false)
 const formName = ref('')
 
 onMounted(() => {
-  isError.value = false
-  isLoading.value = true
+  state.value = 'loading'
   getPostsByUserId(userId)
     .then(({ data }) => {
       posts.value = data
     })
-    .catch(() => {
-      isError.value = true
+    .then(() => {
+      state.value = 'success'
+      console.log('success')
     })
-    .finally(() => {
-      isLoading.value = false
+    .catch(() => {
+      state.value = 'error'
+      console.log('error')
     })
 })
 
@@ -120,15 +120,15 @@ const handleCloseForm = () => {
           </button>
         </div>
 
-        <Loader v-if="isLoading" />
+        <Loader v-if="state === 'loading'" />
 
-        <div v-else-if="!isLoading && isError" class="notification is-danger">
+        <div v-else-if="state === 'error'" class="notification is-danger">
           Failed to load posts. Please reload the page.
         </div>
-        <div v-else-if="!isLoading && !isError && !posts.length" class="">No posts yet.</div>
+        <div v-else-if="state === 'success' && !posts.length" class="">No posts yet.</div>
 
         <table
-          v-if="!isLoading && !isError && posts.length"
+          v-if="state === 'success' && posts.length"
           class="table is-fullwidth is-striped is-hoverable is-narrow"
         >
           <thead>
