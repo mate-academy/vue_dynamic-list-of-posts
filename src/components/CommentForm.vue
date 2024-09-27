@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { reactive, ref, onMounted, watch } from 'vue'
 import { addComment } from '@/api/comments'
 import InputField from './InputField.vue'
 import TextAreaField from './TextAreaField.vue'
@@ -23,60 +23,61 @@ const { postId, formName, formEmail } = defineProps({
 
 const emits = defineEmits(['closeForm', 'addComment'])
 
-const name = ref('')
-const email = ref('')
-const body = ref('')
-
-const errors = ref({
+const form = reactive({
   name: '',
   email: '',
-  body: ''
+  body: '',
+  errors: {
+    name: '',
+    email: '',
+    body: ''
+  }
 })
 
 const isLoading = ref(false)
 
 onMounted(() => {
-  name.value = formName
-  email.value = formEmail
+  form.name = formName
+  form.email = formEmail
 })
 
-watch([name, email, body], ([newName, newEmail, newBody]) => {
-  if (newName) errors.value.name = ''
-  if (newEmail) errors.value.email = ''
-  if (newBody) errors.value.body = ''
+watch([() => form.name, () => form.email, () => form.body], ([newName, newEmail, newBody]) => {
+  if (newName) form.errors.name = ''
+  if (newEmail) form.errors.email = ''
+  if (newBody) form.errors.body = ''
 })
 
 const handleCloseForm = () => {
-  emits('closeForm', { name: name.value, email: email.value })
+  emits('closeForm', { name: form.name, email: form.email })
 }
 
 const validateEmail = (email) => {
   return /\S+@\S+\.\S+/.test(email)
 }
 const handleSubmit = () => {
-  errors.value.name = name.value ? '' : 'Name is required'
+  form.errors.name = form.name ? '' : 'Name is required'
 
-  if (!email.value) {
-    errors.value.email = 'Email is required'
+  if (!form.email) {
+    form.errors.email = 'Email is required'
   }
 
-  if (email.value && !validateEmail(email.value)) {
-    errors.value.email = 'Invalid email format'
+  if (form.email && !validateEmail(form.email)) {
+    form.errors.email = 'Invalid email format'
   }
 
-  if (email.value && validateEmail(email.value)) {
-    errors.value.email = ''
+  if (form.email && validateEmail(form.email)) {
+    form.errors.email = ''
   }
 
-  errors.value.body = body.value ? '' : 'Body is required'
+  form.errors.body = form.body ? '' : 'Body is required'
 
-  if (errors.value.name || errors.value.email || errors.value.body) {
+  if (Object.values(form.errors).some((error) => error)) {
     return
   }
 
   isLoading.value = true
 
-  addComment({ postId, name: name.value, email: email.value, body: body.value })
+  addComment({ postId, name: form.name, email: form.email, body: form.body })
     .then(({ data }) => {
       emits('addComment', data)
     })
@@ -92,9 +93,9 @@ const handleSubmit = () => {
 
 <template>
   <form @submit.prevent="handleSubmit" novalidate>
-    <InputField v-model="name" name="name" :error="errors.name" />
-    <InputField v-model="email" name="email" :error="errors.email" />
-    <TextAreaField v-model="body" name="comment" :error="errors.body" />
+    <InputField v-model="form.name" name="name" :error="form.errors.name" />
+    <InputField v-model="form.email" name="email" :error="form.errors.email" />
+    <TextAreaField v-model="form.body" name="comment" :error="form.errors.body" />
     <div class="field is-grouped">
       <div class="control">
         <button type="submit" class="button is-link">Submit</button>
