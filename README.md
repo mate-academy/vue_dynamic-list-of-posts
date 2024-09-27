@@ -47,3 +47,6 @@ form to add new comments.
 1. Implement comment deletion
    - Delete the commnet immediately not waiting for the server response to improve the UX.
 1. (\*) Handle `Add` and `Delete` errors so the user can retry
+
+Ось моє демо
+   [ ДЕМО ] (https://kolomietsn.github.io/vue3-todo-app/)
