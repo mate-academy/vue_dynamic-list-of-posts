@@ -98,7 +98,14 @@ const handleSubmit = () => {
     <TextAreaField v-model="form.body" name="comment" :error="form.errors.body" />
     <div class="field is-grouped">
       <div class="control">
-        <button type="submit" class="button is-link">Submit</button>
+        <button
+          :disabled="isLoading"
+          type="submit"
+          class="button is-link"
+          :class="{ 'is-loading': isLoading }"
+        >
+          Submit
+        </button>
       </div>
       <div class="control">
         <button type="reset" @click="handleCloseForm" class="button is-link is-light">

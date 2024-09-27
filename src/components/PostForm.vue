@@ -23,14 +23,6 @@ const form = reactive({
   }
 })
 
-// const title = ref('')
-// const body = ref('')
-
-// const errors = ref({
-//   title: '',
-//   body: ''
-// })
-
 onMounted(() => {
   if (formName === 'editPost') {
     form.title = editedPost.title
