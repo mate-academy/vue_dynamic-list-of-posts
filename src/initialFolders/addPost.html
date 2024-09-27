@@ -1,0 +1,36 @@
+<div className="content">
+  <h2>title</h2>
+
+  <form>
+    <!-- inputs... -->
+    <div class="field" data-cy="NameField">
+      <label class="label" for="comment-author-name-title">Title</label>
+      <div class="control has-icons-left has-icons-right">
+        <input
+          type="text"
+          name="title"
+          id="comment-author-name-title"
+          placeholder="Post title"
+          class="input"
+          value=""
+        /><span class="icon is-small is-left"><i class="fas fa-user fa-heading"></i></span>
+      </div>
+    </div>
+
+    <div class="field" data-cy="BodyField">
+      <label class="label" for="comment-body">Write Post Body</label>
+      <div class="control">
+        <textarea id="comment-body" name="body" placeholder="Post body" class="textarea"></textarea>
+      </div>
+    </div>
+
+    <div className="field is-grouped">
+      <div className="control">
+        <button type="submit" className="button is-link">Save</button>
+      </div>
+      <div className="control">
+        <button type="reset" className="button is-link is-light">Cancel</button>
+      </div>
+    </div>
+  </form>
+</div>
