@@ -4,7 +4,11 @@ import InputField from './InputField.vue'
 import TextAreaField from './TextAreaField.vue'
 
 const { formName, editedPost } = defineProps({
-  formName: String,
+  formName: {
+    type: String,
+    Required: true,
+    validator: (value) => ['addPost', 'editPost'].includes(value)
+  },
   editedPost: Object
 })
 

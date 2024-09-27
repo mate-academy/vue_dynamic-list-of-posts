@@ -1,6 +1,9 @@
 <script setup>
 const { post, selectedPost } = defineProps({
-  post: Object,
+  post: {
+    type: Object,
+    required: true
+  },
   selectedPost: Object
 })
 

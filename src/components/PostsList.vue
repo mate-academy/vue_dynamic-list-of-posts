@@ -6,7 +6,11 @@ import Loader from './Loader.vue'
 import SideBar from './SideBar.vue'
 
 const { userId } = defineProps({
-  userId: Number
+  userId: {
+    type: Number,
+    required: true,
+    validator: (value) => value > 0
+  }
 })
 
 const posts = ref([])

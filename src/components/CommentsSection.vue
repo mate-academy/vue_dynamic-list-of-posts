@@ -6,7 +6,11 @@ import Comment from './Comment.vue'
 import CommentForm from './CommentForm.vue'
 
 const { postId } = defineProps({
-  postId: Number
+  postId: {
+    type: Number,
+    required: true,
+    validator: (value) => value > 0
+  }
 })
 
 const comments = ref([])

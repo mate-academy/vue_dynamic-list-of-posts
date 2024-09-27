@@ -5,9 +5,20 @@ import InputField from './InputField.vue'
 import TextAreaField from './TextAreaField.vue'
 
 const { postId, formName, formEmail } = defineProps({
-  postId: Number,
-  formName: String,
-  formEmail: String
+  postId: {
+    type: Number,
+    required: true,
+    validator: (value) => value > 0
+  },
+  formName: {
+    type: String,
+    default: '',
+    validator: (value) => value.length <= 30
+  },
+  formEmail: {
+    type: String,
+    default: ''
+  }
 })
 
 const emits = defineEmits(['closeForm', 'addComment'])
@@ -39,9 +50,24 @@ const handleCloseForm = () => {
   emits('closeForm', { name: name.value, email: email.value })
 }
 
+const validateEmail = (email) => {
+  return /\S+@\S+\.\S+/.test(email)
+}
 const handleSubmit = () => {
   errors.value.name = name.value ? '' : 'Name is required'
-  errors.value.email = email.value ? '' : 'Email is required'
+
+  if (!email.value) {
+    errors.value.email = 'Email is required'
+  }
+
+  if (email.value && !validateEmail(email.value)) {
+    errors.value.email = 'Invalid email format'
+  }
+
+  if (email.value && validateEmail(email.value)) {
+    errors.value.email = ''
+  }
+
   errors.value.body = body.value ? '' : 'Body is required'
 
   if (errors.value.name || errors.value.email || errors.value.body) {
@@ -65,7 +91,7 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <form @submit.prevent="handleSubmit">
+  <form @submit.prevent="handleSubmit" novalidate>
     <InputField v-model="name" name="name" :error="errors.name" />
     <InputField v-model="email" name="email" :error="errors.email" />
     <TextAreaField v-model="body" name="comment" :error="errors.body" />

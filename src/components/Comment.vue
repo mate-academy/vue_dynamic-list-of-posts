@@ -1,6 +1,9 @@
 <script setup>
 const { comment } = defineProps({
-  comment: Object
+  comment: {
+    type: Object,
+    required: true
+  }
 })
 
 const emits = defineEmits(['deleteComment'])
