@@ -1,0 +1,16 @@
+:root {
+    --bulma-primary-h: 127deg;
+    --bulma-primary-s: 82%;
+    --bulma-primary-l: 65%;
+  }
+  
+  .input {
+    --bulma-input-h: 205;
+    --bulma-input-focus-h: 66deg;
+  }
+  
+  .file {
+    --bulma-file-h: 127;
+  }
+  
+  

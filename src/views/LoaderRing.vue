@@ -1,3 +1,17 @@
+<script setup lang="ts"></script>
+
+<template>
+  <div className="is-flex is-justify-content-center is-align-items-center mt-2">
+    <div className="lds-ring">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+</div>  
+</template>
+
+<style lang="css">
 .lds-ring {
   display: inline-block;
   position: relative;
@@ -33,3 +47,4 @@
     transform: rotate(360deg);
   }
 }
+</style>
