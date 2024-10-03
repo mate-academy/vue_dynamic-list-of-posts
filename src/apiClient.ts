@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Post } from "./types/post";
 import { User } from "./types/user";
+import { Comment } from "./types/comment";
 
 const apiClientPosts = axios.create({
   baseURL: "https://mate.academy/students-api",
@@ -62,6 +63,23 @@ export const createUser = async ({ username, email }: User) => {
 
 export const getPostComments = async (postId: number) => {
   const res = await apiClientPosts.get(`/comments?postId=${postId}`);
+
+  return res.data;
+};
+
+export const createComment = async ({ postId, name, body, email }: Comment): Promise<Comment> => {
+  const res = await apiClientPosts.post(`/comments`, {
+    postId,
+    name,
+    email,
+    body,
+  });
+
+  return res.data;
+};
+
+export const deleteComment = async (commentId: number) => {
+  const res = await apiClientPosts.delete(`/comments/${commentId}`);
 
   return res.data;
 };

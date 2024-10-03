@@ -7,7 +7,7 @@ const props = defineProps<{
   user: User;
   closePostEditing: () => void;
   chosenPost?: Post;
-  submitPostChange: ({ id, userId, title, body }: Post) => Promise<void>
+  submitPostChange: ({ id, userId, title, body }: Post) => Promise<void>;
 }>();
 
 const title = ref<string>("");
@@ -40,12 +40,12 @@ watch(
 
   <form @submit.prevent="submitPostChange({ id, userId, title, body })">
     <div class="field" data-cy="NameField">
-      <label class="label" for="comment-author-name-title">Title</label>
+      <label class="label" for="post-author-name-title">Title</label>
       <div class="control has-icons-left has-icons-right">
         <input
           type="text"
           name="title"
-          id="comment-author-name-title"
+          id="post-author-name-title"
           placeholder="Post title"
           class="input"
           v-model="title"
@@ -54,9 +54,9 @@ watch(
     </div>
 
     <div class="field" data-cy="BodyField">
-      <label class="label" for="comment-body">Write Post Body</label>
+      <label class="label" for="post-body">Write Post Body</label>
       <div class="control">
-        <textarea id="comment-body" name="body" placeholder="Post body" class="textarea" v-model="body"></textarea>
+        <textarea id="post-body" name="body" placeholder="Post body" class="textarea" v-model="body"></textarea>
       </div>
     </div>
 

@@ -23,6 +23,10 @@ defineProps<{
   sidebarStatus: SidebarStatus;
   editPost: () => void;
   submitPostChange: ({ id, userId, title, body }: Post) => Promise<void>;
+  isCommentsEditing: boolean;
+  changeCommentAddingState: () => void;
+  addNewComment: ({ postId, name, body, email }: Comment) => Promise<void>;
+  deletePostComment: (commentId: number) => Promise<void>;
 }>();
 </script>
 
@@ -49,6 +53,10 @@ defineProps<{
           :post-comments="postComments"
           :delete-chosen-post="deleteChosenPost"
           :sidebar-status="sidebarStatus"
+          :is-comments-editing="isCommentsEditing"
+          :changeCommentAddingState="changeCommentAddingState"
+          :add-new-comment="addNewComment"
+          :deletePostComment="deletePostComment"
         />
       </div>
     </div>

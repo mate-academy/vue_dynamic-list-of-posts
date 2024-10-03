@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
-import { createNewPost, deletePost, getPostComments, getPosts, getUser, patchPost } from "./apiClient";
+import {
+  createComment,
+  createNewPost,
+  deleteComment,
+  deletePost,
+  getPostComments,
+  getPosts,
+  getUser,
+  patchPost,
+} from "./apiClient";
 import { Post } from "./types/post";
 import { User } from "./types/user";
 import PostsPage from "./components/PostsPage/PostsPage.vue";
@@ -16,6 +25,7 @@ const chosenPost = ref<Post | null>(null);
 const postList = ref<Post[]>([]);
 const userName = ref<User | null>(user.value || null);
 const commentsLoading = ref<boolean>(false);
+const isCommentsEditing = ref<boolean>(false);
 const sidebarStatus = ref<SidebarStatus>(null);
 
 const fetchUserData = async (id: number) => {
@@ -82,6 +92,7 @@ const changeChosenPost = async (postId: number) => {
   const findedPost = postList.value.find((el) => el.id === postId)!;
 
   chosenPost.value = findedPost;
+  isCommentsEditing.value = false;
   postComments.value = null;
   commentsLoading.value = true;
 
@@ -149,6 +160,31 @@ const submitPostChange = async ({ id, userId, title, body }: Post) => {
     console.error("Failed to add new post");
   }
 };
+
+const changeCommentAddingState = () => {
+  isCommentsEditing.value = !isCommentsEditing.value;
+};
+
+const addNewComment = async ({ postId, name, body, email }: Comment) => {
+  try {
+    const newComment = await createComment({ postId, name, body, email });
+
+    postComments.value = [...postComments.value!, newComment];
+    isCommentsEditing.value = false;
+  } catch {
+    console.error("failed to added comment");
+  }
+};
+
+const deletePostComment = async (commentId: number) => {
+  try {
+    await deleteComment(commentId);
+
+    postComments.value = postComments.value!.filter((el) => el.id !== commentId);
+  } catch {
+    console.error("Failing to delete comment");
+  }
+};
 </script>
 
 <template>
@@ -172,6 +208,10 @@ const submitPostChange = async ({ id, userId, title, body }: Post) => {
       :close-post-editing="closePostEditing"
       :edit-post="editPost"
       :submitPostChange="submitPostChange"
+      :is-comments-editing="isCommentsEditing"
+      :change-comment-adding-state="changeCommentAddingState"
+      :add-new-comment="addNewComment"
+      :deletePostComment="deletePostComment"
     />
   </template>
 </template>

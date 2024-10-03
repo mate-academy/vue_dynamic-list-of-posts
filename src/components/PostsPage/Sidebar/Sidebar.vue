@@ -18,6 +18,10 @@ defineProps<{
   closePostEditing: () => void;
   sidebarStatus: SidebarStatus;
   editPost: () => void;
+  isCommentsEditing: boolean;
+  changeCommentAddingState: () => void;
+  addNewComment: ({ postId, name, body, email }: Comment) => Promise<void>;
+  deletePostComment: (commentId: number) => Promise<void>;
 }>();
 </script>
 
@@ -28,7 +32,15 @@ defineProps<{
         <template v-if="sidebarStatus === 'Post'">
           <SidebarPost :chosen-post="chosenPost" :delete-chosen-post="deleteChosenPost" :edit-post="editPost" />
           <Loading v-if="commentsLoading" />
-          <SidebarComments v-else :post-comments="postComments" />
+          <SidebarComments
+            v-else
+            :add-new-comment="addNewComment"
+            :chosen-post="chosenPost!"
+            :post-comments="postComments"
+            :is-comments-editing="isCommentsEditing"
+            :changeCommentAddingState="changeCommentAddingState"
+            :deletePostComment="deletePostComment"
+          />
         </template>
         <template v-else-if="sidebarStatus === 'Post Adding'">
           <PostEditing :user="user" :submit-post-change="submitPostChange" :close-post-editing="closePostEditing">
