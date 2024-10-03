@@ -1,7 +1,7 @@
 <script setup lang="tsx"></script>
 
 <template>
-  <div className="lds-ring">
+  <div class="lds-ring">
     <div></div>
     <div></div>
     <div></div>

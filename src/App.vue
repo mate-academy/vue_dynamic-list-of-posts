@@ -1,15 +1,22 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
-import { getPosts, getUser } from "./apiClient";
+import { createNewPost, deletePost, getPostComments, getPosts, getUser, patchPost } from "./apiClient";
 import { Post } from "./types/post";
 import { User } from "./types/user";
 import PostsPage from "./components/PostsPage/PostsPage.vue";
 import LoginPage from "./components/LoginPage/LoginPage.vue";
+import { Comment } from "./types/comment";
+import { SidebarStatus } from "./types/sidebar";
 
 const userIdData = localStorage.getItem("userId");
-const postList = ref<Post[]>([]);
-const userId = ref<number | null>(userIdData ? JSON.parse(userIdData) : null);
 const user = ref<User | null>(null)!;
+const userId = ref<number | null>(userIdData ? JSON.parse(userIdData) : null);
+const postComments = ref<Comment[] | null>(null);
+const chosenPost = ref<Post | null>(null);
+const postList = ref<Post[]>([]);
+const userName = ref<User | null>(user.value || null);
+const commentsLoading = ref<boolean>(false);
+const sidebarStatus = ref<SidebarStatus>(null);
 
 const fetchUserData = async (id: number) => {
   try {
@@ -57,7 +64,91 @@ const setNewUser = (newUser: User) => {
   user.value = newUser;
 };
 
-console.log(postList);
+const deleteChosenPost = async (postId: number) => {
+  try {
+    await deletePost(postId);
+
+    postList.value = postList.value.filter((el) => el.id !== postId);
+    chosenPost.value = null;
+  } catch {
+    console.error("Cannot get comments from post");
+  } finally {
+    sidebarStatus.value = null;
+  }
+};
+
+const changeChosenPost = async (postId: number) => {
+  sidebarStatus.value = "Post";
+  const findedPost = postList.value.find((el) => el.id === postId)!;
+
+  chosenPost.value = findedPost;
+  postComments.value = null;
+  commentsLoading.value = true;
+
+  try {
+    const comments = await getPostComments(postId);
+
+    postComments.value = comments;
+  } catch {
+    console.error("Cannot get comments from post");
+  } finally {
+    commentsLoading.value = false;
+  }
+};
+
+const closeCurrentPost = () => {
+  chosenPost.value = null;
+  sidebarStatus.value = null;
+};
+
+const closePostEditing = () => {
+  if (sidebarStatus.value === "Post Editing") {
+    return (sidebarStatus.value = "Post");
+  }
+
+  sidebarStatus.value = null;
+};
+
+const openCreateNewPost = () => {
+  chosenPost.value = null;
+  sidebarStatus.value = "Post Adding";
+  postComments.value = null;
+};
+
+const editPost = () => {
+  sidebarStatus.value = "Post Editing";
+};
+
+const submitPostChange = async ({ id, userId, title, body }: Post) => {
+  if (sidebarStatus.value === "Post Editing") {
+    try {
+      const updatedPost = await patchPost({ id, title, body });
+
+      postList.value = postList.value.map((el) => {
+        if (el.id === id) {
+          return { ...el, title, body };
+        }
+
+        return el;
+      });
+      changeChosenPost(updatedPost?.id!);
+    } catch {
+      console.error("Failed to update post");
+    } finally {
+      sidebarStatus.value = "Post";
+      return;
+    }
+  }
+
+  try {
+    const addedPost = await createNewPost({ userId, title, body });
+
+    postList.value = [...postList.value, addedPost];
+    changeChosenPost(addedPost?.id!);
+  } catch {
+    console.error("Failed to add new post");
+  }
+};
 </script>
 
 <template>
@@ -65,7 +156,23 @@ console.log(postList);
     <LoginPage :handle-submit-user-id="handleSubmitUserId" :set-new-user="setNewUser" />
   </template>
   <template v-else>
-    <PostsPage :user="user!" :post-list="postList" :handle-click-logout="handleClickLogout" />
+    <PostsPage
+      :chosen-post="chosenPost"
+      :user="user!"
+      :post-list="postList"
+      :handle-click-logout="handleClickLogout"
+      :delete-chosen-post="deleteChosenPost"
+      :change-chosen-post="changeChosenPost"
+      :close-current-post="closeCurrentPost"
+      :userName="userName"
+      :post-comments="postComments"
+      :comments-loading="commentsLoading"
+      :open-create-new-post="openCreateNewPost"
+      :sidebar-status="sidebarStatus"
+      :close-post-editing="closePostEditing"
+      :edit-post="editPost"
+      :submitPostChange="submitPostChange"
+    />
   </template>
 </template>
 

@@ -58,17 +58,17 @@ const updateUsername = (newUsername: string) => {
 </script>
 
 <template>
-  <section className="container is-flex is-justify-content-center">
-    <form @submit.prevent="onSubmitLogin" className="box mt-5">
-      <h1 className="title is-3">You need to register</h1>
+  <section class="container is-flex is-justify-content-center">
+    <form @submit.prevent="onSubmitLogin" class="box mt-5">
+      <h1 class="title is-3">You need to register</h1>
 
       <Email :email="email" @onChange="updateEmail" :disable="isUserExist" />
       <template v-if="!isUserExist">
         <Username :username="username" @onChange="updateUsername" />
       </template>
 
-      <div className="field">
-        <button type="submit" className="button is-primary">Login</button>
+      <div class="field">
+        <button type="submit" class="button is-primary">Login</button>
       </div>
     </form>
   </section>

@@ -1,24 +1,36 @@
 <script setup lang="ts">
+import { ref, watch } from "vue";
 import { User } from "../../types/user";
 
-defineProps<{
-  user?: User;
+const props = defineProps<{
+  user: User;
   handleClickLogout: () => void;
 }>();
+
+const localUser = ref<User>(props.user);
+
+watch(
+  () => props.user,
+  (newUser) => {
+    localUser.value = newUser!;
+  }
+);
+
+console.log(localUser.value);
 </script>
 
 <template>
-  <nav className="navbar" role="navigation" aria-label="main navigation">
-    <div className="navbar-item">
-      <h2 className="is-size-4">Vue List Of Posts</h2>
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-item">
+      <h2 class="is-size-4 title">Vue List Of Posts</h2>
     </div>
-    <div className="navbar-end">
-      <div className="navbar-item">
-        <div className="buttons">
-          <div className="mr-5 mb-2">
-            <p>User: {{ user?.name }}</p>
+    <div class="navbar-end">
+      <div class="navbar-item">
+        <div class="buttons">
+          <div class="mr-5 mb-2">
+            <p>User: {{ localUser?.name }}</p>
           </div>
-          <a className="button is-light" @click="handleClickLogout"> Logout </a>
+          <a class="button is-light" @click="handleClickLogout"> Logout </a>
         </div>
       </div>
     </div>

@@ -33,6 +33,45 @@ const onEmailChange = () => {
         :disabled="!disable"
         required
       />
+      <span class="icon is-small is-left">
+        <i class="fas fa-envelope" />
+      </span>
     </div>
   </div>
 </template>
+
+<style>
+.fa-envelope::before {
+  content: "📩";
+}
+*,
+::before,
+::after {
+  box-sizing: inherit;
+}
+.fas,
+.fa-solid {
+  font-weight: 900;
+}
+.fas,
+.fa-classic,
+.fa-solid,
+.far,
+.fa-regular {
+  font-family: "Font Awesome 6 Free";
+}
+.fa,
+.fa-classic,
+.fa-sharp,
+.fas,
+.fa-solid,
+.far,
+.fa-regular,
+.fab,
+.fa-brands {
+  font-style: normal;
+  font-variant: normal;
+  line-height: 1;
+  text-rendering: auto;
+}
+</style>

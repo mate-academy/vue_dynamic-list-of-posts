@@ -12,12 +12,27 @@ export const getPosts = async (user: number) => {
   return res.data;
 };
 
-export const createNewPost = async ({ userId, title, body }: Post) => {
+export const createNewPost = async ({ userId, title, body }: Post): Promise<Post> => {
   const res = await apiClientPosts.post(`/posts`, {
     userId,
     title,
     body,
   });
+
+  return res.data;
+};
+
+export const patchPost = async ({ id, title, body }: Post): Promise<Post> => {
+  const res = await apiClientPosts.patch(`/posts/${id}`, {
+    title,
+    body,
+  });
+
+  return res.data;
+};
+
+export const deletePost = async (postId: number) => {
+  const res = await apiClientPosts.delete(`/posts/${postId}`);
 
   return res.data;
 };
@@ -41,6 +56,12 @@ export const createUser = async ({ username, email }: User) => {
     email,
     phone: "1234567890",
   });
+
+  return res.data;
+};
+
+export const getPostComments = async (postId: number) => {
+  const res = await apiClientPosts.get(`/comments?postId=${postId}`);
 
   return res.data;
 };
