@@ -17,8 +17,9 @@ import LoginPage from "./components/LoginPage/LoginPage.vue";
 import { Comment } from "./types/comment";
 import { SidebarStatus } from "./types/sidebar";
 
-const userIdData = localStorage.getItem("userId");
 const user = ref<User | null>(null)!;
+
+const userIdData = localStorage.getItem("userId");
 const userId = ref<number | null>(userIdData ? JSON.parse(userIdData) : null);
 const postComments = ref<Comment[] | null>(null);
 const chosenPost = ref<Post | null>(null);
@@ -27,6 +28,15 @@ const userName = ref<User | null>(user.value || null);
 const commentsLoading = ref<boolean>(false);
 const isCommentsEditing = ref<boolean>(false);
 const sidebarStatus = ref<SidebarStatus>(null);
+
+const handleSubmitUserId = (newUserId: number) => {
+  userId.value = newUserId;
+};
+
+const setNewUser = (newUser: User) => {
+  user.value = newUser;
+};
+
 
 const fetchUserData = async (id: number) => {
   try {
@@ -64,14 +74,6 @@ onMounted(async () => {
 
 const handleClickLogout = () => {
   userId.value = null;
-};
-
-const handleSubmitUserId = (newUserId: number) => {
-  userId.value = newUserId;
-};
-
-const setNewUser = (newUser: User) => {
-  user.value = newUser;
 };
 
 const deleteChosenPost = async (postId: number) => {
