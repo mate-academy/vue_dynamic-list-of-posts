@@ -1,3 +1,19 @@
+<script>
+export default {
+  name: "Loader",
+};
+</script>
+
+<template>
+  <div class="lds-ring">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+</template>
+
+<style>
 .lds-ring {
   display: inline-block;
   position: relative;
@@ -33,3 +49,4 @@
     transform: rotate(360deg);
   }
 }
+</style>
