@@ -60,7 +60,7 @@ export default defineComponent({
     }
   },
   mounted() {
-    this.user = JSON.parse(localStorage.getItem('user') || '') || null;
+    this.user = JSON.parse(localStorage.getItem('user') || 'null');
   },
   watch: {
     chosenPost(newChosenPost: Post | null) {
@@ -116,7 +116,7 @@ export default defineComponent({
             v-model:chosen-post="chosenPost"
             v-model:posts="posts"
             @change-is-updating="isUpdating = false"
-            :user="user"
+            v-bind="user"
           />
 
           <SidebarEl :class="{'Sidebar--open': isAdding || chosenPost || isUpdating}">

@@ -2,9 +2,7 @@
 import type { Post } from '../../types/Post';
 import { defineComponent, type PropType } from 'vue';
 import PostLoader from '../loader/PostLoader.vue';
-import { getPostsById } from '../../api/api';
-import type { User } from '../../types/User';
-
+import { getPostsByUserId } from '../../api/api';
 
 export default defineComponent({
   components: {
@@ -14,7 +12,10 @@ export default defineComponent({
     isAdding: Boolean,
     posts: Array as PropType<Post[] | null>,
     chosenPost: Object as PropType<Post | null>,
-    user: Object as PropType<User | null>
+    id: {
+      type: Number,
+      required: true,
+    },
   },
   data() {
     return {
@@ -24,11 +25,11 @@ export default defineComponent({
   },
   emits: ['update:isAdding', 'update:chosenPost', 'update:posts', 'change-is-updating'],
   mounted() {
-    if (this.user?.id) {
+    if (this.id) {
         this.isLoading = true;
         this.isPostError = '';
 
-        getPostsById(this.user?.id)
+        getPostsByUserId(this.id)
           .then(({ data }) => {
             this.$emit('update:posts', data);
           })
@@ -59,16 +60,16 @@ export default defineComponent({
       <div class="block">
         <div class="block is-flex is-justify-content-space-between">
           <h2 class="title">Posts</h2>
-          <button 
-            type="button" 
+          <button
+            type="button"
             class="button is-link"
             :class="{ 'is-light': isAdding }"
             @click="closeUpdateOpenAdd">Add New Post</button>
         </div>
 
-        <table 
+        <table
           class="table is-fullwidth is-striped is-hoverable is-narrow"
-          v-if="posts && posts.length > 0 && !isLoading && !isPostError" 
+          v-if="posts && posts.length > 0 && !isLoading && !isPostError"
         >
           <thead>
             <tr class="has-background-link-light">
@@ -82,7 +83,7 @@ export default defineComponent({
               <td>{{ post.id }}</td>
               <td>{{ post.title }}</td>
               <td class="has-text-right is-vcentered">
-                <button 
+                <button
                   type="button"
                   class="button is-link"
                   :class="{ 'is-light': chosenPost?.id !== post.id }"
@@ -93,16 +94,16 @@ export default defineComponent({
               </td>
             </tr>
           </tbody>
-        </table> 
+        </table>
 
-        <PostLoader v-if="isLoading && !isPostError" />
+        <PostLoader v-else-if="isLoading && !isPostError" />
 
-        <h3 class="mt-2 has-text-centered" v-show="posts?.length === 0 && !isLoading && !isPostError">
+        <h3 class="mt-2 has-text-centered" v-else-if="(!posts || posts?.length === 0) && !isLoading && !isPostError">
           No posts yet.
         </h3>
 
-        <p 
-          v-show="isPostError" 
+        <p
+          v-show="isPostError"
           class="help is-danger is-size-4 has-text-centered"
         >
           {{ isPostError }}

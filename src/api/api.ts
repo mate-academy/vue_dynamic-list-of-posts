@@ -1,11 +1,13 @@
-import axios from 'axios';
+import axios, { type AxiosResponse } from 'axios';
 
 export const client = axios.create({
   baseURL: 'https://mate.academy/students-api',
 })
 
+type AxiosProm = Promise<AxiosResponse>;
+
 //#region User
-export const getUserByEmail = (email: string) => {
+export const getUserByEmail: (email: string) => AxiosProm = (email) => {
   return client.get('/users', {
     params: {
       email,
@@ -13,7 +15,10 @@ export const getUserByEmail = (email: string) => {
   })
 }
 
-export const createUser = (email: string, name: string) => {
+export const createUser: (
+  email: string,
+  name: string,
+) => AxiosProm = (email, name) => {
   return client.post('/users', {
     email,
     name,
@@ -22,7 +27,7 @@ export const createUser = (email: string, name: string) => {
 //#endregion
 
 //#region Posts
-export const getPostsById = (userId: number) => {
+export const getPostsByUserId: (userId: number) => AxiosProm = (userId) => {
   return client.get('/posts', {
     params: {
       userId,
@@ -30,7 +35,11 @@ export const getPostsById = (userId: number) => {
   })
 }
 
-export const createPost = (title: string, body: string, userId: number) => {
+export const createPost: (
+  title: string,
+  body: string,
+  userId: number,
+) => AxiosProm = (title, body, userId) => {
   return client.post('/posts', {
     title,
     body,
@@ -38,7 +47,12 @@ export const createPost = (title: string, body: string, userId: number) => {
   })
 }
 
-export const updatePost = (title: string, body: string, postId: number, userId: number) => {
+export const updatePost: (
+  title: string,
+  body: string,
+  postId: number,
+  userId: number,
+) => AxiosProm = (title, body, postId, userId) => {
   return client.patch(`/posts/${postId}`, {
     title,
     body,
@@ -46,13 +60,13 @@ export const updatePost = (title: string, body: string, postId: number, userId: 
   })
 }
 
-export const deletePost = (postId: number) => {
+export const deletePost: (postId: number) => AxiosProm = (postId) => {
   return client.delete(`/posts/${postId}`)
 }
 //#endregion
 
 //#region Comments
-export const getCommentsByPostId = (postId: number) => {
+export const getCommentsByPostId: (postId: number) => AxiosProm = (postId) => {
   return client.get('/comments', {
     params: {
       postId,
@@ -60,7 +74,12 @@ export const getCommentsByPostId = (postId: number) => {
   })
 }
 
-export const createComment = (postId: number, name: string, body: string, email: string) => {
+export const createComment: (
+  postId: number,
+  name: string,
+  body: string,
+  email: string,
+) => AxiosProm = (postId, name, body, email) => {
   return client.post('/comments', {
     postId,
     name,
@@ -69,7 +88,7 @@ export const createComment = (postId: number, name: string, body: string, email:
   })
 }
 
-export const deleteComment = (commentId: number) => {
+export const deleteComment: (commentId: number) => AxiosProm = (commentId) => {
   return client.delete(`/comments/${commentId}`)
 }
 //#endregion
