@@ -1,3 +1,23 @@
+<script setup>
+import AddPost from './AddPost.vue';
+
+</script>
+
+<template>
+  <div class="tile is-parent is-8-desktop Sidebar ">
+    <div class="tile is-child box is-success ">
+
+      <div class="content">
+        <AddPost />
+      </div>
+
+    </div>
+  </div>
+
+
+</template>
+
+<style>
 .Sidebar {
   overflow: hidden;
   opacity: 0;
@@ -17,3 +37,4 @@
     max-width: 50%;
   }
 }
+</style>
