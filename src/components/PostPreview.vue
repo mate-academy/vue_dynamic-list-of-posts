@@ -17,7 +17,7 @@ defineProps({
         </span>
       </div>
     </div>
-    <p data-cy="PostBody">post body</p>
+    <p>{{post.body}}</p>
   </div>
 
 </template>

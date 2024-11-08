@@ -5,39 +5,55 @@ import PostLoader from './components/PostLoader.vue';
 import Message from './components/Message.vue';
 import PostList from './components/PostList.vue';
 import Sidebar from './components/Sidebar.vue';
+import AddPost from './components/AddPost.vue';
+import PostPreview from './components/PostPreview.vue';
 
 
-const loading = ref(false)
-const posts = ref([])
-const error = ref(null)
-const sidebar = ref(false)
+const loading = ref(false);
+const posts = ref([]);
+const error = ref(null);
+const sidebar = ref(false);
+const currentPost = ref(null);
 
 onMounted(async () => {
-  error.value = posts.value = null
-  loading.value = true
+  error.value = posts.value = null;
+  loading.value = true;
 
   try {
-    posts.value = await getPosts() || []
-    console.log('posts', posts.value)
+    posts.value = await getPosts() || [];
   } catch (err) {
-    console.log("error here")
-
-    error.value = 'Unable to load posts'
+    error.value = 'Unable to load posts';
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 });
 
-const showSidebar = () => {
+const handleAddNewPost = () => {
   sidebar.value = true;
+  currentPost.value = null;
+};
+
+const closeSidebar = () => {
+  sidebar.value = false;
+  currentPost.value = null;
 }
 
-const updatePosts = async (postData) => {
+const togglePost = (post) => {
+  if (post.id === currentPost.value?.id) { 
+    closeSidebar();
+    return;
+  }
+  sidebar.value = true;
+  currentPost.value = post;
+};
+
+const addPost = async (postData) => {
   try {
     const newPostData = await addPostToServer(postData);
     posts.value.push(newPostData);
+    currentPost.value = newPostData;
   } catch (err) {
-    error.value = 'Unable to add post'
+    error.value = 'Unable to add post';
   }
 
 }
@@ -52,7 +68,7 @@ const updatePosts = async (postData) => {
             <div class="block">
               <div class="block is-flex is-justify-content-space-between">
                 <p class="title">Posts</p>
-                <button type="button" class="button is-link" @click="showSidebar()">Add New Post</button>
+                <button type="button" class="button is-link" @click="handleAddNewPost()">Add New Post</button>
               </div>
 
               <PostLoader v-if="loading" />
@@ -61,14 +77,17 @@ const updatePosts = async (postData) => {
                 <p>{{ error }}</p>
               </Message>
 
-              <PostList v-else :posts="posts" />
+              <PostList v-else :posts="posts" @toggle-post="togglePost($event)" :open-post-id="currentPost?.id"/>
 
 
             </div>
           </div>
         </div>
         <Transition name="sidebar">
-          <Sidebar v-if="sidebar" @update="updatePosts($event)" @close-sidebar="sidebar = false" />
+          <Sidebar v-if="sidebar" >
+            <AddPost v-if="!currentPost" @update="addPost($event)"  @close-sidebar="sidebar = false" />
+            <PostPreview v-else :post="currentPost" />
+          </Sidebar>
         </Transition>
       </div>
     </div>
