@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getPosts } from './API/posts';
+import { addPostToServer, getPosts } from './API/posts';
 import PostLoader from './components/PostLoader.vue';
 import Message from './components/Message.vue';
 import PostList from './components/PostList.vue';
@@ -8,7 +8,7 @@ import Sidebar from './components/Sidebar.vue';
 
 
 const loading = ref(false)
-const posts = ref(null)
+const posts = ref([])
 const error = ref(null)
 const sidebar = ref(false)
 
@@ -17,7 +17,8 @@ onMounted(async () => {
   loading.value = true
 
   try {
-    posts.value = await getPosts()
+    posts.value = await getPosts() || []
+    console.log('posts', posts.value)
   } catch (err) {
     console.log("error here")
 
@@ -27,10 +28,19 @@ onMounted(async () => {
   }
 });
 
-const showSidebar = () => { 
+const showSidebar = () => {
   sidebar.value = true;
 }
 
+const updatePosts = async (postData) => {
+  try {
+    const newPostData = await addPostToServer(postData);
+    posts.value.push(newPostData);
+  } catch (err) {
+    error.value = 'Unable to add post'
+  }
+
+}
 </script>
 
 <template>
@@ -57,10 +67,55 @@ const showSidebar = () => {
             </div>
           </div>
         </div>
-        <Sidebar :class="{'Sidebar--open': sidebar}" />
+        <Transition name="sidebar">
+          <Sidebar v-if="sidebar" @update="updatePosts($event)" @close-sidebar="sidebar = false" />
+        </Transition>
       </div>
     </div>
   </main>
 </template>
 
-<style scoped></style>
+<style scoped>
+.sidebar-enter-active {
+  animation: sidebar-in-small 0.5s;
+}
+
+.sidebar-leave-active {
+  animation: sidebar-in-small 0.5s reverse;
+}
+
+@keyframes sidebar-in-small {
+
+  0% {
+    max-height: 0;
+    opacity: 0;
+  }
+
+  100% {
+    max-height: 50%;
+    opacity: 1;
+  }
+}
+
+@media (min-width: 769px) {
+  .sidebar-enter-active {
+    animation: sidebar-in-large 0.5s;
+  }
+
+  .sidebar-leave-active {
+    animation: sidebar-in-large 0.5s reverse;
+  }
+
+  @keyframes sidebar-in-large {
+    0% {
+      max-width: 0;
+      opacity: 0;
+    }
+
+    100% {
+      max-width: 50%;
+      opacity: 1;
+    }
+  }
+}
+</style>

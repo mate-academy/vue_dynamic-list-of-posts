@@ -8,7 +8,8 @@ export const getPosts = async() => {
   return response.data;
 };
 
-export const addPost = async (postData) => {
+export const addPostToServer = async (postData) => {
+  console.log('post data in fetch', postData);
   const response = await client.post('/posts', {
     userId,
     ...postData,

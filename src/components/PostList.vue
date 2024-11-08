@@ -1,11 +1,13 @@
 <script setup>
 import Message from './Message.vue';
-const props = defineProps(['posts']);
+defineProps({
+  posts: Array,
+});
 </script>
 
 <template>
-  <Message v-if="posts?.length === 0">         
-    <p>No posts yet</p>         
+  <Message v-if="posts.length === 0">
+    <p>No posts yet</p>
   </Message>
   <template v-else>
   <table class="table is-fullwidth is-striped is-hoverable is-narrow">

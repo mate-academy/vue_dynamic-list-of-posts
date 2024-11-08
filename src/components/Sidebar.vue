@@ -1,40 +1,33 @@
 <script setup>
-import AddPost from './AddPost.vue';
 
+import AddPost from './AddPost.vue';
+const emit = defineEmits(['update', 'closeSidebar']);
+
+const update = (postData) => {
+  console.log('postData middleware', postData);
+  emit('update', postData);
+}
+
+const closeSidebar = () => {
+  emit('closeSidebar');
+}
 </script>
 
 <template>
-  <div class="tile is-parent is-8-desktop Sidebar ">
-    <div class="tile is-child box is-success ">
 
-      <div class="content">
-        <AddPost />
+    <div class="tile is-parent is-8-desktop Sidebar Sidebar--open">
+      <div class="tile is-child box is-success ">
+
+        <div class="content">
+          <AddPost @update="update($event)" @close-sidebar="closeSidebar" />
+        </div>
+
       </div>
-
     </div>
-  </div>
 
-
+ 
 </template>
 
-<style>
-.Sidebar {
-  overflow: hidden;
-  opacity: 0;
-  transition-property: max-width, opacity;
-  transition-duration: 0.5s;
-  transition-timing-function: ease-in-out;
+<style scoped>
 
-  @media (min-width: 769px) {
-    max-width: 0;
-  }
-}
-
-.Sidebar--open {
-  opacity: 1;
-
-  @media (min-width: 769px) {
-    max-width: 50%;
-  }
-}
 </style>
