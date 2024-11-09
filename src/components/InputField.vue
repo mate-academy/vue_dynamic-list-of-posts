@@ -1,11 +1,18 @@
 <script setup>
+const emit = defineEmits(['update:modelValue']);
+
 defineProps({
   label: String,
   error: String,
   name: String,
   modelValue: String,
-
 });
+
+const handleInput = (event) => {
+  if (event.target.value === '') {
+    emit('update:modelValue');
+  }
+};
 </script>
 
 <template>
@@ -16,7 +23,7 @@ defineProps({
 
     <div class="control has-icons-left has-icons-right">
       <input type="text" :name="name" :id="name" placeholder="" class="input" :class="{ 'is-danger': error }"
-        :value="modelValue" />
+        :value="modelValue" @input="handleInput" />
 
       <span class="icon is-small is-left">
         <i class="fas fa-user"></i>

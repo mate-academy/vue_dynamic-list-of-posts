@@ -8,7 +8,6 @@ import Sidebar from './components/Sidebar.vue';
 import PostForm from './components/PostForm.vue';
 import PostPreview from './components/PostPreview.vue';
 
-
 const loading = ref(false);
 const posts = ref([]);
 const error = ref(null);
@@ -29,12 +28,6 @@ onMounted(async () => {
   }
 });
 
-watch(currentPost, () => {
-  console.log('change currentPost', currentPost.value)
-})
-watch(sidebar, () => {
-  console.log('change sidebar', sidebar.value)
-})
 const handleAddNewPost = () => {
   sidebar.value = true;
   currentPost.value = null;
@@ -66,6 +59,10 @@ const addPost = async (postData) => {
 }
 
 const editPost = async (postData) => {
+  if (currentPost.title === postData.title && currentPost.body === postData.body) { 
+    return;
+  }
+  
   try {
     const editPostId = currentPost.value.id;
     const updatedPost = await editServerPost(editPostId, postData);
@@ -125,7 +122,7 @@ const handleEditPost = async (post) => {
 
             <PostForm v-else-if="editing" title="Post editing" :post="currentPost" @update="editPost($event)"
               @close-sidebar="closeSidebar" />
-
+            
             <PostPreview v-else :post="currentPost" @edit="handleEditPost($event)" @delete="handleDeletePost($event)" />
 
           </Sidebar>

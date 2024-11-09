@@ -1,15 +1,14 @@
 <script setup>
 import { ref, watch } from 'vue';
+import FormBlock from './FormBlock.vue';
 import InputField from './InputField.vue';
 import TextAreaField from './TextAreaField.vue';
-
-
 const emit = defineEmits(['update', 'closeSidebar']);
 
 const props = defineProps({
   title: String,
   post: { type: Object, default: null }
-})
+});
 
 const formData = ref({
   title: props.post?.title || '',
@@ -26,10 +25,12 @@ const error = ref({
   body: '',
 });
 
-const fillForm = (event) => {
-  const formData = new FormData(event.target);
-  const title = formData.get('postTitle');
-  const body = formData.get('postBody');
+const fillForm = (eventFormData) => {
+  const title = eventFormData.get('postTitle');
+  const body = eventFormData.get('postBody');
+
+  formData.value.title = title;
+  formData.value.body = body;
 
   error.value.title = title ? '' : 'Title is required';
   error.value.body = body ? '' : 'Body is required';
@@ -37,33 +38,22 @@ const fillForm = (event) => {
   if (title && body) {
     emit("update", { title, body });
   }
-}
+};
 
 const closeSidebar = () => {
   emit('closeSidebar');
-}
+};
 
+const clearError = (field) => {
+  error.value[field] = '';
+};
 </script>
 
 <template>
-  <div class="content">
-    <h2>{{ title }}</h2>
-
-    <form @submit.prevent="fillForm">
-      <InputField label="Title" :error="error.title" name="postTitle" v-model="formData.title" />
-      <TextAreaField label="Write Post Body" :error="error.body" name="postBody" v-model="formData.body" />
-
-      <div class="field is-grouped">
-        <div class="control">
-          <button type="submit" class="button is-link">Save</button>
-        </div>
-
-        <div class="control">
-          <button type="reset" class="button is-link is-light" @click="closeSidebar">Cancel</button>
-        </div>
-      </div>
-    </form>
-  </div>
+  <FormBlock @close-sidebar="closeSidebar" @submit="fillForm($event)" :title="title">
+    <InputField label="Title" :error="error.title" name="postTitle" v-model="formData.title"
+      @input="clearError('title')" />
+    <TextAreaField label="Write Post Body" :error="error.body" name="postBody" v-model="formData.body"
+      @input="clearError('body')" />
+  </FormBlock>
 </template>
-
-<style></style>
