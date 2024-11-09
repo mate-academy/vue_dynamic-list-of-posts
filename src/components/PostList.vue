@@ -32,7 +32,7 @@ const togglePost = (post) => {
           <td>{{ post.id }}</td>
           <td>{{ post.title }}</td>
           <td class="has-text-right is-vcentered">
-            <button type="button" class="button is-link" @click="togglePost(post)">{{ openPostId === post.id ? "Close" :
+            <button type="button" class="button is-link" :class="{'is-light': openPostId !== post.id}" @click="togglePost(post)">{{ openPostId === post.id ? "Close" :
               "Open" }}</button>
           </td>
         </tr>

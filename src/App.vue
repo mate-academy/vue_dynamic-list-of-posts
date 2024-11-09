@@ -103,7 +103,8 @@ const handleEditPost = async (post) => {
             <div class="block">
               <div class="block is-flex is-justify-content-space-between">
                 <p class="title">Posts</p>
-                <button type="button" class="button is-link" @click="handleAddNewPost()">Add New Post</button>
+                <button type="button" class="button is-link" :class="{'is-light': sidebar && !currentPost && !editing }"
+                 @click="handleAddNewPost()">Add New Post</button>
               </div>
 
               <PostLoader v-if="loading" />
@@ -116,6 +117,7 @@ const handleEditPost = async (post) => {
             </div>
           </div>
         </div>
+
         <Transition name="sidebar">
           <Sidebar v-if="sidebar">
             <PostForm v-if="!currentPost" title="Create new post" @update="addPost($event)"
