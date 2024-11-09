@@ -2,18 +2,22 @@
 defineProps({
   label: String,
   error: String,
-  name: String
-});
+  name: String,
+  modelValue: String,
 
+});
 </script>
+
 <template>
   <div class="field">
     <label class="label" :for="name">
-      {{label}}
+      {{ label }}
     </label>
+
     <div class="control has-icons-left has-icons-right">
-      <input type="text" :name="name" :id="name" placeholder=""
-        class="input" :class="{'is-danger': error}"/>
+      <input type="text" :name="name" :id="name" placeholder="" class="input" :class="{ 'is-danger': error }"
+        :value="modelValue" />
+
       <span class="icon is-small is-left">
         <i class="fas fa-user"></i>
       </span>
@@ -23,8 +27,8 @@ defineProps({
       </span>
     </div>
 
-    <p v-if="error" class="help is-danger">{{error}}</p>
+    <p v-if="error" class="help is-danger">{{ error }}</p>
   </div>
-
 </template>
+
 <style scope></style>

@@ -9,7 +9,6 @@ export const getPosts = async() => {
 };
 
 export const addPostToServer = async (postData) => {
-  console.log('post data in fetch', postData);
   const response = await client.post('/posts', {
     userId,
     ...postData,
@@ -22,7 +21,7 @@ export const addPostToServer = async (postData) => {
   return response.data;
 };
 
-export const editPost = async (postId, postData) => {
+export const editServerPost = async (postId, postData) => {
   const response = await client.patch(`/posts/${postId}`, {
     ...postData,
   }, {
@@ -30,7 +29,7 @@ export const editPost = async (postId, postData) => {
       'Content-Type': 'application/x-www-form-urlencoded'
     }
   });
-  
+
   return response.data;
 };
 

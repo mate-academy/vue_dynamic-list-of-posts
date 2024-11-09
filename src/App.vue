@@ -1,11 +1,11 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import { addPostToServer, getPosts } from './API/posts';
+import { ref, onMounted, watch } from 'vue'
+import { addPostToServer, deletePost, getPosts, editServerPost } from './API/posts';
 import PostLoader from './components/PostLoader.vue';
 import Message from './components/Message.vue';
 import PostList from './components/PostList.vue';
 import Sidebar from './components/Sidebar.vue';
-import AddPost from './components/AddPost.vue';
+import PostForm from './components/PostForm.vue';
 import PostPreview from './components/PostPreview.vue';
 
 
@@ -14,6 +14,7 @@ const posts = ref([]);
 const error = ref(null);
 const sidebar = ref(false);
 const currentPost = ref(null);
+const editing = ref(false);
 
 onMounted(async () => {
   error.value = posts.value = null;
@@ -28,6 +29,12 @@ onMounted(async () => {
   }
 });
 
+watch(currentPost, () => {
+  console.log('change currentPost', currentPost.value)
+})
+watch(sidebar, () => {
+  console.log('change sidebar', sidebar.value)
+})
 const handleAddNewPost = () => {
   sidebar.value = true;
   currentPost.value = null;
@@ -36,10 +43,11 @@ const handleAddNewPost = () => {
 const closeSidebar = () => {
   sidebar.value = false;
   currentPost.value = null;
+  editing.value = false;
 }
 
 const togglePost = (post) => {
-  if (post.id === currentPost.value?.id) { 
+  if (post.id === currentPost.value?.id) {
     closeSidebar();
     return;
   }
@@ -55,8 +63,35 @@ const addPost = async (postData) => {
   } catch (err) {
     error.value = 'Unable to add post';
   }
-
 }
+
+const editPost = async (postData) => {
+  try {
+    const editPostId = currentPost.value.id;
+    const updatedPost = await editServerPost(editPostId, postData);
+    const editPost = posts.value.find(({ id }) => id === editPostId);
+    Object.assign(editPost, updatedPost);
+    editing.value = false;
+  } catch {
+    error.value = 'Unable edit post';
+  }
+}
+
+const handleDeletePost = async (postId) => {
+  try {
+    await deletePost(postId);
+    posts.value = posts.value.filter(({ id }) => id !== postId);
+    closeSidebar();
+  } catch {
+    error.value = 'Unable to delete post';
+  }
+}
+
+const handleEditPost = async (post) => {
+  currentPost.value = post;
+  editing.value = true;
+}
+
 </script>
 
 <template>
@@ -77,16 +112,20 @@ const addPost = async (postData) => {
                 <p>{{ error }}</p>
               </Message>
 
-              <PostList v-else :posts="posts" @toggle-post="togglePost($event)" :open-post-id="currentPost?.id"/>
-
-
+              <PostList v-else :posts="posts" @toggle-post="togglePost($event)" :open-post-id="currentPost?.id" />
             </div>
           </div>
         </div>
         <Transition name="sidebar">
-          <Sidebar v-if="sidebar" >
-            <AddPost v-if="!currentPost" @update="addPost($event)"  @close-sidebar="sidebar = false" />
-            <PostPreview v-else :post="currentPost" />
+          <Sidebar v-if="sidebar">
+            <PostForm v-if="!currentPost" title="Create new post" @update="addPost($event)"
+              @close-sidebar="closeSidebar" />
+
+            <PostForm v-else-if="editing" title="Post editing" :post="currentPost" @update="editPost($event)"
+              @close-sidebar="closeSidebar" />
+
+            <PostPreview v-else :post="currentPost" @edit="handleEditPost($event)" @delete="handleDeletePost($event)" />
+
           </Sidebar>
         </Transition>
       </div>
