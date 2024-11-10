@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import FormBlock from './FormBlock.vue';
 import InputField from './InputField.vue';
 import TextAreaField from './TextAreaField.vue';
@@ -7,6 +7,7 @@ import TextAreaField from './TextAreaField.vue';
 const emit = defineEmits(['closeForm', 'submit']);
 
 const props = defineProps({
+  btnCls: Boolean,
   postId: Number,
 })
 
@@ -16,29 +17,48 @@ const formData = ref({
   body: '',
 });
 
-const error = ref({
-  name: '',
-  email: '',
-  body: '',
+const error = ref({});
+
+onMounted(() => {
+  const savedName = localStorage.getItem('name');
+  const savedEmail = localStorage.getItem('email');
+
+  if (savedName) {
+    formData.value.name = savedName;
+  }
+  if (savedEmail) {
+    formData.value.email = savedEmail;
+  }
 });
 
+const validateForm = (formValues) => {
+  error.value = {};
+
+  for (const field in formValues) {
+    if (formValues[field].trim() === '') {
+      error.value[field] = `${field} is required`
+    }
+
+    if (field === 'email' && !formValues[field].includes('@')) {
+      error.value.email = 'invalid email address'
+    }
+  }
+}
+
 const fillForm = (eventFormData) => {
-  const name = eventFormData.get('userName');
-  const email = eventFormData.get('userEmail');
-  const body = eventFormData.get('comment');
+  const formValues = Object.fromEntries(eventFormData.entries());
 
-  formData.value.name = name;
-  formData.value.email = email;
-  formData.value.body = body;
+  validateForm(formValues);
+  formData.value = { ...formValues };
 
-  error.value.name = name ? '' : 'Name is required';
-  error.value.email = email ? '' : 'Email is required';
-  error.value.body = body ? '' : 'Body is required';
+  const { name, email, body } = formData.value;
 
-  const commentData = { postId: props.postId, name, email, body };
+  const postId = props.postId;
 
-  if (name && email && body) {
-    emit('submit', commentData);
+  if (!Object.keys(error.value).length) {
+    localStorage.setItem('name', name);
+    localStorage.setItem('email', email);
+    emit('submit', { postId, name, email, body });
   }
 };
 
@@ -52,14 +72,13 @@ const clearError = (field) => {
 </script>
 
 <template>
-  <FormBlock @close-sidebar="closeForm" @submit="fillForm($event)">
-    <InputField label="Your Name" :error="error.name" name="userName" v-model="formData.name"
-      @input="clearError('name')" />
+  <FormBlock :btn-cls="btnCls" @close-sidebar="closeForm" @submit="fillForm($event)">
+    <InputField label="Your Name" :error="error.name" name="name" v-model="formData.name" @input="clearError('name')" />
 
-    <InputField label="Your Email" :error="error.email" name="userEmail" v-model="formData.email"
+    <InputField label="Your Email" :error="error.email" name="email" v-model="formData.email"
       @input="clearError('email')" />
 
-    <TextAreaField label="Write Comment" :error="error.body" name="comment" v-model="formData.body"
+    <TextAreaField label="Write Comment" :error="error.body" name="body" v-model="formData.body"
       @input="clearError('body')" />
   </FormBlock>
 </template>

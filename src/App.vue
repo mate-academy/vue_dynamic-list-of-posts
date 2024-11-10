@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import { addPostToServer, deletePost, getPosts, editServerPost } from './API/posts';
 import PostLoader from './components/PostLoader.vue';
 import Message from './components/Message.vue';
@@ -59,10 +59,10 @@ const addPost = async (postData) => {
 }
 
 const editPost = async (postData) => {
-  if (currentPost.title === postData.title && currentPost.body === postData.body) { 
+  if (currentPost.title === postData.title && currentPost.body === postData.body) {
     return;
   }
-  
+
   try {
     const editPostId = currentPost.value.id;
     const updatedPost = await editServerPost(editPostId, postData);
@@ -100,8 +100,8 @@ const handleEditPost = async (post) => {
             <div class="block">
               <div class="block is-flex is-justify-content-space-between">
                 <p class="title">Posts</p>
-                <button type="button" class="button is-link" :class="{'is-light': sidebar && !currentPost && !editing }"
-                 @click="handleAddNewPost()">Add New Post</button>
+                <button type="button" class="button is-link" :class="{ 'is-light': sidebar && !currentPost && !editing }"
+                  @click="handleAddNewPost()">Add New Post</button>
               </div>
 
               <PostLoader v-if="loading" />
@@ -122,7 +122,7 @@ const handleEditPost = async (post) => {
 
             <PostForm v-else-if="editing" title="Post editing" :post="currentPost" @update="editPost($event)"
               @close-sidebar="closeSidebar" />
-            
+
             <PostPreview v-else :post="currentPost" @edit="handleEditPost($event)" @delete="handleDeletePost($event)" />
 
           </Sidebar>

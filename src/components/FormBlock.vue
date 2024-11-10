@@ -1,7 +1,9 @@
 <script setup>
 const emit = defineEmits(['closeSidebar', 'submit']);
+
 defineProps({
   title: { type: String, default: '' },
+  btnCls: { type: Boolean, default: false },
 });
 
 const fillForm = (event) => {
@@ -18,7 +20,7 @@ const fillForm = (event) => {
       <slot></slot>
       <div class="field is-grouped">
         <div class="control">
-          <button type="submit" class="button is-link">Save</button>
+          <button type="submit" class="button is-link" :class="{ 'is-loading': btnCls }">Save</button>
         </div>
 
         <div class="control">
