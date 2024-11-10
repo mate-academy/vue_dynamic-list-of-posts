@@ -1,5 +1,6 @@
 # Simple Blog Application
 [Demo](https://iyehorova.github.io/vue_dynamic-list-of-posts/)
+
 This is a basic blog application built with Vue 3 using the Composition API. The app connects to an API to manage user registration, posts, and comments.
 
 ## Features
