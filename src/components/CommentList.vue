@@ -19,6 +19,7 @@ const handleDeleteComment = (commentId) => {
         delete button
       </button>
     </div>
+
     <div class="message-body">{{ comment.body }}</div>
   </article>
 </template>

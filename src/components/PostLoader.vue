@@ -7,5 +7,3 @@ import Loader from './Loader.vue';
     <Loader />
   </div>
 </template>
-
-<style></style>

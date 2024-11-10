@@ -42,5 +42,3 @@ const togglePost = (post) => {
     </table>
   </template>
 </template>
-
-<style></style>

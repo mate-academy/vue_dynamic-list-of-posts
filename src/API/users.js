@@ -1,15 +1,19 @@
 import { client } from '../utils/fetchClient';
 
-export const getPosts = async (userId) => {
-  const response = await client.get(`/posts?userId=${userId}`);
+
+export const getUsers = async () => {
+  const response = await client.get('/users');
 
   return response.data;
 };
 
-export const addPostToServer = async (userId, postData) => {
-  const response = await client.post('/posts', {
-    userId,
-    ...postData,
+export const addUser = async (userData) => {
+  const response = await client.post('/users', {
+    name: userData.name,
+    username: userData.name,
+    email: userData.email,
+    phone: "1234567890"
+
   }, {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'

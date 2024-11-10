@@ -30,5 +30,3 @@ const fillForm = (event) => {
     </form>
   </div>
 </template>
-
-<style></style>

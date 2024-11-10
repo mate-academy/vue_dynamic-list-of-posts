@@ -22,7 +22,7 @@ onMounted(async () => {
 
 watch(() => props.postId, async (newPostId) => {
   await getComment(newPostId);
-})
+});
 
 const getComment = async (postId) => {
   openCommentForm.value = false;
@@ -89,5 +89,3 @@ const handleOpenCommentForm = () => {
     </template>
   </div>
 </template>
-
-<style scope></style>

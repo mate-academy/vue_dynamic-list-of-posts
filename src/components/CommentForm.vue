@@ -9,7 +9,7 @@ const emit = defineEmits(['closeForm', 'submit']);
 const props = defineProps({
   btnCls: Boolean,
   postId: Number,
-})
+});
 
 const formData = ref({
   name: '',
@@ -43,7 +43,7 @@ const validateForm = (formValues) => {
       error.value.email = 'invalid email address'
     }
   }
-}
+};
 
 const fillForm = (eventFormData) => {
   const formValues = Object.fromEntries(eventFormData.entries());

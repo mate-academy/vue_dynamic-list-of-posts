@@ -1,6 +1,3 @@
-<script>
-</script>
-
 <template>
   <div className="lds-ring">
     <div></div>

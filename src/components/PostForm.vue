@@ -3,6 +3,7 @@ import { ref, watch } from 'vue';
 import FormBlock from './FormBlock.vue';
 import InputField from './InputField.vue';
 import TextAreaField from './TextAreaField.vue';
+
 const emit = defineEmits(['update', 'closeSidebar']);
 
 const props = defineProps({
@@ -53,6 +54,7 @@ const clearError = (field) => {
   <FormBlock @close-sidebar="closeSidebar" @submit="fillForm($event)" :title="title">
     <InputField label="Title" :error="error.title" name="postTitle" v-model="formData.title"
       @input="clearError('title')" />
+
     <TextAreaField label="Write Post Body" :error="error.body" name="postBody" v-model="formData.body"
       @input="clearError('body')" />
   </FormBlock>

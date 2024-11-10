@@ -35,5 +35,3 @@ const deletePost = () => {
   </div>
   <CommentBlock :post-id="post.id" />
 </template>
-
-<style></style>

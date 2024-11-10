@@ -9,9 +9,7 @@ defineProps({
 });
 
 const handleInput = (event) => {
-  if (event.target.value === '') {
-    emit('update:modelValue');
-  }
+  emit('update:modelValue', event.target.value);
 };
 </script>
 
@@ -37,5 +35,3 @@ const handleInput = (event) => {
     <p v-if="error" class="help is-danger">{{ error }}</p>
   </div>
 </template>
-
-<style scope></style>
