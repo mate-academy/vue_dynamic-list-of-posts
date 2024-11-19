@@ -19,8 +19,16 @@ const handleInput = (event) => {
   <div class="field">
     <label class="label" :for="name">{{ label }}</label>
     <div class="control">
-      <textarea :id="name" :name="name" placeholder="" class="textarea" :class="{ 'is-danger': error }"
-        :value="modelValue" @input="handleInput"></textarea>
+      <textarea 
+        :id="name" 
+        :name="name" 
+        placeholder="" 
+        class="textarea" 
+        :class="{ 'is-danger': error }"
+        :value="modelValue" 
+        @input="handleInput"
+      >
+      </textarea>
     </div>
 
     <p v-if="error" class="help is-danger">{{ error }}</p>

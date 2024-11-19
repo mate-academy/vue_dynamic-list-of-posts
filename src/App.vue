@@ -7,13 +7,6 @@ import AuthorizedControl from './components/AuthorizedControl.vue';
 
 const user = ref(null);
 
-onMounted(() => {
-  const savedUser = JSON.parse(localStorage.getItem('user'));
-  if (savedUser) {
-    user.value = savedUser;
-  }
-})
-
 const handleLogOut = () => {
   user.value = null;
   localStorage.removeItem('user');
@@ -23,6 +16,14 @@ const getUser = (currentUser) => {
   user.value = currentUser;
   localStorage.setItem('user', JSON.stringify(currentUser));
 }
+
+onMounted(() => {
+  const savedUser = JSON.parse(localStorage.getItem('user'));
+  if (savedUser) {
+    user.value = savedUser;
+  }
+})
+
 </script>
 
 <template>

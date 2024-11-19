@@ -19,18 +19,6 @@ const formData = ref({
 
 const error = ref({});
 
-onMounted(() => {
-  const savedName = localStorage.getItem('name');
-  const savedEmail = localStorage.getItem('email');
-
-  if (savedName) {
-    formData.value.name = savedName;
-  }
-  if (savedEmail) {
-    formData.value.email = savedEmail;
-  }
-});
-
 const validateForm = (formValues) => {
   error.value = {};
 
@@ -69,16 +57,48 @@ const closeForm = () => {
 const clearError = (field) => {
   error.value[field] = '';
 };
+
+onMounted(() => {
+  const savedName = localStorage.getItem('name');
+  const savedEmail = localStorage.getItem('email');
+
+  if (savedName) {
+    formData.value.name = savedName;
+  }
+  if (savedEmail) {
+    formData.value.email = savedEmail;
+  }
+});
 </script>
 
 <template>
-  <FormBlock :btn-cls="btnCls" @close-sidebar="closeForm" @submit="fillForm($event)">
-    <InputField label="Your Name" :error="error.name" name="name" v-model="formData.name" @input="clearError('name')" />
+  <FormBlock 
+    :btn-cls="btnCls"
+    @close-sidebar="closeForm"
+    @submit="fillForm($event)"
+  >
+    <InputField
+      label="Your Name" 
+      :error="error.name" 
+      name="name" 
+      v-model="formData.name" 
+      @input="clearError('name')" 
+    />
 
-    <InputField label="Your Email" :error="error.email" name="email" v-model="formData.email"
-      @input="clearError('email')" />
+    <InputField 
+      label="Your Email" 
+      :error="error.email" 
+      name="email" 
+      v-model="formData.email"
+      @input="clearError('email')" 
+    />
 
-    <TextAreaField label="Write Comment" :error="error.body" name="body" v-model="formData.body"
-      @input="clearError('body')" />
+    <TextAreaField
+      label="Write Comment" 
+      :error="error.body" 
+      name="body" 
+      v-model="formData.body"
+      @input="clearError('body')"
+    />
   </FormBlock>
 </template>

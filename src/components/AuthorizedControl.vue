@@ -36,12 +36,19 @@ const createUser = async (userData) => {
 </script>
 
 <template>
-  <section v-if="error" class="container is-flex is-justify-content-center">
+  <section
+    v-if="error"
+    class="container is-flex is-justify-content-center"
+  >
     <Message class="is-danger box mt-5">
       <p>{{ error }}</p>
     </Message>
   </section>
 
-  <LoginForm v-else title="Get your userId" :is-register="needToRegister" @email="checkEmail($event)"
-    @create-user="createUser($event)" />
+  <LoginForm
+    v-else title="Get your userId"
+    :is-register="needToRegister" 
+    @email="checkEmail($event)"
+    @create-user="createUser($event)"
+  />
 </template>

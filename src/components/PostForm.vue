@@ -16,11 +16,6 @@ const formData = ref({
   body: props.post?.body || ''
 });
 
-watch(() => props.post, (newPost) => {
-  formData.value.title = newPost?.title || '';
-  formData.value.body = newPost?.body || '';
-});
-
 const error = ref({
   title: '',
   body: '',
@@ -48,14 +43,29 @@ const closeSidebar = () => {
 const clearError = (field) => {
   error.value[field] = '';
 };
+
+watch(() => props.post, (newPost) => {
+  formData.value.title = newPost?.title || '';
+  formData.value.body = newPost?.body || '';
+});
 </script>
 
 <template>
   <FormBlock @close-sidebar="closeSidebar" @submit="fillForm($event)" :title="title">
-    <InputField label="Title" :error="error.title" name="postTitle" v-model="formData.title"
-      @input="clearError('title')" />
+    <InputField 
+      label="Title" 
+      :error="error.title" 
+      name="postTitle" 
+      v-model="formData.title"
+      @input="clearError('title')" 
+    />
 
-    <TextAreaField label="Write Post Body" :error="error.body" name="postBody" v-model="formData.body"
-      @input="clearError('body')" />
+    <TextAreaField 
+      label="Write Post Body" 
+      :error="error.body" 
+      name="postBody" 
+      v-model="formData.body"
+      @input="clearError('body')" 
+    />
   </FormBlock>
 </template>

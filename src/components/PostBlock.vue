@@ -19,19 +19,6 @@ const sidebar = ref(false);
 const currentPost = ref(null);
 const editing = ref(false);
 
-onMounted(async () => {
-  error.value = posts.value = null;
-  loading.value = true;
-
-  try {
-    posts.value = await getPosts(props.userId) || [];
-  } catch (err) {
-    error.value = 'Unable to load posts';
-  } finally {
-    loading.value = false;
-  }
-});
-
 const handleAddNewPost = () => {
   sidebar.value = true;
   currentPost.value = null;
@@ -92,6 +79,19 @@ const handleEditPost = async (post) => {
   currentPost.value = post;
   editing.value = true;
 }
+
+onMounted(async () => {
+  error.value = posts.value = null;
+  loading.value = true;
+
+  try {
+    posts.value = await getPosts(props.userId) || [];
+  } catch (err) {
+    error.value = 'Unable to load posts';
+  } finally {
+    loading.value = false;
+  }
+});
 </script>
 
 <template>
@@ -103,9 +103,14 @@ const handleEditPost = async (post) => {
             <div class="block">
               <div class="block is-flex is-justify-content-space-between">
                 <p class="title">Posts</p>
-                <button type="button" class="button is-link"
-                  :class="{ 'is-light': sidebar && !currentPost && !editing }" @click="handleAddNewPost()">Add New
-                  Post</button>
+                <button 
+                  type="button"
+                  class="button is-link"
+                  :class="{ 'is-light': sidebar && !currentPost && !editing }"
+                  @click="handleAddNewPost()"
+                >
+                  Add New Post
+                </button>
               </div>
 
               <PostLoader v-if="loading" />
@@ -114,20 +119,39 @@ const handleEditPost = async (post) => {
                 <p>{{ error }}</p>
               </Message>
 
-              <PostList v-else :posts="posts" @toggle-post="togglePost($event)" :open-post-id="currentPost?.id" />
+              <PostList 
+                v-else 
+                :posts="posts" 
+                @toggle-post="togglePost($event)" 
+                :open-post-id="currentPost?.id" 
+              />
             </div>
           </div>
         </div>
 
         <Transition name="sidebar">
           <Sidebar v-if="sidebar">
-            <PostForm v-if="!currentPost" title="Create new post" @update="addPost($event)"
-              @close-sidebar="closeSidebar" />
+            <PostForm 
+              v-if="!currentPost" 
+              title="Create new post" 
+              @update="addPost($event)"
+              @close-sidebar="closeSidebar" 
+            />
 
-            <PostForm v-else-if="editing" title="Post editing" :post="currentPost" @update="editPost($event)"
-              @close-sidebar="closeSidebar" />
+            <PostForm 
+              v-else-if="editing" 
+              title="Post editing" 
+              :post="currentPost" 
+              @update="editPost($event)"
+              @close-sidebar="closeSidebar" 
+            />
 
-            <PostPreview v-else :post="currentPost" @edit="handleEditPost($event)" @delete="handleDeletePost($event)" />
+            <PostPreview 
+              v-else 
+              :post="currentPost" 
+              @edit="handleEditPost($event)" 
+              @delete="handleDeletePost($event)" 
+            />
 
           </Sidebar>
         </Transition>

@@ -16,14 +16,6 @@ const comments = ref([]);
 const error = ref('');
 const openCommentForm = ref(false);
 
-onMounted(async () => {
-  await getComment(props.postId);
-})
-
-watch(() => props.postId, async (newPostId) => {
-  await getComment(newPostId);
-});
-
 const getComment = async (postId) => {
   openCommentForm.value = false;
   loading.value = true;
@@ -66,6 +58,13 @@ const handleOpenCommentForm = () => {
   openCommentForm.value = true;
 };
 
+onMounted(async () => {
+  await getComment(props.postId);
+})
+
+watch(() => props.postId, async (newPostId) => {
+  await getComment(newPostId);
+});
 </script>
 
 <template>
@@ -76,14 +75,30 @@ const handleOpenCommentForm = () => {
       <p>{{ error }}</p>
     </Message>
 
-    <CommentForm v-else-if="openCommentForm" :btn-cls="adding" :post-id="postId" @close-form="handleCloseForm"
-      @submit="addComment($event)" />
+    <CommentForm
+      v-else-if="openCommentForm" 
+      :btn-cls="adding" 
+      :post-id="postId" 
+      @close-form="handleCloseForm"
+      @submit="addComment($event)" 
+    />
 
     <template v-else>
-      <p v-if="!comments.length" class="title is-4">No comments yet</p>
-      <CommentList v-else :comments="comments" @delete-comment="deleteComment($event)" />
+      <p
+        v-if="!comments.length" 
+        class="title is-4"
+      >
+        No comments yet
+      </p>
+      <CommentList
+        v-else :comments="comments"
+        @delete-comment="deleteComment($event)" />
 
-      <button type="button" class="button is-link" @click="handleOpenCommentForm">
+      <button
+        type="button" 
+        class="button is-link" 
+        @click="handleOpenCommentForm"
+      >
         Write a comment
       </button>
     </template>

@@ -26,7 +26,10 @@ const deletePost = () => {
           <i class="fas fa-pen-to-square"></i>
         </span>
 
-        <span class="icon is-small is-right has-text-danger is-clickable ml-3" @click="deletePost">
+        <span 
+          class="icon is-small is-right has-text-danger is-clickable ml-3" 
+          @click="deletePost"
+        >
           <i class="fas fa-trash"></i>
         </span>
       </div>

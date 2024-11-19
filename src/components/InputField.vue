@@ -20,8 +20,16 @@ const handleInput = (event) => {
     </label>
 
     <div class="control has-icons-left has-icons-right">
-      <input type="text" :name="name" :id="name" placeholder="" class="input" :class="{ 'is-danger': error }"
-        :value="modelValue" @input="handleInput" />
+      <input 
+        type="text" 
+        :name="name" 
+        :id="name"
+        placeholder=""
+        class="input"
+        :class="{ 'is-danger': error }"
+        :value="modelValue"
+        @input="handleInput"
+      />
 
       <span class="icon is-small is-left">
         <i class="fas fa-user"></i>

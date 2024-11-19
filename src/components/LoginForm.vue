@@ -17,14 +17,6 @@ const title = computed(() => {
   return props.isRegister ? "You need to register" : "Get your userId";
 });
 
-watch(email, () => {
-  delete error.value.email;
-});
-
-watch(name, () => {
-  delete error.value.name;
-});
-
 const validateField = (field, value) => {
   error.value = {};
 
@@ -39,7 +31,6 @@ const validateField = (field, value) => {
     error.value.email = 'invalid email address';
   }
 }
-
 
 const formFill = () => {
   if (!props.isRegister) {
@@ -57,6 +48,14 @@ const formFill = () => {
     emit('createUser', { name: name.value, email: email.value });
   }
 }
+
+watch(email, () => {
+  delete error.value.email;
+});
+
+watch(name, () => {
+  delete error.value.name;
+});
 </script>
 
 <template>
@@ -69,8 +68,14 @@ const formFill = () => {
         <label class="label" for="user-email"> Email </label>
 
         <div class="control has-icons-left">
-          <input type="email" id="user-email" name="email" class="input" v-model="email"
-            placeholder="Enter your email" />
+          <input
+            type="email"
+            id="user-email"
+            name="email"
+            class="input"
+            v-model="email"
+            placeholder="Enter your email"
+          />
 
           <span class="icon is-small is-left">
             <i class="fas fa-envelope" />

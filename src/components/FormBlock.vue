@@ -18,13 +18,26 @@ const fillForm = (event) => {
 
     <form @submit.prevent="fillForm">
       <slot></slot>
+      
       <div class="field is-grouped">
         <div class="control">
-          <button type="submit" class="button is-link" :class="{ 'is-loading': btnCls }">Save</button>
+          <button
+            type="submit"
+            class="button is-link" 
+            :class="{ 'is-loading': btnCls }"
+          >
+            Save
+          </button>
         </div>
 
         <div class="control">
-          <button type="reset" class="button is-link is-light" @click="emit('closeSidebar')">Cancel</button>
+          <button
+            type="reset"
+            class="button is-link is-light"
+            @click="emit('closeSidebar')"
+          >
+            Cancel
+          </button>
         </div>
       </div>
     </form>
