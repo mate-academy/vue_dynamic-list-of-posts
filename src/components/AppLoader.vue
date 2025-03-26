@@ -1,3 +1,30 @@
+<script>
+export default {
+  name: 'AppLoader',
+}
+</script>
+
+<template>
+  <div class="center">
+    <div className="lds-ring">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  </div>
+</template>
+
+<style>
+/* .center {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 160px;
+} */
+
 .lds-ring {
   display: inline-block;
   position: relative;
@@ -33,3 +60,4 @@
     transform: rotate(360deg);
   }
 }
+</style>
