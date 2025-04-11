@@ -1,3 +1,18 @@
+<template>
+  <div className="lds-ring">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+</template>
+<script lang="ts">
+export default {
+  name: 'AppLoader',
+}
+</script>
+
+<style scoped>
 .lds-ring {
   display: inline-block;
   position: relative;
@@ -33,3 +48,4 @@
     transform: rotate(360deg);
   }
 }
+</style>
