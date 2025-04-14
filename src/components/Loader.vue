@@ -1,8 +1,25 @@
+<script>
+export default {
+  name: "Loader",
+};
+</script>
+
+<template>
+  <div class="lds-ring">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+</template>
+
+<style>
 .lds-ring {
-  display: inline-block;
+  display: block;
   position: relative;
   width: 80px;
   height: 80px;
+  margin: 0 auto;
 }
 .lds-ring div {
   box-sizing: border-box;
@@ -10,7 +27,6 @@
   position: absolute;
   width: 64px;
   height: 64px;
-  margin: 8px;
   border: 8px solid #c0c0c0;
   border-radius: 50%;
   animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
@@ -33,3 +49,4 @@
     transform: rotate(360deg);
   }
 }
+</style>
