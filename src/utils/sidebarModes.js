@@ -1,0 +1,6 @@
+export const SIDEBAR_MODES = {
+  NONE: '',
+  NEW_POST_FORM: 'NEW_POST_FORM',
+  POST: 'POST',
+  EDIT_FORM: 'EDIT_FORM',
+};
