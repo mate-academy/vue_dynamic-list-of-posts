@@ -1,0 +1,12 @@
+.message {
+  transform-origin: top center;
+  max-height: 100%;
+  transition: all 0.3s ease;
+
+  &--hidden {
+    max-height: 0;
+    transform: scaleY(0);
+    opacity: 0;
+    pointer-events: none;
+  }
+}
