@@ -1,0 +1,308 @@
+<script>
+import Comment from "./Comment.vue";
+import PostPreview from "./PostPreview.vue";
+import Sidebar from "./Sidebar.vue";
+import AddPost from "./AddPost.vue";
+import Loader from "./Loader.vue";
+import WriteCommentBtn from "./WriteCommentBtn.vue";
+import CommentForm from "./CommentForm.vue";
+import NoCommentsYet from "./NoCommentsYet.vue";
+import PostLoader from "./PostLoader.vue";
+import { destroyComment, getComments } from "@/api/comments";
+import { destroyPost, getPostById, getPosts } from "@/api/posts";
+
+export default {
+  name: "PostsList",
+  components: {
+    Loader,
+    Sidebar,
+    PostPreview,
+    Comment,
+    AddPost,
+    WriteCommentBtn,
+    CommentForm,
+    PostLoader,
+    NoCommentsYet,
+  },
+
+  props: ["user"],
+
+  data() {
+    return {
+      isLoadingCurrentPost: false,
+      isLoadingPosts: true,
+      posts: [],
+      currentPost: null,
+      comments: [],
+      areCommentsLoading: false,
+      isWritingPost: false,
+      isEditingPost: false,
+      isWritingComment: false,
+    };
+  },
+  methods: {
+    selectPost(post) {
+      this.cancelEditing();
+
+      if (this.currentPost && post.id === this.currentPost.id) {
+        this.currentPost = null;
+        return;
+      }
+
+      this.isLoadingCurrentPost = true;
+
+      this.findAndSetPost(post.id);
+    },
+
+    clearComments() {
+      this.comments = [];
+    },
+
+    findAndSetPost(postId) {
+      getPostById(postId)
+        .then((response) => {
+          this.currentPost = response.data;
+        })
+        .catch(() => {
+          console.log("Could not fetch the post");
+        })
+        .finally(() => {
+          this.isLoadingCurrentPost = false;
+        });
+    },
+
+    addPost(post) {
+      this.posts.push(post);
+      this.findAndSetPost(post.id);
+    },
+    deletePost(postId) {
+      destroyPost(postId)
+        .then(() => {
+          const index = this.posts.findIndex((post) => post.id === postId);
+          this.posts.splice(index, 1);
+          this.currentPost = null;
+        })
+        .catch(() => console.log("Could not delete the post"));
+    },
+    editPost(newPost) {
+      const index = this.posts.findIndex((post) => post.id === newPost.id);
+      this.posts[index] = newPost;
+      this.findAndSetPost(newPost.id);
+
+      this.isWritingPost = false;
+      this.isEditingPost = false;
+    },
+    addComment(comment) {
+      this.comments.push(comment);
+      this.isWritingComment = false;
+    },
+    deleteComment(commentId) {
+      destroyComment(commentId).then(() => {
+        const index = this.comments.findIndex(
+          (comment) => comment.id === commentId
+        );
+        this.comments.splice(index, 1);
+      });
+    },
+    showSidebar() {
+      this.isSidebarOpen = true;
+    },
+    hideSidebar() {
+      this.isSidebarOpen = false;
+    },
+    cancelEditing() {
+      this.isEditingPost = false;
+    },
+  },
+  watch: {
+    currentPost() {
+      if (this.currentPost === null) {
+        this.clearComments();
+      }
+    },
+    isEditingPost() {
+      if (this.isEditingPost) {
+        this.isWritingPost = false;
+      }
+    },
+    isWritingPost() {
+      if (this.isWritingPost) {
+        this.isEditingPost = false;
+      }
+    },
+  },
+  computed: {
+    isSidebarOpen() {
+      return (
+        this.currentPost !== null ||
+        this.isEditingPost ||
+        this.isWritingComment ||
+        this.isWritingPost
+      );
+    },
+    isPostPreviewOpen() {
+      return (
+        this.currentPost !== null &&
+        this.isWritingPost === false &&
+        this.isEditingPost === false
+      );
+    },
+  },
+  mounted() {
+    if (this.user) {
+      getPosts(this.user.id)
+        .then((response) => {
+          this.posts = response.data;
+        })
+        .catch((error) => {
+          alert("Error while fetching the posts", error);
+        })
+        .finally(() => {
+          this.isLoadingPosts = false;
+        });
+    }
+  },
+
+  watch: {
+    currentPost() {
+      if (this.isWritingPost === true && this.currentPost !== null) {
+        this.isWritingPost = false;
+      }
+
+      if (this.currentPost) {
+        this.areCommentsLoading = true;
+
+        getComments(this.currentPost.id)
+          .then((response) => {
+            this.comments = response.data;
+          })
+          .catch(() => console.log("Could not fetch the comments"))
+          .finally(() => {
+            this.areCommentsLoading = false;
+          });
+      }
+    },
+    isWritingPost() {
+      if (this.isWritingPost) {
+        this.isWritingComment = false;
+        this.comments = [];
+      }
+    },
+    isWritingComment() {
+      if (this.isWritingComment) {
+        this.isWritingPost = false;
+      }
+    },
+  },
+};
+</script>
+
+<template>
+  <div class="tile is-parent">
+    <div class="tile is-child box is-success">
+      <div class="block">
+        <div class="block is-flex is-justify-content-space-between">
+          <p class="title">Posts</p>
+          <button
+            @click="this.isWritingPost = true"
+            type="button"
+            class="button is-link"
+            :class="this.isWritingPost ? 'is-light' : ' '"
+          >
+            Add New Post
+          </button>
+        </div>
+        <PostLoader class="is-parent" v-if="this.isLoadingPosts" />
+        <table
+          v-if="this.posts.length && !this.isLoadingPosts"
+          class="table is-fullwidth is-striped is-hoverable is-narrow"
+        >
+          <thead>
+            <tr class="has-background-link-light">
+              <th>ID</th>
+              <th>Title</th>
+              <th class="has-text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="post of posts" :key="post.id">
+              <td>{{ post.id }}</td>
+              <td>{{ post.title }}</td>
+              <td class="has-text-right is-vcentered">
+                <button
+                  type="button"
+                  class="button is-link"
+                  :class="post.id !== currentPost?.id ? 'is-light' : ''"
+                  @click="selectPost(post)"
+                >
+                  {{ post.id === currentPost?.id ? "Close" : "Open" }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <h3
+          class="mt-2 has-text-centered"
+          v-if="!this.posts.length && !this.isLoadingPosts"
+        >
+          No posts yet.
+        </h3>
+      </div>
+    </div>
+  </div>
+
+  <Sidebar
+    v-if="isSidebarOpen"
+    class="Sidebar"
+    :class="{ 'Sidebar--open': isSidebarOpen }"
+  >
+    <PostPreview
+      v-if="isPostPreviewOpen"
+      :post="this.currentPost"
+      :deletePost="deletePost"
+      v-model="this.isEditingPost"
+    />
+
+    <PostLoader v-if="isLoadingCurrentPost || areCommentsLoading" />
+
+    <template
+      v-else-if="
+        !this.isWritingComment && !this.isWritingPost && !this.isEditingPost
+      "
+    >
+      <!-- <Loader v-if="areCommentsLoading" /> -->
+      <NoCommentsYet v-if="!this.comments.length" />
+
+      <Comment
+        v-else
+        v-if="!isEditingPost"
+        v-for="comment of this.comments"
+        :comment="comment"
+        :deleteComment="this.deleteComment"
+      />
+      <WriteCommentBtn
+        v-model="isWritingComment"
+        v-if="isPostPreviewOpen && !this.isWritingComment"
+      />
+    </template>
+    <CommentForm
+      v-if="this.isWritingComment"
+      v-model="isWritingComment"
+      :addComment="addComment"
+      :postId="this.currentPost.id"
+    />
+
+    <AddPost
+      v-if="this.isWritingPost || this.isEditingPost"
+      v-model="isWritingPost"
+      :user="user"
+      :addPost="addPost"
+      :is-editing="isEditingPost"
+      :cancelEditing="cancelEditing"
+      :editPost="editPost"
+      :post="currentPost"
+    />
+  </Sidebar>
+</template>
+
+<style></style>
