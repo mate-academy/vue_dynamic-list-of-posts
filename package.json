@@ -1,0 +1,27 @@
+{
+  "name": "vue_dynamic-list-of-posts",
+  "version": "1.0.0",
+  "description": "Implement the App with ability to show posts of a current logged-in user. The user should be able to create a new post with their userId. Each post can be opened in the sidebar with its comments, can be edited and deleted. There should delete a comment and a form to add new comments.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "deploy": "./deploy.sh",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vue/cli-service": "^5.0.8",
+    "sass": "^1.81.0",
+    "vite": "^5.4.11"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.7.1",
+    "bulma": "^1.0.2",
+    "vue": "^3.5.13",
+    "vue-router": "^4.4.5"
+  }
+}
