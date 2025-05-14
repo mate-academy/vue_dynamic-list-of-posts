@@ -3,7 +3,7 @@
 Implement the App with ability to show posts of a current logged-in user.
 The user should be able to create a new post with their userId. Each post can
 be opened in the sidebar with its comments, can be edited and deleted. There should delete a comment and a
-form to add new comments.
+form to add new comments. For communication with the server, use the Posts and Users [Mate API](https://mate-academy.github.io/fe-students-api).
 
 > Here is [the working version](https://mate-academy.github.io/vue_dynamic-list-of-posts/#/)
 
