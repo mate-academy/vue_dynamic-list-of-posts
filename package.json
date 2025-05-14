@@ -1,11 +1,16 @@
 {
+<<<<<<< HEAD
   "name": "vue_dynamic-list-of-posts",
+=======
+  "name": "vue_list-of-posts",
+>>>>>>> ab7d773b45522c29aeda20e2620c8a9a6e91ab22
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+<<<<<<< HEAD
     "preview": "vite preview",
     "lint": "eslint . --fix",
     "format": "prettier --write src/"
@@ -25,6 +30,20 @@
     "globals": "^16.0.0",
     "prettier": "3.5.3",
     "sass-embedded": "^1.87.0",
+=======
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "axios": "^1.8.4",
+    "bulma": "^1.0.3",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.3",
+    "sass": "^1.86.3",
+>>>>>>> ab7d773b45522c29aeda20e2620c8a9a6e91ab22
     "vite": "^6.2.4",
     "vite-plugin-vue-devtools": "^7.7.2"
   }
