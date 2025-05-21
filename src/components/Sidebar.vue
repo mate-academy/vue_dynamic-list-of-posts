@@ -1,0 +1,39 @@
+<script>
+export default {
+  name: 'Sidebar',
+};
+</script>
+
+<template>
+  <div class="tile is-parent is-8-desktop">
+    <article class="tile is-child box is-success">
+      <div class="content">
+        <slot name="createPost"></slot>
+        <slot name="editPost"></slot>
+        <slot name="postDetailes"></slot>
+      </div>
+    </article>
+  </div>
+</template>
+
+<style>
+.Sidebar {
+  overflow: hidden;
+  opacity: 0;
+  transition-property: max-width, opacity;
+  transition-duration: 0.5s;
+  transition-timing-function: ease-in-out;
+
+  @media (min-width: 769px) {
+    max-width: 0;
+  }
+}
+
+.Sidebar--open {
+  opacity: 1;
+
+  @media (min-width: 769px) {
+    max-width: 50%;
+  }
+}
+</style>
