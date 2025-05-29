@@ -1,0 +1,5 @@
+label,
+input::placeholder,
+textarea::placeholder {
+	text-transform: capitalize;
+}
