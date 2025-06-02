@@ -146,6 +146,7 @@ export default {
       selectedPost: null,
       posts: [],
       comments: [],
+      isEditingPost: false,
       isLoadingPosts: true,
       isLoadingComments: false,
       isAddingComment: false,
@@ -299,6 +300,10 @@ export default {
       const index = this.posts.findIndex((post) => post.id === updatedPost.id);
       if (index !== -1) {
         this.posts[index] = updatedPost; // Update post list
+      }
+      // Update selectedPost if it's the edited one
+      if (this.selectedPost && this.selectedPost.id === updatedPost.id) {
+        this.selectedPost = { ...updatedPost };
       }
       this.isEditingPost = false; // Show post preview again
     },

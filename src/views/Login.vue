@@ -32,30 +32,32 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios';
+
+const BASE_URL = 'https://mate-academy.github.io/fe-students-api';
 
 export default {
   data() {
     return {
-      email: "",
+      email: '',
       hasError: false,
-      errorMessage: ""
+      errorMessage: '',
     };
   },
   methods: {
     async handleSubmit() {
       try {
         const response = await axios.post(`${BASE_URL}/login`, {
-          email: this.email
+          email: this.email,
         });
-        localStorage.setItem("userId", response.data.userId);
-        alert("Login successful!");
+        localStorage.setItem('userId', response.data.userId);
+        alert('Login successful!');
       } catch (error) {
         this.hasError = true;
-        this.errorMessage = "Invalid email. Please try again.";
+        this.errorMessage = 'Invalid email. Please try again.';
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

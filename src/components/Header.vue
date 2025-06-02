@@ -1,16 +1,12 @@
 <template>
-  <nav
-    class="navbar is-light"
-    role="navigation"
-    aria-label="main navigation"
-  >
+  <nav class="navbar is-light" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <h2 class="navbar-item is-size-4">Vue List Of Posts</h2>
     </div>
     <div class="navbar-end ml-auto">
       <div class="navbar-item">
         <span class="mr-4">User: {{ user?.name || 'Guest' }}</span>
-        <button class="button is-danger is-light" @click="logout">
+        <button class="button is-danger is-light" @click="$emit('logout')">
           Logout
         </button>
       </div>
@@ -19,20 +15,9 @@
 </template>
 
 <script>
-import { useRouter } from 'vue-router';
-import { nextTick } from 'vue';
 export default {
   props: {
-    user: Object, // Expecting a user object with a name property
-  },
-  setup() {
-    const router = useRouter();
-    const logout = async () => {
-      localStorage.removeItem('userId');
-      await nextTick(); // Ensure the DOM updates before navigating
-      router.push('/login');
-    };
-    return { logout}
+    user: Object,
   },
 };
 </script>
@@ -63,5 +48,4 @@ export default {
   background: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
-
 </style>

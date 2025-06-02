@@ -35,14 +35,11 @@ export default {
           `https://mate-academy.github.io/fe-students-api/posts/${postId}`
         );
         post.value = postResponse.data?.data || null;
-        comments.value = Array.isArray(postResponse.data?.comments)
-          ? postResponse.data.comments
-          : [];
 
         const commentsResponse = await axios.get(
           `https://mate-academy.github.io/fe-students-api/comments?postId=${postId}`
         );
-        comments.value = commentsResponse.data;
+        comments.value = commentsResponse.data.data;
       } catch (error) {
         console.error('Failed to fetch post or comments:', error);
       }
@@ -57,7 +54,7 @@ export default {
           body: newComment.value,
         }
       );
-      comments.value.push(response.data);
+      comments.value.push(response.data.data);
       newComment.value = '';
     };
 

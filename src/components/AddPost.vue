@@ -109,7 +109,7 @@ export default {
         }
 
         this.resetForm();
-        this.$emit('submitPost', response.data);
+        this.$emit('submitPost', response.data.data);
       } catch (error) {
         this.errorMessage = 'Failed to save post. Please try again.';
       }

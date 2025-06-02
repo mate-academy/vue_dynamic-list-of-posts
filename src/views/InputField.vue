@@ -11,12 +11,17 @@
         :placeholder="placeholder"
         class="input"
         :class="{ 'is-danger': hasError }"
-        v-model="inputValue"
+        :value="modelValue"
+        @input="$emit('update:modelValue', $event.target.value)"
       />
       <span class="icon is-small is-left">
         <i class="fas fa-user"></i>
       </span>
-      <span v-if="hasError" class="icon is-small is-right has-text-danger" :data-cy="errorIconCy">
+      <span
+        v-if="hasError"
+        class="icon is-small is-right has-text-danger"
+        :data-cy="errorIconCy"
+      >
         <i class="fas fa-exclamation-triangle"></i>
       </span>
     </div>
@@ -29,6 +34,7 @@
 <script>
 export default {
   props: {
+    modelValue: String,
     title: String,
     name: String,
     placeholder: String,
@@ -36,13 +42,8 @@ export default {
     errorText: String,
     dataCy: String,
     errorIconCy: String,
-    errorMessageCy: String
+    errorMessageCy: String,
   },
-  data() {
-    return {
-      inputValue: ""
-    };
-  }
 };
 </script>
 
