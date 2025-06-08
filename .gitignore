@@ -2,3 +2,30 @@
 ./dist
 dist
 node_modules
+# Загальні для Node.js/npm
+node_modules/
+.DS_Store # macOS
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
+.eslintcache
+.idea/ # IDE files, e.g. WebStorm
+
+# Build artifacts
+dist/
+build/
+*.log
+*.tmp
+*.bak
+
+# Vue specific
+.vuepress/dist # VuePress build output
+
+# Vite specific
+.vite/ # Vite cache directory
+
+# Локальні конфігурації
+.env.local
+.env.*.local
+.vscode/ # VS Code specific files, if you don't want to share them

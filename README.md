@@ -6,6 +6,7 @@ be opened in the sidebar with its comments, can be edited and deleted. There sho
 form to add new comments. For communication with the server, use the Posts and Users [Mate API](https://mate-academy.github.io/fe-students-api).
 
 > Here is [the working version](https://mate-academy.github.io/vue_dynamic-list-of-posts/#/)
+> my version [DEMO LINK] (https://Opokhvalenko.github.io/vue_dynamic-list-of-posts/#/)
 
 1. Learn the `.html` files to get all needed layouts;
    - Bulma is required to have all styles
