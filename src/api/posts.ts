@@ -1,33 +1,17 @@
-import { client } from "./clientHttp.ts";
+import { client } from '../utils/httpClient'
 
-export const getPostsByUserId = (id: number) => {
-  console.log('getPostsByUserId')
-  return client.get(`/posts?userId=${id}`);
-};
+export const getPostsByUserId = async (userId) => {
+  return client.get(`/posts?userId=${userId}`)
+}
 
-export const addNewPost = async ({ userId, title, body }: { userId: number; title: string; body: string }) => {
-  try {
-    return await client.post("/posts", { userId, title, body });
-  } catch (err) {
-    console.error('addPost error:', err);
-    throw err;
-  }
-};
+export const removePost = async (postId) => {
+  return client.delete(`/posts/${postId}`)
+}
 
-export const updatePost = async ( post : { id: number; userId: number; title: string; body: string }) => {
-  try {
-    return await client.patch(`/posts/${post.id}`, { post });
-  } catch (err) {
-    console.error('updatePost error:', err);
-    throw err;
-  }
-};
-export const deletePost = async ( postId : number) => {
-  try {
-    return await client.delete(`/posts/${postId}`);
-  } catch (err) {
-    console.error('updatePost error:', err);
-    throw err;
-  }
-};
+export const createPost = async (data) => {
+  return client.post('/posts', data)
+}
 
+export const updatePost = async (postId, data) => {
+  return client.patch(`/posts/${postId}`, data)
+}
