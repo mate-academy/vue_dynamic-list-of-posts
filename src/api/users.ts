@@ -1,16 +1,9 @@
-import { client } from "./clientHttp.ts";
+import { client } from '../utils/httpClient';
 
-export const getUserByEmail = (email: string) => {
-  console.log('getUserByEmail')
+export const getUserByEmail = async (email) => {
   return client.get(`/users?email=${email}`);
-};
+}
 
-export const addUser = async ({ name, email }: { name: string; email: string }) => {
-  try {
-    return await client.post("/users", { name, email });
-  } catch (err) {
-    console.error('addUser error:', err);
-    throw err;
-  }
+export const createUser = async ({ name, username, email, phone }) => {
+  return client.post("/users", { name, username, email, phone });
 };
-
