@@ -36,7 +36,7 @@ const isLoggedIn = () => Boolean(user.value.id);
     <main class="section">
       <div class="container">
         <div class="tile is-ancestor is-flex is-flex-wrap-wrap">
-          <PostsList :user-id="user.id" />
+          <PostsList :user-id="user.value.id" />
         </div>
       </div>
     </main>
