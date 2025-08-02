@@ -31,7 +31,7 @@ const isLoggedIn = () => Boolean(user.value.id);
   <LoginPage v-if="!isLoggedIn()" @addUser="saveUser" />
 
   <template v-else>
-    <AppHeader :user="user" @log-out="removeUser" />
+    <AppHeader :user="user.value" @log-out="removeUser" />
 
     <main class="section">
       <div class="container">
