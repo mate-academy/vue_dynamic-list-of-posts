@@ -1,26 +1,29 @@
 <script setup>
-import { deleteComment } from '@/api/comments';
-import { useCommentsStore } from '@/stores/commentsStore';
+import { deleteComment } from "@/api/comments";
+import { useCommentsStore } from "@/stores/commentsStore";
+import { usePostsStore } from "@/stores/postsStore";
 
 const commentsStore = useCommentsStore();
+const postsStore = usePostsStore();
 
 const props = defineProps({
   comment: {
     type: Object,
     required: true,
   },
-   postId: Number,
+  postId: Number,
 });
 
 const handleDelete = async () => {
+  commentsStore.removeComment(comment.id);
+
   try {
-    await deleteComment(props.comment.id);
-    commentsStore.removeComment(props.comment.id, props.comment.postId);
+    await deleteComment(comment.id);
   } catch (error) {
-    console.error("Error deleting comment:", error);
+    console.error("Failed to delete comment, reverting:", error);
+    commentsStore.addComment(comment, postsStore.activePostId);
   }
 };
-
 </script>
 
 <template>
@@ -32,6 +35,7 @@ const handleDelete = async () => {
         type="button"
         class="delete is-small"
         aria-label="delete"
+        
       ></button>
     </div>
     <div class="message-body">{{ comment.body }}</div>

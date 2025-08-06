@@ -14,12 +14,14 @@ const nameError = ref("");
 const emailError = ref("");
 const bodyError = ref("");
 
+const isLoading = ref(false);
+
 const authorName = ref("");
 const authorEmail = ref("");
 const body = ref("");
 
 const handleCancel = () => {
-  sidebarStore.writeACommentBtn = false;
+  body.value = "";
 };
 
 const validate = () => {
@@ -52,6 +54,18 @@ const validate = () => {
   return isValid;
 };
 
+watch(authorName, () => {
+  nameError.value = "";
+});
+
+watch(authorEmail, () => {
+  emailError.value = "";
+});
+
+watch(body, () => {
+  bodyError.value = "";
+});
+
 const handleSubmit = async (event) => {
   event.preventDefault();
 
@@ -64,12 +78,15 @@ const handleSubmit = async (event) => {
     body: body.value,
   };
 
+  isLoading.value = true;
+
   try {
     await createComment(newComment);
+    body.value = "";
   } catch (error) {
     console.error("Error creating comment:", error);
   } finally {
-    sidebarStore.writeACommentBtn = false;
+    isLoading.value = false;
   }
 };
 </script>
@@ -100,7 +117,13 @@ const handleSubmit = async (event) => {
 
     <div class="field is-grouped">
       <div class="control">
-        <button @click="handleSubmit" type="submit" class="button is-link">
+        <button
+          @click="handleSubmit"
+          type="submit"
+          class="button is-link"
+          :class="{ 'is-loading': isLoading }"
+          :disabled="isLoading"
+        >
           Add Comment
         </button>
       </div>
