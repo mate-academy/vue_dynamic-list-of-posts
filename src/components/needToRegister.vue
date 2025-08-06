@@ -1,23 +1,30 @@
-<template>
-  <div className="field">
-    <label className="label" htmlFor="user-name"> Your Name </label>
+<script setup>
+defineProps(["modelValue", "errorMessage"]);
+defineEmits(["update:modelValue"]);
+</script>
 
-    <div className="control has-icons-left">
+<template>
+  <div class="field">
+    <label class="label" for="user-name">Your Name</label>
+
+    <div class="control has-icons-left">
       <input
+        :value="modelValue"
+        @input="$emit('update:modelValue', $event.target.value)"
         type="text"
         id="user-name"
         name="name"
-        className="input"
+        class="input"
         placeholder="Enter your name"
         required
-        minlength="{4}"
+        minlength="4"
       />
 
-      <span className="icon is-small is-left">
-        <i className="fas fa-user"></i>
+      <span class="icon is-small is-left">
+        <i class="fas fa-user"></i>
       </span>
     </div>
 
-    <p className="help is-danger">error message</p>
+    <p class="help is-danger">{{ errorMessage }}</p>
   </div>
 </template>

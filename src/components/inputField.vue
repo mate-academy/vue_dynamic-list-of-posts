@@ -1,28 +1,47 @@
+<script setup>
+import { ref } from "vue";
+
+const props = defineProps({
+  label: String,
+  placeholder: String,
+  modelValue: String,
+  errorMessage: String,
+});
+
+const emit = defineEmits(["update:modelValue"]);
+
+const updateValue = (event) => {
+  emit("update:modelValue", event.target.value);
+};
+</script>
+
 <template>
-  <div className="field" data-cy="NameField">
-    <label className="label" htmlFor="{`comment-author-name-${name}`}">
-      title
+  <div class="field" :data-cy="`NameField`">
+    <label class="label">
+      {{ label }}
     </label>
-    <div className="control has-icons-left has-icons-right">
+    <div class="control has-icons-left has-icons-right">
       <input
+        class="input"
         type="text"
-        name="{name}"
-        id="{`comment-author-name-${name}`}"
-        placeholder="{placeholder}"
-        className="input is-danger"
+        :placeholder="placeholder"
+        :value="modelValue"
+        @input="updateValue"
       />
-      <span className="icon is-small is-left">
-        <i className="fas fa-user"></i>
+
+      <span class="icon is-small is-left">
+        <i class="fas fa-user"></i>
       </span>
 
       <span
-        className="icon is-small is-right has-text-danger"
-        data-cy="ErrorIcon"
+        v-if="errorMessage"
+        class="icon is-small is-right has-text-danger"
+        :data-cy="'ErrorIcon'"
       >
-        <i className="fas fa-exclamation-triangle"></i>
+        <i class="fas fa-exclamation-triangle"></i>
       </span>
     </div>
 
-    <p className="help is-danger" data-cy="ErrorMessage">error text</p>
+    <p v-if="errorMessage" class="help is-danger" :data-cy="'ErrorMessage'">{{ errorMessage }}</p>
   </div>
 </template>

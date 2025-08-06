@@ -1,38 +1,89 @@
 <script setup>
-function handleSubmit() {
-  // Handle form submission logic here
-  console.log("Form submitted");
-}
+import Register from "./needToRegister.vue";
+import { getUserByEmail, createUser } from "@/api/users.js";
+import { useUserStore } from "@/stores/userStore";
+import { ref } from "vue";
+
+const email = ref("");
+const name = ref("");
+const errorMessage = ref("");
+const showRegister = ref(false);
+const buttonText = ref("Login");
+const titleText = ref("Get your userId");
+const userStore = useUserStore();
+
+const handleSubmit = async () => {
+  errorMessage.value = "";
+
+  if (showRegister.value) {
+    try {
+      const newUser = {
+        name: name.value,
+        email: email.value,
+        username: null,
+        phone: null,
+      };
+
+      const response = await createUser(newUser);
+
+      userStore.setUser(response.data);
+    } catch (error) {
+      errorMessage.value = "Registration failed";
+    }
+
+    return;
+  }
+
+  try {
+    const response = await getUserByEmail(email.value);
+
+    if (response.data.length > 0) {
+      const user = response.data[0];
+      userStore.setUser(user);
+    } else {
+      showRegister.value = true;
+      buttonText.value = "Register";
+      titleText.value = "You need to register";
+    }
+  } catch (error) {
+    errorMessage.value = "Login failed";
+  }
+};
 </script>
 
 <template>
-  <section className="container is-flex is-justify-content-center">
-    <form @submit.prevent="handleSubmit" className="box mt-5">
-      <h1 className="title is-3">You need to register"</h1>
+  <section class="container is-flex is-justify-content-center">
+    <form @submit.prevent="handleSubmit" class="box mt-5">
+      <h1 class="title is-3">{{ titleText }}</h1>
 
-      <div className="field">
-        <label className="label" htmlFor="user-email"> Email </label>
+      <div class="field">
+        <label class="label" htmlFor="user-email"> Email </label>
 
-        <div className="control has-icons-left">
+        <div class="control has-icons-left">
           <input
+            v-model="email"
             type="email"
             id="user-email"
             name="email"
-            className="input"
+            class="input"
             placeholder="Enter your email"
             required
+            :disabled="showRegister"
           />
 
-          <span className="icon is-small is-left">
-            <i className="fas fa-envelope"></i>
+          <span class="icon is-small is-left">
+            <i class="fas fa-envelope"></i>
           </span>
         </div>
+        <Register v-if="showRegister" v-model="name" />
 
-        <p className="help is-danger">error message</p>
+        <p class="help is-danger">{{ errorMessage }}</p>
       </div>
 
-      <div className="field">
-        <button type="submit" className="button is-primary">Login</button>
+      <div class="field">
+        <button type="submit" class="button is-primary">
+          {{ buttonText }}
+        </button>
       </div>
     </form>
   </section>

@@ -1,26 +1,84 @@
+<script setup>
+import { onMounted } from "vue";
+import { usePostsStore } from "@/stores/postsStore";
+import { useUserStore } from "@/stores/userStore";
+import { useSidebarStore } from "@/stores/sidebarStore";
+import Loader from "./loader.vue";
+
+const postsStore = usePostsStore();
+const userStore = useUserStore();
+const sidebarStore = useSidebarStore();
+
+onMounted(async () => {
+  userStore.init();
+  if (userStore.user) {
+    await postsStore.fetchPostsByUserId(userStore.user.id);
+  }
+});
+
+const handleAddNewPostClick = () => {
+  postsStore.setActivePost(null);
+  sidebarStore.openNewPost = true;
+  sidebarStore.open();
+};
+
+const handleOpenPostClick = (postId) => {
+  const isSamePost = postsStore.activePostId === postId;
+
+  if (isSamePost) {
+    postsStore.setActivePost(null);
+    sidebarStore.close();
+    sidebarStore.openNewPost = false;
+    sidebarStore.editPost = false;
+    sidebarStore.writeACommentBtn = false;
+  } else {
+    postsStore.setActivePost(postId);
+    sidebarStore.open();
+    sidebarStore.openNewPost = false;
+    sidebarStore.writeACommentBtn = false;
+    sidebarStore.editPost = false;
+  }
+};
+</script>
+
 <template>
-  <div className="tile is-parent">
-    <div className="tile is-child box is-success">
-      <div className="block">
-        <div className="block is-flex is-justify-content-space-between">
-          <p className="title">Posts</p>
-          <button type="button" className="button is-link">Add New Post</button>
+  <div class="tile is-parent">
+    <div class="tile is-child box is-success">
+      <div class="block">
+        <div class="block is-flex is-justify-content-space-between">
+          <p class="title">Posts</p>
+          <button
+            type="button"
+            class="button is-link"
+            @click="handleAddNewPostClick"
+          >
+            Add New Post
+          </button>
         </div>
 
-        <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+        <Loader v-if="postsStore.isLoading" />
+
+        <table v-else class="table is-fullwidth is-striped is-hoverable is-narrow">
           <thead>
-            <tr className="has-background-link-light">
+            <tr class="has-background-link-light">
               <th>ID</th>
               <th>Title</th>
-              <th className="has-text-right">Actions</th>
+              <th class="has-text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>id</td>
-              <td>title</td>
-              <td className="has-text-right is-vcentered">
-                <button type="button" className="button is-link">Open</button>
+            <tr v-for="post in postsStore.posts" :key="post.id">
+              <td>{{ post.id }}</td>
+              <td>{{ post.title }}</td>
+              <td class="has-text-right is-vcentered">
+                <button
+                  type="button"
+                  class="button is-link"
+                  :class="{ 'is-light': postsStore.activePostId !== post.id }"
+                  @click="handleOpenPostClick(post.id)"
+                >
+                  {{ postsStore.activePostId === post.id ? "Close" : "Open" }}
+                </button>
               </td>
             </tr>
           </tbody>
