@@ -76,6 +76,7 @@ const handleSubmit = async () => {
       />
       <TextAreaField
         label="Write Post Body"
+        name="body"
         placeholder="Post body"
         v-model="body"
         :errorMessage="bodyError"

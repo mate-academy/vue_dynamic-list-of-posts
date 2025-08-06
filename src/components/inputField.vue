@@ -42,6 +42,8 @@ const updateValue = (event) => {
       </span>
     </div>
 
-    <p v-if="errorMessage" class="help is-danger" :data-cy="'ErrorMessage'">{{ errorMessage }}</p>
+    <p v-if="errorMessage" class="help is-danger" :data-cy="'ErrorMessage'">
+      {{ errorMessage }}
+    </p>
   </div>
 </template>

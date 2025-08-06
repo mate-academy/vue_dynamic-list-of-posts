@@ -98,6 +98,7 @@ const handleSave = async (e) => {
       />
       <TextAreaField
         v-model="body"
+        name="body"
         placeholder="Post body"
         label="Body"
         :errorMessage="bodyError"

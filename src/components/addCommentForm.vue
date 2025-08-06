@@ -20,7 +20,7 @@ const body = ref("");
 
 const handleCancel = () => {
   sidebarStore.writeACommentBtn = false;
-}
+};
 
 const validate = () => {
   let isValid = true;
@@ -52,7 +52,6 @@ const validate = () => {
   return isValid;
 };
 
-
 const handleSubmit = async (event) => {
   event.preventDefault();
 
@@ -63,16 +62,16 @@ const handleSubmit = async (event) => {
     name: authorName.value,
     email: authorEmail.value,
     body: body.value,
-  }
+  };
 
   try {
-    await createComment(newComment);    
+    await createComment(newComment);
   } catch (error) {
     console.error("Error creating comment:", error);
   } finally {
     sidebarStore.writeACommentBtn = false;
   }
-}
+};
 </script>
 
 <template>
@@ -81,23 +80,38 @@ const handleSubmit = async (event) => {
       label="Author Name"
       placeholder="Name Surname"
       v-model="authorName"
+      :errorMessage="nameError"
     />
+
     <InputField
       label="Author Email"
       placeholder="Your Email"
       v-model="authorEmail"
+      :errorMessage="emailError"
     />
+
     <TextAreaField
       label="Write Post Body"
+      name="comment"
       placeholder="Comment"
       v-model="body"
+      :error-message="bodyError"
     />
+
     <div class="field is-grouped">
       <div class="control">
-        <button @click="handleSubmit" type="submit" class="button is-link">Add Comment</button>
+        <button @click="handleSubmit" type="submit" class="button is-link">
+          Add Comment
+        </button>
       </div>
       <div class="control">
-        <button @click="handleCancel" type="reset" class="button is-link is-light">Cancel</button>
+        <button
+          @click="handleCancel"
+          type="reset"
+          class="button is-link is-light"
+        >
+          Cancel
+        </button>
       </div>
     </div>
   </form>

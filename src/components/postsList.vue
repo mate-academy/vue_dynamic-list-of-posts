@@ -3,7 +3,7 @@ import { onMounted } from "vue";
 import { usePostsStore } from "@/stores/postsStore";
 import { useUserStore } from "@/stores/userStore";
 import { useSidebarStore } from "@/stores/sidebarStore";
-import Loader from "./loader.vue";
+import PostLoader from "./postLoader.vue";
 
 const postsStore = usePostsStore();
 const userStore = useUserStore();
@@ -56,7 +56,7 @@ const handleOpenPostClick = (postId) => {
           </button>
         </div>
 
-        <Loader v-if="postsStore.isLoading" />
+        <PostLoader v-if="postsStore.isLoading" />
 
         <table v-else class="table is-fullwidth is-striped is-hoverable is-narrow">
           <thead>
