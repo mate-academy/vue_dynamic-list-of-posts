@@ -1,49 +1,135 @@
 # Vue Dynamic List of Posts
 
-Implement the App with ability to show posts of a current logged-in user.
-The user should be able to create a new post with their userId. Each post can
-be opened in the sidebar with its comments, can be edited and deleted. There should delete a comment and a
-form to add new comments. For communication with the server, use the Posts and Users [Mate API](https://mate-academy.github.io/fe-students-api).
+Реалізація додатку з можливістю відображення публікацій поточного зареєстрованого користувача. Користувач може створювати нові публікації, редагувати та видаляти існуючі, а також додавати коментарі.
 
-> Here is [the working version](https://mate-academy.github.io/vue_dynamic-list-of-posts/#/)
+## Функціональність
 
-1. Learn the `.html` files to get all needed layouts;
-   - Bulma is required to have all styles
-1. Initially the `App` shows the `Posts table` and `Create new post` button
+- ✅ Відображення списку публікацій поточного користувача
+- ✅ Створення нових публікацій
+- ✅ Редагування існуючих публікацій
+- ✅ Видалення публікацій
+- ✅ Перегляд коментарів до публікацій
+- ✅ Додавання нових коментарів
+- ✅ Видалення коментарів
+- ✅ Валідація форм
+- ✅ Обробка помилок API
+- ✅ Завантажувач (Loader) під час очікування відповіді
+- ✅ Адаптивний дизайн з Bulma CSS
 
-   - show the `<Loader>` while waiting for the API response;
-   - show an error notification if `posts` loading fails;
-   - if the user has no posts show the `No posts yet` notification.
+## Технології
 
-1. Add the `Sidebar--open` class to the sidebar when user click on `Create new post`;
+- **Frontend**: Vue.js 3, HTML5, CSS3
+- **CSS Framework**: Bulma
+- **Icons**: Font Awesome
+- **API**: Mate Academy Students API
 
-   - the form for new post should be appear there immediately;
-   - add validation to the fields;
-   - when user click on `Create` component with post details and comments should be appear there immediately ;
+## Запуск проекту
 
-1. In the `Post preview` user should see `edit` and `delete` buttons;
+1. **Клонуйте репозиторій:**
+   ```bash
+   git clone <repository-url>
+   cd vue_dynamic-list-of-posts
+   ```
 
-   - When user click on `Delete`, post should be deleted and sidebar close;
-   - When user click on `Edit` show edit post form;
-   - When user click on `Save` in edit mode - show post preview in the sidebar;
+2. **Відкрийте `index.html` у браузері:**
+   - Просто двічі клацніть на файл `index.html`
+   - Або використовуйте локальний сервер (рекомендовано)
 
-1. Add the `Sidebar--open` class to the sidebar when a post is selected;
-   - the post details should appear there immediately;
-   - the post commnets should be loaded from the API;
-   - the `Loader` is shown before comments are loaded;
-   - `CommentsError` notification is show on loading error;
-   - `NoComments` message is shown if the post does not have comments yet;
-1. Show the `Write a comment` button below the comments
-   - after click hide the button and show the form to add new comment;
-   - the form stays visible until the other post is opened;
-   - the form should be implemented as a separate component;
-1. The form requires an author's name and email and a comment text.
-   - show errors only after the form is submitted;
-   - remove an error on the field change;
-   - keep the `name` and `email` after the successful submit but clear a comment text;
-   - The `Clear` button should also clear all errors;
-   - Add the `is-loading` class to the submit button while waiting for a response;
-   - Add the new comment received as a response from the `API` to the end of the list;
-1. Implement comment deletion
-   - Delete the commnet immediately not waiting for the server response to improve the UX.
-1. (\*) Handle `Add` and `Delete` errors so the user can retry
+3. **Для запуску локального сервера:**
+   ```bash
+   # Python 3
+   python -m http.server 8000
+   
+   # Node.js (якщо встановлено)
+   npx http-server
+   
+   # PHP (якщо встановлено)
+   php -S localhost:8000
+   ```
+
+4. **Відкрийте браузер та перейдіть на:**
+   ```
+   http://localhost:8000
+   ```
+
+## Структура проекту
+
+```
+vue_dynamic-list-of-posts/
+├── index.html          # Основний HTML файл
+├── app.js              # Vue.js логіка додатку
+├── loader/             # CSS для завантажувача
+│   ├── index.css
+│   └── index.html
+├── sidebar/            # CSS для бічної панелі
+│   ├── index.css
+│   └── index.html
+├── addPost.html        # Макет форми створення публікації
+├── comment.html        # Макет коментаря
+├── header.html         # Макет заголовка
+├── inputField.html     # Макет поля вводу
+├── postLoader.html     # Макет завантажувача публікації
+├── postPreview.html    # Макет перегляду публікації
+├── postsList.html      # Макет списку публікацій
+├── textAreaField.html  # Макет текстового поля
+├── writeCommentBtn.html # Макет кнопки написання коментаря
+└── README.md           # Цей файл
+```
+
+## API Endpoints
+
+Додаток використовує [Mate Academy Students API](https://mate.academy/students-api):
+
+- **GET** `/posts?userId={id}` - Отримання публікацій користувача
+- **POST** `/posts` - Створення нової публікації
+- **PATCH** `/posts/{id}` - Оновлення публікації
+- **DELETE** `/posts/{id}` - Видалення публікації
+- **GET** `/comments?postId={id}` - Отримання коментарів до публікації
+- **POST** `/comments` - Додавання нового коментаря
+- **DELETE** `/comments/{id}` - Видалення коментаря
+
+## Особливості реалізації
+
+### Оптимістичне видалення коментарів
+Коментарі видаляються з UI негайно для покращення UX, але відновлюються у випадку помилки API.
+
+### Валідація форм
+- Валідація на клієнті перед відправкою
+- Показ помилок тільки після спроби відправки
+- Автоматичне очищення помилок при зміні полів
+
+### Обробка помилок
+- Показ зрозумілих повідомлень про помилки
+- Можливість повторної спроби при невдачі
+- Graceful fallback при проблемах з API
+
+### Стан додатку
+- Централізоване управління станом через Vue.js
+- Автоматичне оновлення UI при зміні даних
+- Синхронізація між різними компонентами
+
+## Налаштування користувача
+
+За замовчуванням додаток використовує користувача з ID = 1. Для зміни користувача відредагуйте `currentUser` об'єкт у файлі `app.js`:
+
+```javascript
+currentUser: {
+  id: 1,        // Змініть на потрібний ID
+  name: 'Demo User'
+}
+```
+
+## Тестування
+
+Додаток готовий до тестування з Cypress (включає `data-cy` атрибути для основних елементів).
+
+## Підтримка браузерів
+
+- Chrome (рекомендовано)
+- Firefox
+- Safari
+- Edge
+
+## Ліцензія
+
+Цей проект створено для навчальних цілей.

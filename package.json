@@ -1,0 +1,34 @@
+{
+  "name": "vue-dynamic-list-of-posts",
+  "version": "1.0.0",
+  "description": "Vue.js application for dynamic list of posts with comments",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "dev": "python3 -m http.server 8001",
+    "serve": "python3 -m http.server 8002",
+    "build": "echo 'No build step needed for static HTML'",
+    "deploy": "./deploy.sh",
+    "lint": "echo 'No linting configured for static HTML'",
+    "test": "echo 'No tests configured'"
+  },
+  "keywords": [
+    "vue",
+    "posts",
+    "comments",
+    "bulma",
+    "api"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/vue_dynamic-list-of-posts.git"
+  },
+  "homepage": "https://yourusername.github.io/vue_dynamic-list-of-posts/",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
