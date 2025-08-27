@@ -1,5 +1,6 @@
 <template>
   <form @submit.prevent="submitComment">
+    <!-- Name Field -->
     <div class="field">
       <label class="label">Author Name</label>
       <div
@@ -24,6 +25,7 @@
       <p v-if="errors.name" class="help is-danger">Name is required</p>
     </div>
 
+    <!-- Email Field -->
     <div class="field">
       <label class="label">Author Email</label>
       <div
@@ -49,6 +51,7 @@
       <p v-if="errors.email" class="help is-danger">Email is required</p>
     </div>
 
+    <!-- Body Field -->
     <div class="field">
       <label class="label">Write Post Body</label>
       <div class="control" :class="{ 'has-icons-right': errors.body }">
@@ -66,19 +69,36 @@
       <p v-if="errors.body" class="help is-danger">Comment is required</p>
     </div>
 
+    <!-- Buttons -->
     <div class="field is-grouped">
       <div class="control">
-        <button type="submit" class="button is-link">Add Comment</button>
+        <button
+          type="submit"
+          class="button is-link"
+          :class="{ 'is-loading': loading }"
+          :disabled="loading"
+        >
+          Add Comment
+        </button>
       </div>
       <div class="control">
         <button
           type="button"
           class="button is-link is-inverted"
           @click="clearForm"
+          :disabled="loading"
         >
           Cancel
         </button>
       </div>
+    </div>
+
+    <!-- Ошибка при запросе -->
+    <div v-if="errorMessage" class="notification is-danger is-light">
+      <p>{{ errorMessage }}</p>
+      <button class="button is-small is-danger mt-2" @click="retrySubmit">
+        Retry
+      </button>
     </div>
   </form>
 </template>
@@ -100,6 +120,10 @@ const errors = reactive({
   body: false,
 });
 
+const loading = ref(false);
+const errorMessage = ref('');
+
+// Валидация
 const isFormValid = () => {
   let isValid = true;
   if (!name.value) {
@@ -118,15 +142,9 @@ const isFormValid = () => {
 };
 
 const validateField = (field) => {
-  if (field === 'name') {
-    errors.name = !name.value;
-  }
-  if (field === 'email') {
-    errors.email = !email.value || !/\S+@\S+\.\S+/.test(email.value);
-  }
-  if (field === 'body') {
-    errors.body = !body.value;
-  }
+  if (field === 'name') errors.name = !name.value;
+  if (field === 'email') errors.email = !email.value || !/\S+@\S+\.\S+/.test(email.value);
+  if (field === 'body') errors.body = !body.value;
 };
 
 const clearErrors = () => {
@@ -135,22 +153,40 @@ const clearErrors = () => {
   errors.body = false;
 };
 
+// Сабмит
 const submitComment = async () => {
   clearErrors();
-  if (!isFormValid()) {
-    return;
-  }
-  
+  errorMessage.value = '';
+
+  if (!isFormValid()) return;
+
+  loading.value = true;
+
   const comment = {
     postId: props.postId,
     name: name.value,
     email: email.value,
     body: body.value,
   };
-  const newComment = await addCommentApi(comment);
 
-  clearForm();
-  emit('comment-added', newComment);
+  try {
+    const newComment = await addCommentApi(comment);
+
+    // очищаем только тело комментария
+    body.value = '';
+    errors.body = false;
+
+    emit('comment-added', newComment);
+  } catch (err) {
+    console.error('Failed to add comment:', err);
+    errorMessage.value = 'Failed to send comment. Please try again.';
+  } finally {
+    loading.value = false;
+  }
+};
+
+const retrySubmit = () => {
+  submitComment();
 };
 
 const clearForm = () => {
@@ -158,6 +194,7 @@ const clearForm = () => {
   email.value = '';
   body.value = '';
   clearErrors();
+  errorMessage.value = '';
   emit('cancel');
 };
 </script>
