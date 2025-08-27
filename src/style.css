@@ -1,0 +1,30 @@
+/* Sidebar layout */
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -500px;
+  width: 400px;
+  height: 100%;
+  background: #fff;
+  overflow-y: auto;
+  transition: right 0.3s ease-in-out;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.Sidebar--open {
+  right: 0;
+}
+
+/* Scrollbar для приятного UX */
+.sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}

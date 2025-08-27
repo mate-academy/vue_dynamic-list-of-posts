@@ -1,0 +1,94 @@
+/* -----------------------------
+   Sidebar
+----------------------------- */
+.Sidebar {
+  overflow: hidden;
+  opacity: 0;
+  transition: max-width 0.5s ease-in-out, opacity 0.5s ease-in-out;
+  @media (min-width: 769px) {
+    max-width: 0;
+  }
+}
+
+.Sidebar--open {
+  opacity: 1;
+  @media (min-width: 769px) {
+    max-width: 50%;
+  }
+}
+
+/* -----------------------------
+   Loader (.lds-ring)
+----------------------------- */
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border: 8px solid #3273dc; /* Bulma primary color */
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #3273dc transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) { animation-delay: -0.45s; }
+.lds-ring div:nth-child(2) { animation-delay: -0.3s; }
+.lds-ring div:nth-child(3) { animation-delay: -0.15s; }
+
+@keyframes lds-ring {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* -----------------------------
+   Post Table
+----------------------------- */
+.table thead tr.has-background-link-light {
+  background-color: #eff5fc;
+}
+
+/* -----------------------------
+   Post Preview & Comments
+----------------------------- */
+.message-header a {
+  color: #363636;
+  font-weight: bold;
+}
+.message-header .delete {
+  margin-left: auto;
+}
+
+/* -----------------------------
+   Buttons
+----------------------------- */
+.button.is-link.is-loading {
+  pointer-events: none;
+}
+
+/* -----------------------------
+   Forms
+----------------------------- */
+.field .help.is-danger {
+  color: #ff3860;
+}
+
+.input.is-danger,
+.textarea.is-danger {
+  border-color: #ff3860;
+}
+
+/* -----------------------------
+   Misc
+----------------------------- */
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 0.75rem; }
+.mt-5 { margin-top: 1.5rem; }
+.mr-3 { margin-right: 0.75rem; }
+.mr-5 { margin-right: 1.25rem; }
