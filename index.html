@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue Dynamic List of Posts</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="loader/index.css">
+  <link rel="stylesheet" href="sidebar/index.css">
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <div class="tile is-ancestor">
+        <!-- Posts List -->
+        <div class="tile is-parent">
+          <div class="tile is-child box is-success">
+            <div class="block">
+              <div class="block is-flex is-justify-content-space-between">
+                <p class="title">Posts</p>
+                <button 
+                  type="button" 
+                  class="button is-link"
+                  @click="openCreatePost"
+                >
+                  Create New Post
+                </button>
+              </div>
+
+              <!-- Loader -->
+              <div v-if="isLoading" class="has-text-centered">
+                <div class="lds-ring">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              </div>
+
+              <!-- Error Message -->
+              <div v-else-if="error" class="notification is-danger">
+                {{ error }}
+              </div>
+
+              <!-- No Posts Message -->
+              <div v-else-if="posts.length === 0" class="notification is-info">
+                No posts yet
+              </div>
+
+              <!-- Posts Table -->
+              <table v-else class="table is-fullwidth is-striped is-hoverable is-narrow">
+                <thead>
+                  <tr class="has-background-link-light">
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th class="has-text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="post in posts" :key="post.id">
+                    <td>{{ post.id }}</td>
+                    <td>{{ post.title }}</td>
+                    <td class="has-text-right is-vcentered">
+                      <button 
+                        type="button" 
+                        class="button is-link"
+                        @click="openPost(post)"
+                      >
+                        Open
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div 
+          class="tile is-parent is-8-desktop Sidebar"
+          :class="{ 'Sidebar--open': isSidebarOpen }"
+        >
+          <div class="tile is-child box is-success">
+            <div class="content">
+              <!-- Create Post Form -->
+              <div v-if="showCreateForm">
+                <h2>Create New Post</h2>
+                <form @submit.prevent="createPost">
+                  <div class="field">
+                    <label class="label" for="post-title">Title</label>
+                    <div class="control">
+                      <input
+                        type="text"
+                        id="post-title"
+                        v-model="newPost.title"
+                        class="input"
+                        :class="{ 'is-danger': createErrors.title }"
+                        placeholder="Enter post title"
+                        required
+                      />
+                    </div>
+                    <p v-if="createErrors.title" class="help is-danger">
+                      {{ createErrors.title }}
+                    </p>
+                  </div>
+
+                  <div class="field">
+                    <label class="label" for="post-body">Body</label>
+                    <div class="control">
+                      <textarea
+                        id="post-body"
+                        v-model="newPost.body"
+                        class="textarea"
+                        :class="{ 'is-danger': createErrors.body }"
+                        placeholder="Enter post body"
+                        required
+                      ></textarea>
+                    </div>
+                    <p v-if="createErrors.body" class="help is-danger">
+                      {{ createErrors.body }}
+                    </p>
+                  </div>
+
+                  <div class="field is-grouped">
+                    <div class="control">
+                      <button 
+                        type="submit" 
+                        class="button is-link"
+                        :class="{ 'is-loading': isCreating }"
+                      >
+                        Create
+                      </button>
+                    </div>
+                    <div class="control">
+                      <button 
+                        type="button" 
+                        class="button is-link is-light"
+                        @click="closeSidebar"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+              <!-- Post Preview -->
+              <div v-else-if="selectedPost">
+                <div class="block">
+                  <div class="is-flex is-justify-content-space-between is-align-items-center">
+                    <h2>#{{ selectedPost.id }}: {{ selectedPost.title }}</h2>
+                    <div class="is-flex">
+                      <span 
+                        class="icon is-small is-right is-clickable"
+                        @click="editPost"
+                      >
+                        <i class="fas fa-pen-to-square"></i>
+                      </span>
+                      <span
+                        class="icon is-small is-right has-text-danger is-clickable ml-3"
+                        @click="deletePost"
+                      >
+                        <i class="fas fa-trash"></i>
+                      </span>
+                    </div>
+                  </div>
+                  <p data-cy="PostBody">{{ selectedPost.body }}</p>
+                </div>
+
+                <!-- Edit Post Form -->
+                <div v-if="isEditing">
+                  <h3>Edit Post</h3>
+                  <form @submit.prevent="saveEdit">
+                    <div class="field">
+                      <label class="label" for="edit-title">Title</label>
+                      <div class="control">
+                        <input
+                          type="text"
+                          id="edit-title"
+                          v-model="editForm.title"
+                          class="input"
+                          :class="{ 'is-danger': editErrors.title }"
+                          required
+                        />
+                      </div>
+                      <p v-if="editErrors.title" class="help is-danger">
+                        {{ editErrors.title }}
+                      </p>
+                    </div>
+
+                    <div class="field">
+                      <label class="label" for="edit-body">Body</label>
+                      <div class="control">
+                        <textarea
+                          id="edit-body"
+                          v-model="editForm.body"
+                          class="textarea"
+                          :class="{ 'is-danger': editErrors.body }"
+                          required
+                        ></textarea>
+                      </div>
+                      <p v-if="editErrors.body" class="help is-danger">
+                        {{ editErrors.body }}
+                      </p>
+                    </div>
+
+                    <div class="field is-grouped">
+                      <div class="control">
+                        <button 
+                          type="submit" 
+                          class="button is-link"
+                          :class="{ 'is-loading': isSaving }"
+                        >
+                          Save
+                        </button>
+                      </div>
+                      <div class="control">
+                        <button 
+                          type="button" 
+                          class="button is-link is-light"
+                          @click="cancelEdit"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+
+                <!-- Comments Section -->
+                <div v-else>
+                  <h3>Comments</h3>
+                  
+                  <!-- Comments Loader -->
+                  <div v-if="isLoadingComments" class="has-text-centered">
+                    <div class="lds-ring">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
+                  </div>
+
+                  <!-- Comments Error -->
+                  <div v-else-if="commentsError" class="notification is-danger">
+                    {{ commentsError }}
+                  </div>
+
+                  <!-- No Comments -->
+                  <div v-else-if="comments.length === 0" class="notification is-info">
+                    No comments yet
+                  </div>
+
+                  <!-- Comments List -->
+                  <div v-else>
+                    <article 
+                      v-for="comment in comments" 
+                      :key="comment.id"
+                      class="message is-small"
+                    >
+                      <div class="message-header">
+                        <a :href="`mailto:${comment.email}`">{{ comment.name }}</a>
+                        <button 
+                          type="button" 
+                          class="delete is-small" 
+                          aria-label="delete"
+                          @click="deleteComment(comment.id)"
+                        ></button>
+                      </div>
+                      <div class="message-body">{{ comment.body }}</div>
+                    </article>
+                  </div>
+
+                  <!-- Write Comment Button -->
+                  <div v-if="!showCommentForm" class="mt-4">
+                    <button 
+                      type="button" 
+                      class="button is-link"
+                      @click="showCommentForm = true"
+                    >
+                      Write a comment
+                    </button>
+                  </div>
+
+                  <!-- Comment Form -->
+                  <div v-else class="mt-4">
+                    <h4>Add Comment</h4>
+                    <form @submit.prevent="addComment">
+                      <div class="field" data-cy="NameField">
+                        <label class="label" :for="`comment-author-name-${commentForm.name}`">
+                          Name
+                        </label>
+                        <div class="control has-icons-left has-icons-right">
+                          <input
+                            type="text"
+                            name="name"
+                            :id="`comment-author-name-${commentForm.name}`"
+                            placeholder="Enter your name"
+                            v-model="commentForm.name"
+                            class="input"
+                            :class="{ 'is-danger': commentErrors.name }"
+                            @input="clearError('name')"
+                          />
+                          <span class="icon is-small is-left">
+                            <i class="fas fa-user"></i>
+                          </span>
+
+                          <span
+                            v-if="commentErrors.name"
+                            class="icon is-small is-right has-text-danger"
+                            data-cy="ErrorIcon"
+                          >
+                            <i class="fas fa-exclamation-triangle"></i>
+                          </span>
+                        </div>
+
+                        <p v-if="commentErrors.name" class="help is-danger" data-cy="ErrorMessage">
+                          {{ commentErrors.name }}
+                        </p>
+                      </div>
+
+                      <div class="field">
+                        <label class="label" for="comment-email">Email</label>
+                        <div class="control has-icons-left has-icons-right">
+                          <input
+                            type="email"
+                            id="comment-email"
+                            placeholder="Enter your email"
+                            v-model="commentForm.email"
+                            class="input"
+                            :class="{ 'is-danger': commentErrors.email }"
+                            @input="clearError('email')"
+                            required
+                          />
+                          <span class="icon is-small is-left">
+                            <i class="fas fa-envelope"></i>
+                          </span>
+
+                          <span
+                            v-if="commentErrors.email"
+                            class="icon is-small is-right has-text-danger"
+                          >
+                            <i class="fas fa-exclamation-triangle"></i>
+                          </span>
+                        </div>
+
+                        <p v-if="commentErrors.email" class="help is-danger">
+                          {{ commentErrors.email }}
+                        </p>
+                      </div>
+
+                      <div class="field" data-cy="BodyField">
+                        <label class="label" for="comment-body">Comment</label>
+                        <div class="control">
+                          <textarea
+                            id="comment-body"
+                            name="body"
+                            placeholder="Enter your comment"
+                            v-model="commentForm.body"
+                            class="textarea"
+                            :class="{ 'is-danger': commentErrors.body }"
+                            @input="clearError('body')"
+                            required
+                          ></textarea>
+                        </div>
+
+                        <p v-if="commentErrors.body" class="help is-danger" data-cy="ErrorMessage">
+                          {{ commentErrors.body }}
+                        </p>
+                      </div>
+
+                      <div class="field is-grouped">
+                        <div class="control">
+                          <button 
+                            type="submit" 
+                            class="button is-link"
+                            :class="{ 'is-loading': isAddingComment }"
+                          >
+                            Add Comment
+                          </button>
+                        </div>
+                        <div class="control">
+                          <button 
+                            type="button" 
+                            class="button is-link is-light"
+                            @click="clearCommentForm"
+                          >
+                            Clear
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
