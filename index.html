@@ -255,22 +255,13 @@
 
                   <!-- Comments List -->
                   <div v-else>
-                    <article 
-                      v-for="comment in comments" 
+                    <comment-item
+                      v-for="comment in comments"
                       :key="comment.id"
-                      class="message is-small"
-                    >
-                      <div class="message-header">
-                        <a :href="`mailto:${comment.email}`">{{ comment.name }}</a>
-                        <button 
-                          type="button" 
-                          class="delete is-small" 
-                          aria-label="delete"
-                          @click="deleteComment(comment.id)"
-                        ></button>
-                      </div>
-                      <div class="message-body">{{ comment.body }}</div>
-                    </article>
+                      :comment="comment"
+                      @comment-deleted="onCommentDeleted"
+                      @comment-delete-error="onCommentDeleteError"
+                    />
                   </div>
 
                   <!-- Write Comment Button -->
@@ -284,114 +275,15 @@
                     </button>
                   </div>
 
-                  <!-- Comment Form -->
-                  <div v-else class="mt-4">
-                    <h4>Add Comment</h4>
-                    <form @submit.prevent="addComment">
-                      <div class="field" data-cy="NameField">
-                        <label class="label" :for="`comment-author-name-${commentForm.name}`">
-                          Name
-                        </label>
-                        <div class="control has-icons-left has-icons-right">
-                          <input
-                            type="text"
-                            name="name"
-                            :id="`comment-author-name-${commentForm.name}`"
-                            placeholder="Enter your name"
-                            v-model="commentForm.name"
-                            class="input"
-                            :class="{ 'is-danger': commentErrors.name }"
-                            @input="clearError('name')"
-                          />
-                          <span class="icon is-small is-left">
-                            <i class="fas fa-user"></i>
-                          </span>
-
-                          <span
-                            v-if="commentErrors.name"
-                            class="icon is-small is-right has-text-danger"
-                            data-cy="ErrorIcon"
-                          >
-                            <i class="fas fa-exclamation-triangle"></i>
-                          </span>
-                        </div>
-
-                        <p v-if="commentErrors.name" class="help is-danger" data-cy="ErrorMessage">
-                          {{ commentErrors.name }}
-                        </p>
-                      </div>
-
-                      <div class="field">
-                        <label class="label" for="comment-email">Email</label>
-                        <div class="control has-icons-left has-icons-right">
-                          <input
-                            type="email"
-                            id="comment-email"
-                            placeholder="Enter your email"
-                            v-model="commentForm.email"
-                            class="input"
-                            :class="{ 'is-danger': commentErrors.email }"
-                            @input="clearError('email')"
-                            required
-                          />
-                          <span class="icon is-small is-left">
-                            <i class="fas fa-envelope"></i>
-                          </span>
-
-                          <span
-                            v-if="commentErrors.email"
-                            class="icon is-small is-right has-text-danger"
-                          >
-                            <i class="fas fa-exclamation-triangle"></i>
-                          </span>
-                        </div>
-
-                        <p v-if="commentErrors.email" class="help is-danger">
-                          {{ commentErrors.email }}
-                        </p>
-                      </div>
-
-                      <div class="field" data-cy="BodyField">
-                        <label class="label" for="comment-body">Comment</label>
-                        <div class="control">
-                          <textarea
-                            id="comment-body"
-                            name="body"
-                            placeholder="Enter your comment"
-                            v-model="commentForm.body"
-                            class="textarea"
-                            :class="{ 'is-danger': commentErrors.body }"
-                            @input="clearError('body')"
-                            required
-                          ></textarea>
-                        </div>
-
-                        <p v-if="commentErrors.body" class="help is-danger" data-cy="ErrorMessage">
-                          {{ commentErrors.body }}
-                        </p>
-                      </div>
-
-                      <div class="field is-grouped">
-                        <div class="control">
-                          <button 
-                            type="submit" 
-                            class="button is-link"
-                            :class="{ 'is-loading': isAddingComment }"
-                          >
-                            Add Comment
-                          </button>
-                        </div>
-                        <div class="control">
-                          <button 
-                            type="button" 
-                            class="button is-link is-light"
-                            @click="clearCommentForm"
-                          >
-                            Clear
-                          </button>
-                        </div>
-                      </div>
-                    </form>
+                  <!-- Comment Form Component -->
+                  <div v-else>
+                    <add-comment-form
+                      :initial-name="commentForm.name"
+                      :initial-email="commentForm.email"
+                      :post-id="selectedPost.id"
+                      @comment-added="onCommentAdded"
+                      @comment-error="onCommentError"
+                    />
                   </div>
                 </div>
               </div>
@@ -402,7 +294,6 @@
     </div>
   </div>
 
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  <script src="app.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>

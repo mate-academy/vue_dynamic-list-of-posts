@@ -1,8 +1,17 @@
-const { createApp } = Vue;
+import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
 
 const BASE_URL = 'https://mate.academy/students-api';
 
+// Import components
+import AddCommentForm from './components/AddCommentForm.js';
+import CommentItem from './components/CommentItem.js';
+
 createApp({
+  components: {
+    'add-comment-form': AddCommentForm,
+    'comment-item': CommentItem
+  },
+  
   data() {
     return {
       // Posts data
@@ -44,8 +53,6 @@ createApp({
         email: '',
         body: ''
       },
-      commentErrors: {},
-      isAddingComment: false,
       
       // Current user (hardcoded for demo)
       currentUser: {
@@ -310,113 +317,37 @@ createApp({
       }
     },
     
-    // Add new comment
-    async addComment() {
-      if (!this.validateCommentForm()) {
-        return;
-      }
-      
-      this.isAddingComment = true;
-      
-      try {
-        const response = await fetch(`${BASE_URL}/comments`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json; charset=utf-8',
-          },
-          body: JSON.stringify({
-            name: this.commentForm.name,
-            email: this.commentForm.email,
-            body: this.commentForm.body,
-            postId: this.selectedPost.id
-          })
-        });
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const newComment = await response.json();
-        
-        // Add new comment to the list
-        this.comments.push(newComment);
-        
-        // Clear only the comment body, keep name and email
-        this.commentForm.body = '';
-        this.commentErrors = {};
-        
-      } catch (error) {
-        console.error('Error adding comment:', error);
-        this.commentErrors.general = 'Failed to add comment. Please try again.';
-      } finally {
-        this.isAddingComment = false;
-      }
-    },
+
     
-    // Validate comment form
-    validateCommentForm() {
-      this.commentErrors = {};
+    // Handle comment added from component
+    onCommentAdded(newComment) {
+      // Add new comment to the list
+      this.comments.push(newComment);
       
-      if (!this.commentForm.name.trim()) {
-        this.commentErrors.name = 'Name is required';
-      }
-      
-      if (!this.commentForm.email.trim()) {
-        this.commentErrors.email = 'Email is required';
-      } else if (!this.isValidEmail(this.commentForm.email)) {
-        this.commentErrors.email = 'Please enter a valid email address';
-      }
-      
-      if (!this.commentForm.body.trim()) {
-        this.commentErrors.body = 'Comment is required';
-      }
-      
-      return Object.keys(this.commentErrors).length === 0;
+      // Update form with successful name and email
+      this.commentForm.name = newComment.name;
+      this.commentForm.email = newComment.email;
     },
-    
-    // Validate email format
-    isValidEmail(email) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailRegex.test(email);
+
+    // Handle comment error from component
+    onCommentError(error) {
+      console.error('Comment error:', error);
+      // Error is already handled in component
     },
-    
-    // Clear specific error
-    clearError(field) {
-      if (this.commentErrors[field]) {
-        delete this.commentErrors[field];
-      }
-    },
-    
-    // Clear comment form
-    clearCommentForm() {
-      this.commentForm = { name: '', email: '', body: '' };
-      this.commentErrors = {};
-    },
-    
-    // Delete comment (optimistic deletion)
-    async deleteComment(commentId) {
-      // Remove comment immediately for better UX
+
+    // Handle comment deleted from component
+    onCommentDeleted(commentId) {
+      // Remove comment from the list
       const index = this.comments.findIndex(c => c.id === commentId);
       if (index !== -1) {
-        const deletedComment = this.comments.splice(index, 1)[0];
-        
-        try {
-          const response = await fetch(`${BASE_URL}/comments/${commentId}`, {
-            method: 'DELETE'
-          });
-          
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          
-        } catch (error) {
-          console.error('Error deleting comment:', error);
-          
-          // Restore comment if deletion failed
-          this.comments.splice(index, 0, deletedComment);
-          alert('Failed to delete comment. Please try again.');
-        }
+        this.comments.splice(index, 1);
       }
+    },
+
+    // Handle comment delete error from component
+    onCommentDeleteError({ commentId, error }) {
+      console.error('Comment delete error:', error);
+      // Error is already handled in component with retry button
     }
   }
 }).mount('#app');
