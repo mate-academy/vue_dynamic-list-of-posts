@@ -11,7 +11,22 @@
       <button class="button is-small is-danger" @click="deleteComment(comment)">Delete</button>
     </div>
 
-    <CommentForm :postId="postId" @added="addComment" />
+    <!-- ✅ BOTÃO TOGGLE PARA MOSTRAR FORM -->
+    <button 
+      v-if="!showForm" 
+      class="button is-primary mt-4" 
+      @click="showForm = true"
+    >
+      Write a comment
+    </button>
+
+    <!-- ✅ FORM SÓ APARECE QUANDO showForm = true -->
+    <CommentForm 
+      v-if="showForm" 
+      :postId="postId" 
+      @added="addComment"
+      @cancel="showForm = false"
+    />
   </div>
 </template>
 
@@ -27,12 +42,14 @@ export default {
     return {
       comments: [],
       loading: false,
-      error: null
+      error: null,
+      showForm: false // ✅ ESTADO PARA CONTROLAR FORM
     };
   },
   methods: {
     async fetchComments() {
       this.loading = true;
+      this.error = null; // ✅ LIMPAR ERRO ANTERIOR
       try {
         const res = await fetch(`https://mate-academy.github.io/fe-students-api/comments?postId=${this.postId}`);
         if (!res.ok) throw new Error('Failed to load comments');
@@ -57,10 +74,21 @@ export default {
     },
     addComment(comment) {
       this.comments.push(comment);
+      this.showForm = false; // ✅ FECHAR FORM APÓS ADICIONAR COMENTÁRIO
     }
   },
-  mounted() {
-    this.fetchComments();
+  watch: {
+    // ✅ WATCHER PARA postId - RECARREGAR COMENTÁRIOS E RESETAR ESTADO
+    postId: {
+      immediate: true,
+      handler(newPostId) {
+        if (newPostId) {
+          this.fetchComments();
+          this.showForm = false; // ✅ RESETAR FORM QUANDO POST MUDAR
+          this.error = null; // ✅ LIMPAR ERROS
+        }
+      }
+    }
   }
 };
 </script>

@@ -36,7 +36,7 @@ export default {
   props: {
     selectedPost: Object,
     isCreating: Boolean,
-    currentUserId: {  // Nova prop para o ID do usuário logado
+    currentUserId: {
       type: Number,
       required: true
     }
@@ -49,17 +49,21 @@ export default {
   methods: {
     handleDelete(postId) {
       this.$emit('deleted', postId);
-      this.isEditing = false;
+      this.closeSidebar(); // ✅ USAR closeSidebar EM VEZ DE isEditing = false
     },
     onUpdated(post) {
       this.$emit('updated', post);
       this.isEditing = false;
     },
     onCreated(post) {
-      this.$emit('created', post);  // Novo método para criação
+      this.$emit('created', post);
     },
     onCancel() {
-      this.$emit('cancel');  // Novo método para cancelar criação
+      this.$emit('cancel');
+    },
+    closeSidebar() {
+      this.isEditing = false;
+      this.$emit('close'); // ✅ GARANTIR QUE EMITE EVENTO close
     }
   }
 };

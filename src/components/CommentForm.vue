@@ -8,7 +8,6 @@
           v-model="name"
           :class="{ 'is-danger': submitted && errors.name }"
           @input="clearError('name')"
-          required
         />
       </div>
       <p v-if="submitted && errors.name" class="help is-danger">{{ errors.name }}</p>
@@ -18,12 +17,10 @@
       <label class="label">Email</label>
       <div class="control">
         <input
-          type="email"
           class="input"
           v-model="email"
           :class="{ 'is-danger': submitted && errors.email }"
           @input="clearError('email')"
-          required
         />
       </div>
       <p v-if="submitted && errors.email" class="help is-danger">{{ errors.email }}</p>
@@ -37,7 +34,6 @@
           v-model="body"
           :class="{ 'is-danger': submitted && errors.body }"
           @input="clearError('body')"
-          required
         ></textarea>
       </div>
       <p v-if="submitted && errors.body" class="help is-danger">{{ errors.body }}</p>
@@ -49,7 +45,14 @@
       <button class="button is-primary" :disabled="isSubmitting" :class="{ 'is-loading': isSubmitting }" type="submit">
         Submit
       </button>
-      <button class="button" type="button" @click="clearForm">Clear</button>
+      <button 
+        class="button" 
+        type="button" 
+        @click="clearForm"
+        :disabled="isSubmitting"
+      >
+        Clear
+      </button>
     </div>
   </form>
 </template>
@@ -74,7 +77,10 @@ export default {
   },
   methods: {
     clearError(field) {
-      this.errors[field] = null;
+      // ✅ DELETAR CHAVE EM VEZ DE SETAR NULL
+      if (this.errors[field]) {
+        delete this.errors[field];
+      }
     },
     clearForm() {
       this.name = '';
@@ -87,9 +93,10 @@ export default {
       this.submitted = true;
       this.errors = {};
 
-      if (!this.name) this.errors.name = 'Name is required';
-      if (!this.email) this.errors.email = 'Email is required';
-      if (!this.body) this.errors.body = 'Comment is required';
+      // ✅ VALIDAÇÃO APENAS EM JAVASCRIPT
+      if (!this.name.trim()) this.errors.name = 'Name is required';
+      if (!this.email.trim()) this.errors.email = 'Email is required';
+      if (!this.body.trim()) this.errors.body = 'Comment is required';
 
       if (Object.keys(this.errors).length) return;
 
@@ -111,8 +118,7 @@ export default {
 
         const newComment = await res.json();
         this.$emit('added', newComment);
-        this.body = '';
-        this.errors.general = null;
+        this.clearForm(); // ✅ LIMPAR FORM APÓS SUCESSO
       } catch (err) {
         this.errors.general = err.message || 'Failed to submit comment';
       } finally {
