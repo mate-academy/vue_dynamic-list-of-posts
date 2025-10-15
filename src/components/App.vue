@@ -16,7 +16,9 @@
       <Sidebar
         :selectedPost="selectedPost"
         :isCreating="isCreating"
+        :currentUserId="user.id" 
         @close="closeSidebar"
+        @cancel="closeSidebar"
         @created="addPost"
         @updated="updatePost"
         @deleted="deletePost"
@@ -46,12 +48,20 @@ export default {
   },
   methods: {
     async fetchPosts() {
+      this.error = null; // Limpa erro anterior
       this.isLoading = true;
+      
       try {
         const res = await fetch(`https://mate-academy.github.io/fe-students-api/posts?userId=${this.user.id}`);
+        
+        // Verifica se a resposta é OK
+        if (!res.ok) {
+          throw new Error(`Failed to load posts: ${res.status} ${res.statusText}`);
+        }
+        
         this.posts = await res.json();
-      } catch {
-        this.error = 'Failed to load posts';
+      } catch (error) {
+        this.error = error.message;
       } finally {
         this.isLoading = false;
       }

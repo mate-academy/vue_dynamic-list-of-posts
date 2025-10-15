@@ -3,7 +3,7 @@
     <div class="field">
       <label class="label">Title</label>
       <div class="control">
-        <input class="input" v-model="title" :class="{ 'is-danger': submitted && errors.title }" @input="clearError('title')" required />
+        <input class="input" v-model="title" :class="{ 'is-danger': submitted && errors.title }" @input="clearError('title')" />
       </div>
       <p v-if="submitted && errors.title" class="help is-danger">{{ errors.title }}</p>
     </div>
@@ -11,7 +11,7 @@
     <div class="field">
       <label class="label">Body</label>
       <div class="control">
-        <textarea class="textarea" v-model="body" :class="{ 'is-danger': submitted && errors.body }" @input="clearError('body')" required></textarea>
+        <textarea class="textarea" v-model="body" :class="{ 'is-danger': submitted && errors.body }" @input="clearError('body')"></textarea>
       </div>
       <p v-if="submitted && errors.body" class="help is-danger">{{ errors.body }}</p>
     </div>
@@ -22,7 +22,7 @@
       <button class="button is-primary" type="submit" :disabled="isSubmitting" :class="{ 'is-loading': isSubmitting }">
         {{ post ? 'Save' : 'Create' }}
       </button>
-      <button class="button" type="button" @click="$emit('cancel')">Cancel</button>
+      <button class="button" type="button" @click="$emit('cancel')" :disabled="isSubmitting">Cancel</button>
     </div>
   </form>
 </template>
@@ -32,7 +32,13 @@ import Notification from './Notification.vue';
 
 export default {
   components: { Notification },
-  props: { post: Object },
+  props: { 
+    post: Object,
+    userId: {  // ✅ ADICIONAR ESTA PROP
+      type: Number,
+      required: true
+    }
+  },
   data() {
     return {
       title: this.post?.title || '',
@@ -43,13 +49,20 @@ export default {
     };
   },
   methods: {
-    clearError(field) { this.errors[field] = null; },
+    clearError(field) { 
+      // ✅ DELETAR A CHAVE EM VEZ DE SETAR NULL
+      if (this.errors[field]) {
+        delete this.errors[field];
+      }
+    },
     async handleSubmit() {
       this.submitted = true;
       this.errors = {};
 
-      if (!this.title) this.errors.title = 'Title is required';
-      if (!this.body) this.errors.body = 'Body is required';
+      // ✅ VALIDAÇÃO CUSTOMIZADA (REMOVER OS 'required' DO TEMPLATE)
+      if (!this.title.trim()) this.errors.title = 'Title is required';
+      if (!this.body.trim()) this.errors.body = 'Body is required';
+      
       if (Object.keys(this.errors).length) return;
 
       this.isSubmitting = true;
@@ -63,7 +76,12 @@ export default {
         const res = await fetch(url, {
           method,
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title: this.title, body: this.body, userId: 1 })
+          // ✅ USAR userId DA PROP EM VEZ DO VALOR HARD-CODED
+          body: JSON.stringify({ 
+            title: this.title, 
+            body: this.body, 
+            userId: this.userId 
+          })
         });
 
         if (!res.ok) throw new Error('Failed to save post');
