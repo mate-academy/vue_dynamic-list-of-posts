@@ -1,0 +1,10 @@
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.button.is-loading {
+  pointer-events: none;
+}
