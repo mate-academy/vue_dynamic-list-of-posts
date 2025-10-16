@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue Dynamic Posts</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <style>
+      .Layout { display: grid; grid-template-columns: 1fr 380px; gap: 1rem; }
+      .Sidebar { position: sticky; top: 1rem; height: calc(100vh - 2rem); overflow: auto; border-left: 1px solid #eee; padding-left: 1rem; }
+      .Sidebar--open { box-shadow: inset 4px 0 0 #00d1b2; }
+      .PostRow:hover { background: #fafafa; }
+      .clickable { cursor: pointer; }
+      .is-hidden { display: none !important; }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
