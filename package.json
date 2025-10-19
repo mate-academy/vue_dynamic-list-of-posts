@@ -1,0 +1,30 @@
+{
+  "name": "vue_dynamic-list-of-posts",
+  "version": "1.0.0",
+  "description": "Implement the App with ability to show posts of a current logged-in user. The user should be able to create a new post with their userId. Each post can be opened in the sidebar with its comments, can be edited and deleted. There should delete a comment and a form to add new comments. For communication with the server, use the Posts and Users [Mate API](https://mate-academy.github.io/fe-students-api).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arberzylyftari/vue_dynamic-list-of-posts.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/arberzylyftari/vue_dynamic-list-of-posts/issues"
+  },
+  "homepage": "https://github.com/arberzylyftari/vue_dynamic-list-of-posts#readme",
+  "dependencies": {
+    "@vitejs/plugin-vue": "^5.2.4",
+    "bulma": "^1.0.4",
+    "vite": "^6.3.6",
+    "vue": "^3.5.22"
+  }
+}
