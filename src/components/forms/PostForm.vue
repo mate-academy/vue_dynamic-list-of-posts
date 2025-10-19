@@ -8,6 +8,7 @@
           class="input"
           type="text"
           placeholder="Enter post title"
+          @input="errors.title = ''"
         />
       </div>
       <p v-if="errors.title" class="help is-danger">{{ errors.title }}</p>
@@ -20,6 +21,7 @@
           v-model="form.body"
           class="textarea"
           placeholder="Enter post content"
+          @input="errors.body = ''"
         ></textarea>
       </div>
       <p v-if="errors.body" class="help is-danger">{{ errors.body }}</p>

@@ -2,16 +2,15 @@
   <div class="columns">
     <div class="column is-two-thirds">
       <PostsTable
+        :posts="posts"
         @open="openPost"
         @create="openCreateForm"
+        @reload="loadPosts"
       />
     </div>
 
-    <div
-      class="column sidebar"
-      :class="{ 'Sidebar--open': isSidebarOpen }"
-    >
-    <Sidebar
+    <div class="column sidebar" :class="{ 'Sidebar--open': isSidebarOpen }">
+      <Sidebar
         v-if="isSidebarOpen"
         :selectedPost="selectedPost"
         :isCreating="isCreating"
@@ -19,20 +18,33 @@
         @postCreated="handlePostCreated"
         @postUpdated="handlePostUpdated"
         @postDeleted="handlePostDeleted"
-    />
-
+      />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import PostsTable from './components/PostsTable.vue';
 import Sidebar from './components/Sidebar.vue';
+import { get } from './api/api';
 
+const posts = ref([]);
 const isSidebarOpen = ref(false);
 const isCreating = ref(false);
 const selectedPost = ref(null);
+
+async function loadPosts() {
+  try {
+    // show posts of current user (userId=1)
+    const data = await get('/posts?userId=1');
+    posts.value = data;
+  } catch (e) {
+    console.error('Failed to load posts:', e);
+  }
+}
+
+onMounted(loadPosts);
 
 function openPost(post) {
   selectedPost.value = post;
@@ -50,11 +62,11 @@ function closeSidebar() {
   isSidebarOpen.value = false;
 }
 
-const posts = ref([]);
-
 function handlePostCreated(newPost) {
   posts.value.unshift(newPost);
-  isSidebarOpen.value = false;
+  selectedPost.value = newPost;
+  isCreating.value = false;
+  isSidebarOpen.value = true;
 }
 
 function handlePostUpdated(updated) {
@@ -65,7 +77,6 @@ function handlePostUpdated(updated) {
 function handlePostDeleted(id) {
   posts.value = posts.value.filter((p) => p.id !== id);
 }
-
 </script>
 
 <style>

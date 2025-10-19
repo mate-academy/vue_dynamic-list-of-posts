@@ -29,9 +29,9 @@
           :errors="errors"
           :isSubmitting="isSubmitting"
           :submitError="submitError"
+          save-label="Save"
           @submit="savePost"
           @clear="cancelEdit"
-          save-label="Save"
         />
       </form>
 
@@ -40,16 +40,12 @@
         <p>{{ selectedPost.body }}</p>
 
         <div class="buttons mt-4">
-          <button class="button is-info is-light" @click="startEdit">
-            Edit
-          </button>
-          <button class="button is-danger is-light" @click="deletePost">
-            Delete
-          </button>
+          <button class="button is-info is-light" @click="startEdit">Edit</button>
+          <button class="button is-danger is-light" @click="deletePost">Delete</button>
         </div>
 
         <hr />
-        <p><em>Comments section will go here 👇</em></p>
+        <CommentsList :postId="selectedPost.id" />
       </div>
 
       <div v-else>
@@ -61,8 +57,9 @@
 
 <script setup>
 import { ref, watch } from 'vue';
-import { post, remove } from '../api/api';
+import { post, put, remove } from '../api/api';
 import PostForm from './forms/PostForm.vue';
+import CommentsList from './comments/CommentsList.vue';
 
 const props = defineProps({
   selectedPost: Object,
@@ -138,11 +135,10 @@ async function savePost() {
   submitError.value = false;
 
   try {
-    const updated = {
-      ...props.selectedPost,
+    const updated = await put(`/posts/${props.selectedPost.id}`, {
       title: form.value.title,
       body: form.value.body,
-    };
+    });
     emit('postUpdated', updated);
     editMode.value = false;
   } catch {
