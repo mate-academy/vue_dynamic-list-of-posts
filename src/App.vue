@@ -103,7 +103,10 @@ const handleSavePost = async (postData) => {
       store.selectedPost = { ...store.selectedPost, ...updatedPost };
       sidebarMode.value = 'view';
     }
-  } catch (error) {}
+  } catch (error) {
+    const action = sidebarMode.value === 'create' ? 'create' : 'update';
+    console.error(`Failed to ${action} post:`, error);
+  }
 };
 
 const handleEditPost = () => {
@@ -117,7 +120,9 @@ const handleDeletePost = async () => {
     store.selectedPost = null;
     store.isSidebarOpen = false;
     sidebarMode.value = '';
-  } catch (error) {}
+  } catch (error) {
+    console.error('Failed to delete post:', error);
+  }
 };
 
 const handleCloseSidebar = () => {
@@ -145,15 +150,23 @@ const handleAddComment = async (commentData) => {
       ...commentData,
     });
     store.comments.push(newComment);
-  } catch (error) {}
+    return true;
+  } catch (error) {
+    console.error('Failed to add comment:', error);
+    return false;
+  }
 };
 
 const handleDeleteComment = async (commentId) => {
+  const originalComments = [...store.comments];
   store.comments = store.comments.filter((c) => c.id !== commentId);
   
   try {
     await deleteComment(commentId);
-  } catch (error) {}
+  } catch (error) {
+    store.comments = originalComments;
+    console.error('Failed to delete comment:', error);
+  }
 };
 </script>
 

@@ -66,10 +66,10 @@ const handleDeletePost = () => {
   emit('deletePost');
 };
 
-const handleAddComment = (commentData) => {
+const handleAddComment = async (commentData) => {
   savedName.value = commentData.name;
   savedEmail.value = commentData.email;
-  emit('addComment', commentData);
+  return await emit('addComment', commentData);
 };
 
 const handleDeleteComment = (commentId) => {
