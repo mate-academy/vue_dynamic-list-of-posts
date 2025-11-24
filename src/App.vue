@@ -105,7 +105,7 @@ const handleSavePost = async (postData) => {
     }
   } catch (error) {
     const action = sidebarMode.value === 'create' ? 'create' : 'update';
-    console.error(`Failed to ${action} post:`, error);
+    store.postsError = `Failed to ${action} post. Please try again.`;
   }
 };
 
@@ -121,7 +121,7 @@ const handleDeletePost = async () => {
     store.isSidebarOpen = false;
     sidebarMode.value = '';
   } catch (error) {
-    console.error('Failed to delete post:', error);
+    store.postsError = 'Failed to delete post. Please try again.';
   }
 };
 
@@ -150,11 +150,10 @@ const handleAddComment = async (commentData) => {
       ...commentData,
     });
     store.comments.push(newComment);
-    return true;
   } catch (error) {
-    console.error('Failed to add comment:', error);
-    return false;
+    store.commentsError = 'Failed to add comment. Please try again.';
   }
+  return false;
 };
 
 const handleDeleteComment = async (commentId) => {
