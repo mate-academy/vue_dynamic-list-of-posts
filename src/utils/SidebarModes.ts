@@ -1,0 +1,6 @@
+export enum SidebarMode {
+  Closed = '',
+  View_Post = 'Post',
+  Create_Post = 'Create Post',
+  Edit_Post = 'Edit Post',
+}

@@ -1,3 +1,15 @@
+<script setup></script>
+
+<template>
+  <div class="lds-ring">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+</template>
+
+<style scoped>
 .lds-ring {
   display: inline-block;
   position: relative;
@@ -33,3 +45,4 @@
     transform: rotate(360deg);
   }
 }
+</style>
