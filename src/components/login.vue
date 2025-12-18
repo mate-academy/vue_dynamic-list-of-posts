@@ -78,24 +78,35 @@ function addEmail() {
 }
 
 function registerUser() {
-  const userName = nameUser.value.trim();
+    const userName = nameUser.value.trim();
 
-  if (userName === '') {
-    alert('This name is invalid.');
-    return;
-  }
+    if (userName === '') {
+        alert('This name is invalid.');
+        return;
+    }
 
-  const userObj = {
-    user: userName,
-    email: emailData.value,
-    posts: []
-  };
+    const users = StorageService.get('userData') || [];
 
-  StorageService.set('userData', userObj);
+    const emailExists = users.some(
+        user => user.email === emailData.value
+    );
 
-  console.log('Salvo no localStorage:', userObj);
+    if (emailExists) {
+        alert('This email is already registered.');
+        return;
+    }
 
-  router.push('/home');
+    const userObj = {
+        user: userName,
+        email: emailData.value,
+        posts: []
+    };
+
+    StorageService.set('userData', userObj);
+
+    console.log('Salvo no localStorage:', userObj);
+
+    router.push('/home');
 }
 </script>
 
