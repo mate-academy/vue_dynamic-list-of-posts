@@ -22,16 +22,52 @@
 
             <Sidebar :is-open="sidebarOpen">
               <!-- Create/Edit Post Form -->
-              <PostForm
-                v-if="showPostForm"
-                :post="editingPost"
-                :loading="postFormLoading"
-                @submit="handlePostSubmit"
-                @cancel="closeSidebar"
-              />
+              <div v-if="showPostForm">
+                <!-- Error notification for post form -->
+                <div v-if="postFormError" class="notification is-danger">
+                  <button class="delete" @click="postFormError = ''"></button>
+                  {{ postFormError }}
+                  <div class="buttons mt-3">
+                    <button
+                      class="button is-danger is-light"
+                      @click="retryPostSubmit"
+                      :disabled="postFormLoading"
+                    >
+                      <span class="icon">
+                        <i class="fas fa-redo"></i>
+                      </span>
+                      <span>Retry</span>
+                    </button>
+                  </div>
+                </div>
+
+                <PostForm
+                  :post="editingPost"
+                  :loading="postFormLoading"
+                  @submit="handlePostSubmit"
+                  @cancel="closeSidebar"
+                />
+              </div>
 
               <!-- Post Details -->
               <template v-else-if="selectedPost">
+                <!-- Error notification for post deletion -->
+                <div v-if="postDeleteError" class="notification is-danger">
+                  <button class="delete" @click="postDeleteError = ''"></button>
+                  {{ postDeleteError }}
+                  <div class="buttons mt-3">
+                    <button
+                      class="button is-danger is-light"
+                      @click="retryDeletePost"
+                    >
+                      <span class="icon">
+                        <i class="fas fa-redo"></i>
+                      </span>
+                      <span>Retry Delete</span>
+                    </button>
+                  </div>
+                </div>
+
                 <PostPreview
                   :post="selectedPost"
                   @edit="editPost"
@@ -43,6 +79,23 @@
                 <!-- Comments Section -->
                 <div class="content">
                   <h3>Comments</h3>
+
+                  <!-- Error notification for comment deletion -->
+                  <div v-if="commentDeleteError" class="notification is-danger">
+                    <button class="delete" @click="dismissCommentDeleteError"></button>
+                    {{ commentDeleteError }}
+                    <div class="buttons mt-3">
+                      <button
+                        class="button is-danger is-light"
+                        @click="retryDeleteComment"
+                      >
+                        <span class="icon">
+                          <i class="fas fa-redo"></i>
+                        </span>
+                        <span>Retry Delete</span>
+                      </button>
+                    </div>
+                  </div>
 
                   <Loader v-if="commentsLoading" />
 
@@ -73,11 +126,30 @@
                     Write a comment
                   </button>
 
-                  <CommentForm
-                    v-else
-                    :loading="commentFormLoading"
-                    @submit="handleCommentSubmit"
-                  />
+                  <div v-else>
+                    <!-- Error notification for comment form -->
+                    <div v-if="commentFormError" class="notification is-danger mt-3">
+                      <button class="delete" @click="commentFormError = ''"></button>
+                      {{ commentFormError }}
+                      <div class="buttons mt-3">
+                        <button
+                          class="button is-danger is-light"
+                          @click="retryCommentSubmit"
+                          :disabled="commentFormLoading"
+                        >
+                          <span class="icon">
+                            <i class="fas fa-redo"></i>
+                          </span>
+                          <span>Retry</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <CommentForm
+                      :loading="commentFormLoading"
+                      @submit="handleCommentSubmit"
+                    />
+                  </div>
                 </div>
               </template>
             </Sidebar>
@@ -126,12 +198,21 @@ export default {
       editingPost: null,
       showPostForm: false,
       postFormLoading: false,
+      postFormError: '',
+      postDeleteError: '',
       comments: [],
       commentsLoading: false,
       commentsError: '',
       showCommentForm: false,
       commentFormLoading: false,
-      sidebarOpen: false
+      commentFormError: '',
+      commentDeleteError: '',
+      sidebarOpen: false,
+      // Store pending data for retry
+      pendingPostData: null,
+      pendingCommentData: null,
+      pendingDeletePostId: null,
+      pendingDeleteCommentId: null
     }
   },
   methods: {
@@ -188,6 +269,8 @@ export default {
     },
     async handlePostSubmit(postData) {
       this.postFormLoading = true
+      this.postFormError = ''
+      this.pendingPostData = postData
 
       try {
         if (this.editingPost) {
@@ -205,6 +288,7 @@ export default {
           this.selectedPost = updatedPost
           this.showPostForm = false
           this.editingPost = null
+          this.pendingPostData = null
         } else {
           // Create new post
           const newPost = await createPost({
@@ -215,12 +299,20 @@ export default {
           this.posts.push(newPost)
           this.selectedPost = newPost
           this.showPostForm = false
+          this.pendingPostData = null
           await this.loadComments(newPost.id)
         }
       } catch (error) {
-        alert('Failed to save post. Please try again.')
+        this.postFormError = this.editingPost
+          ? 'Failed to update post. Please try again.'
+          : 'Failed to create post. Please try again.'
       } finally {
         this.postFormLoading = false
+      }
+    },
+    retryPostSubmit() {
+      if (this.pendingPostData) {
+        this.handlePostSubmit(this.pendingPostData)
       }
     },
     async deletePost() {
@@ -228,12 +320,22 @@ export default {
         return
       }
 
+      this.postDeleteError = ''
+      this.pendingDeletePostId = this.selectedPost.id
+
       try {
         await deletePostAPI(this.selectedPost.id)
         this.posts = this.posts.filter(p => p.id !== this.selectedPost.id)
+        this.pendingDeletePostId = null
         this.closeSidebar()
       } catch (error) {
-        alert('Failed to delete post. Please try again.')
+        this.postDeleteError = 'Failed to delete post. Please try again.'
+        // Keep the post selected so user can retry
+      }
+    },
+    retryDeletePost() {
+      if (this.pendingDeletePostId) {
+        this.deletePost()
       }
     },
     async loadComments(postId) {
@@ -250,6 +352,8 @@ export default {
     },
     async handleCommentSubmit(commentData) {
       this.commentFormLoading = true
+      this.commentFormError = ''
+      this.pendingCommentData = commentData
 
       try {
         const newComment = await createComment({
@@ -258,10 +362,16 @@ export default {
         })
 
         this.comments.push(newComment)
+        this.pendingCommentData = null
       } catch (error) {
-        alert('Failed to add comment. Please try again.')
+        this.commentFormError = 'Failed to add comment. Please try again.'
       } finally {
         this.commentFormLoading = false
+      }
+    },
+    retryCommentSubmit() {
+      if (this.pendingCommentData) {
+        this.handleCommentSubmit(this.pendingCommentData)
       }
     },
     async deleteComment(commentId) {
@@ -273,15 +383,29 @@ export default {
         this.comments.splice(commentIndex, 1)
       }
 
+      this.commentDeleteError = ''
+      this.pendingDeleteCommentId = commentId
+
       try {
         await deleteCommentAPI(commentId)
+        this.pendingDeleteCommentId = null
       } catch (error) {
         // Restore comment if delete fails
         if (deletedComment) {
           this.comments.splice(commentIndex, 0, deletedComment)
         }
-        alert('Failed to delete comment. Please try again.')
+        this.commentDeleteError = 'Failed to delete comment. Please try again.'
+        this.pendingDeleteCommentId = commentId
       }
+    },
+    retryDeleteComment() {
+      if (this.pendingDeleteCommentId) {
+        this.deleteComment(this.pendingDeleteCommentId)
+      }
+    },
+    dismissCommentDeleteError() {
+      this.commentDeleteError = ''
+      this.pendingDeleteCommentId = null
     },
     closeSidebar() {
       this.sidebarOpen = false
@@ -290,6 +414,14 @@ export default {
       this.showPostForm = false
       this.showCommentForm = false
       this.comments = []
+      this.postFormError = ''
+      this.postDeleteError = ''
+      this.commentFormError = ''
+      this.commentDeleteError = ''
+      this.pendingPostData = null
+      this.pendingCommentData = null
+      this.pendingDeletePostId = null
+      this.pendingDeleteCommentId = null
     }
   }
 }
