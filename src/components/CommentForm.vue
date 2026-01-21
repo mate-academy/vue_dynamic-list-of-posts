@@ -125,9 +125,12 @@ export default {
 
       if (!hasError) {
         this.$emit('submit', { ...this.formData })
-        // Clear only body after successful submit
-        this.formData.body = ''
+        // Don't clear here - let parent clear after successful API call
       }
+    },
+    clearBody() {
+      // Public method for parent to call after successful submission
+      this.formData.body = ''
     },
     handleClear() {
       this.formData = {

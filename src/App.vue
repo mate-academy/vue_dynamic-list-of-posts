@@ -146,6 +146,7 @@
                     </div>
 
                     <CommentForm
+                      ref="commentForm"
                       :loading="commentFormLoading"
                       @submit="handleCommentSubmit"
                     />
@@ -320,22 +321,25 @@ export default {
         return
       }
 
-      this.postDeleteError = ''
       this.pendingDeletePostId = this.selectedPost.id
+      await this.performDeletePost(this.pendingDeletePostId)
+    },
+    async performDeletePost(postId) {
+      this.postDeleteError = ''
 
       try {
-        await deletePostAPI(this.selectedPost.id)
-        this.posts = this.posts.filter(p => p.id !== this.selectedPost.id)
+        await deletePostAPI(postId)
+        this.posts = this.posts.filter(p => p.id !== postId)
         this.pendingDeletePostId = null
         this.closeSidebar()
       } catch (error) {
         this.postDeleteError = 'Failed to delete post. Please try again.'
-        // Keep the post selected so user can retry
+        // Keep the pendingDeletePostId so user can retry
       }
     },
     retryDeletePost() {
       if (this.pendingDeletePostId) {
-        this.deletePost()
+        this.performDeletePost(this.pendingDeletePostId)
       }
     },
     async loadComments(postId) {
@@ -363,6 +367,11 @@ export default {
 
         this.comments.push(newComment)
         this.pendingCommentData = null
+
+        // Clear the comment body only after successful submission
+        if (this.$refs.commentForm) {
+          this.$refs.commentForm.clearBody()
+        }
       } catch (error) {
         this.commentFormError = 'Failed to add comment. Please try again.'
       } finally {
