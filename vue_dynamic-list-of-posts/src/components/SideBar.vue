@@ -69,8 +69,8 @@ async function addComment({ postId, name, email, body }) {
 
 async function deleteComment(id) {
   try {
-    await commentApi.deleteComment(id);
     comments.value = comments.value.filter(comment => comment.id !== id);
+    await commentApi.deleteComment(id);
     commentsError.value = '';
   } catch (error) {
     commentsError.value = 'Unable to delete a comment';

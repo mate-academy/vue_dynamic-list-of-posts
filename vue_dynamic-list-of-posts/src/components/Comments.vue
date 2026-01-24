@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, defineEmits, ref, onMounted } from 'vue';
+import { defineProps, defineEmits, ref, onMounted, watch } from 'vue';
 import Loader from './Loader.vue';
 
 const props = defineProps({
@@ -41,11 +41,19 @@ function submitComment() {
 
   emit('add', { postId: props.postId, name: name.value, email: email.value, body: body.value });
 
+  body.value = '';
   errorName.value = '';
   errorEmail.value = '';
   errorBody.value = '';
-  isFormVisible.value = false;
+  isFormVisible.value = true;
 }
+
+watch([name, email, body], ([newName, newEmail, newBody]) => {
+  if (newName) errorName.value = '';
+  if (newEmail) errorEmail.value = '';
+  if (newBody) errorBody.value = '';
+});
+
 </script>
 <template>
   <template v-if="!isFormVisible">
