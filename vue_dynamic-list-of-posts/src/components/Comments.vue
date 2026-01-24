@@ -18,11 +18,7 @@ const errorEmail = ref('');
 const errorBody = ref('');
 
 onMounted(async () => {
-  try {
-    emit('load', props.postId);
-  } catch (error) {
-    errorMessage.value = 'Unable to load comments';
-  }
+  emit('load', props.postId);
 });
 
 function submitComment() {
@@ -47,6 +43,21 @@ function submitComment() {
   errorBody.value = '';
   isFormVisible.value = true;
 }
+
+function closeFormComment() {
+  isFormVisible.value = false;
+
+  name.value = '';
+  email.value = '';
+  body.value = '';
+
+  errorName.value = '';
+  errorEmail.value = '';
+  errorBody.value = '';
+
+  emit('close');
+}
+
 
 watch([name, email, body], ([newName, newEmail, newBody]) => {
   if (newName) errorName.value = '';
@@ -125,7 +136,7 @@ watch([name, email, body], ([newName, newEmail, newBody]) => {
         <button type="submit" class="button is-link" :class="{ 'is-loading': isLoading }">Add comment</button>
       </div>
       <div class="control">
-        <button type="reset" class="button is-link is-light" @click="emit('close')">Cancel</button>
+        <button type="reset" class="button is-link is-light" @click="closeFormComment">Cancel</button>
       </div>
     </div>
   </form>

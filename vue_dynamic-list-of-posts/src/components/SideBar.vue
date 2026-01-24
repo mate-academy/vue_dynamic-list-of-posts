@@ -165,7 +165,7 @@ watch(
             <p data-cy="PostBody">{{ post.body }}</p>
           </div>
           <Comments :comments="comments" :postId="post.id" :isLoading="isLoadingComments" :errorMessage="commentsError"
-            @load="loadComments" @add="addComment" @delete="deleteComment" @close="emit('close')" />
+            @load="loadComments" @add="addComment" @delete="deleteComment" />
           <article class="message is-danger" v-if="error">
             <div class="message-body">
               <p class="help is-danger">{{ error }}</p>
