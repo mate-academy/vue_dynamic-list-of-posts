@@ -1,0 +1,25 @@
+/* Sidebar */
+.Sidebar {
+  overflow: hidden;
+  opacity: 0;
+  transition: max-width 0.5s ease-in-out, opacity 0.5s ease-in-out;
+  max-width: 100%; /* базова ширина на мобільних */
+}
+
+/* Sidebar відкритий */
+.Sidebar--open {
+  opacity: 1;
+}
+
+/* Для десктопів */
+@media (min-width: 769px) {
+  .Sidebar {
+    max-width: 0;
+  }
+
+  .Sidebar--open {
+    max-width: 50%;
+  }
+}
+
+/* Анімація завантаження (lds-ring) */
