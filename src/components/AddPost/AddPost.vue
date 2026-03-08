@@ -4,6 +4,8 @@ import { createPost, updatePost } from '../../api/posts'
 import type { Post } from '../../api/posts'
 
 export default defineComponent({
+  name: 'AddPost',
+
   props: {
     post: {
       type: Object as () => Post | null,
@@ -26,9 +28,9 @@ export default defineComponent({
     const bodyField = ref(props.post?.body ?? '')
     const titleError = ref('')
     const bodyError = ref('')
+    const submitError = ref('')
     const isSubmitting = ref(false)
 
-    // If the post prop changes (switching edit targets), reset fields
     watch(
       () => props.post,
       (newPost) => {
@@ -36,16 +38,9 @@ export default defineComponent({
         bodyField.value = newPost?.body ?? ''
         titleError.value = ''
         bodyError.value = ''
+        submitError.value = ''
       },
     )
-
-    function clearTitleError() {
-      titleError.value = ''
-    }
-
-    function clearBodyError() {
-      bodyError.value = ''
-    }
 
     async function handleSubmit() {
       let valid = true
@@ -63,17 +58,16 @@ export default defineComponent({
       if (!valid) return
 
       isSubmitting.value = true
+      submitError.value = ''
 
       try {
         if (props.post) {
-          // Edit mode
           const updated = await updatePost(props.post.id, {
             title: titleField.value.trim(),
             body: bodyField.value.trim(),
           })
           emit('post-updated', updated)
         } else {
-          // Create mode
           const created = await createPost(props.userId, {
             title: titleField.value.trim(),
             body: bodyField.value.trim(),
@@ -81,14 +75,10 @@ export default defineComponent({
           emit('post-created', created)
         }
       } catch {
-        // Could show a generic error here
+        submitError.value = 'Failed to save post. Please try again.'
       } finally {
         isSubmitting.value = false
       }
-    }
-
-    function handleCancel() {
-      emit('cancel')
     }
 
     return {
@@ -96,11 +86,10 @@ export default defineComponent({
       bodyField,
       titleError,
       bodyError,
+      submitError,
       isSubmitting,
-      clearTitleError,
-      clearBodyError,
       handleSubmit,
-      handleCancel,
+      emit,
     }
   },
 })
@@ -108,7 +97,11 @@ export default defineComponent({
 
 <template>
   <div class="content p-4">
-    <h2 class="title is-4">Create new post</h2>
+    <h2 class="title is-4">{{ title }}</h2>
+
+    <div v-if="submitError" class="notification is-danger is-light">
+      {{ submitError }}
+    </div>
 
     <div class="field">
       <label class="label">Title</label>
@@ -119,7 +112,7 @@ export default defineComponent({
           :class="{ 'is-danger': titleError }"
           type="text"
           placeholder="Post title"
-          @input="clearTitleError"
+          @input="titleError = ''"
         />
       </div>
       <p v-if="titleError" class="help is-danger">{{ titleError }}</p>
@@ -134,7 +127,7 @@ export default defineComponent({
           :class="{ 'is-danger': bodyError }"
           placeholder="Post body"
           rows="6"
-          @input="clearBodyError"
+          @input="bodyError = ''"
         />
       </div>
       <p v-if="bodyError" class="help is-danger">{{ bodyError }}</p>
@@ -151,7 +144,7 @@ export default defineComponent({
         </button>
       </div>
       <div class="control">
-        <button class="button is-light" @click="handleCancel">Cancel</button>
+        <button class="button is-light" @click="emit('cancel')">Cancel</button>
       </div>
     </div>
   </div>

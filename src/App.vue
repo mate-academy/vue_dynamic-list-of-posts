@@ -94,7 +94,9 @@ export default defineComponent({
         posts.value = posts.value.filter((p) => p.id !== postId)
         selectedPost.value = null
         isSidebarOpen.value = false
-      } catch {}
+      } catch {
+        alert('Failed to delete post. Please try again.')
+      }
     }
 
     function handlePostCreated(newPost: Post) {
