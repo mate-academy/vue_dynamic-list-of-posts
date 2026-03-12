@@ -1,4 +1,13 @@
-<script></script>
+<script setup>
+const emit = defineEmits(['logout']);
+
+defineProps({
+  user: {
+    type: Object,
+    required: true,
+  },
+});
+</script>
 
 <template>
   <nav class="navbar" role="navigation" aria-label="main navigation">
@@ -11,12 +20,11 @@
           <div class="mr-5 mb-2">
             <p>User: {{ user.name }}</p>
           </div>
-
-          <a class="button is-light"> Logout </a>
+          <a class="button is-light" @click.prevent="emit('logout')">
+            Logout
+          </a>
         </div>
       </div>
     </div>
   </nav>
 </template>
-
-<style></style>

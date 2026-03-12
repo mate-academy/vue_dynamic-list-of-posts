@@ -1,4 +1,11 @@
-<script></script>
+<script setup>
+defineProps({
+  posts: {
+    type: Array,
+    required: true,
+  },
+});
+</script>
 
 <template>
   <div class="tile is-parent">
@@ -18,9 +25,9 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>id</td>
-              <td>title</td>
+            <tr v-for="post in posts" :key="post.id">
+              <td>{{ post.id }}</td>
+              <td>{{ post.title }}</td>
               <td class="has-text-right is-vcentered">
                 <button type="button" class="button is-link">Open</button>
               </td>
@@ -31,5 +38,3 @@
     </div>
   </div>
 </template>
-
-<style></style>

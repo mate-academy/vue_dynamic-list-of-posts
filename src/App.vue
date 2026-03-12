@@ -1,44 +1,58 @@
-<script setup></script>
+<script setup>
+import { ref, onMounted } from 'vue';
+import { getPosts } from './api/posts';
+import TheNavbar from './components/Layout/TheNavbar.vue';
+import TheSidebar from './components/Layout/TheSidebar.vue';
+import PostList from './components/Posts/PostList.vue';
+import AppLoader from './components/Base/AppLoader.vue';
+import LoginForm from './components/Auth/LoginForm.vue';
+
+const currentUser = ref({ name: 'Paulina', id: 1 });
+const posts = ref([]);
+const isLoading = ref(false);
+const errorMessage = ref('');
+
+const fetchPosts = async () => {
+  isLoading.value = true;
+  errorMessage.value = '';
+  try {
+    posts.value = await getPosts(currentUser.value.id);
+  } catch (error) {
+    errorMessage.value = 'Failed to load posts. Please try again later.';
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+onMounted(fetchPosts);
+</script>
 
 <template>
-  <nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-item">
-      <h1 class="title is-size-4">Vue List Of Posts</h1>
-    </div>
-    <div class="navbar-end">
-      <div class="navbar-item">
-        <div class="buttons">
-          <div class="mr-5 mb-2"><p>User: Paulina</p></div>
-          <a class="button is-light">Logout</a>
-        </div>
-      </div>
-    </div>
-  </nav>
+  <template v-if="currentUser">
+    <TheNavbar :user="currentUser" @logout="currentUser = null" />
 
-  <main class="section">
-    <div class="container">
-      <div class="tile is-ancestor">
-        <div class="tile is-parent">
-          <div class="tile is-child box is-success">
-            <div class="block">
-              <div class="block is-flex is-justify-content-space-between">
-                <h2 class="title">Posts</h2>
-                <button type="button" class="button is-link">
-                  Add New Post
-                </button>
-              </div>
-              <h3 class="mt-2 has-text-centered">No posts yet.</h3>
+    <main class="section">
+      <div class="container">
+        <div v-if="errorMessage" class="notification is-danger">
+          <button class="delete" @click="errorMessage = ''"></button>
+          {{ errorMessage }}
+        </div>
+
+        <div class="tile is-ancestor">
+          <div class="tile is-parent">
+            <div class="tile is-child box is-success">
+              <AppLoader v-if="isLoading" />
+              <PostList v-else-if="posts.length > 0" :posts="posts" />
+              <h3 v-else class="mt-2 has-text-centered">No posts yet.</h3>
             </div>
           </div>
-        </div>
-        <div class="tile is-parent is-8-desktop Sidebar">
-          <div class="tile is-child box is-success">
-            <div class="content"></div>
-          </div>
+          <TheSidebar />
         </div>
       </div>
-    </div>
-  </main>
+    </main>
+  </template>
+
+  <LoginForm v-else @login="handleLogin" />
 </template>
 
 <style></style>
