@@ -1,15 +1,28 @@
-<script></script>
+<script setup>
+import { ref } from 'vue';
+
+const emit = defineEmits(['login']);
+
+const email = ref('');
+
+const handleSubmit = () => {
+  if (email.value.trim()) {
+    emit('login', email.value);
+  }
+};
+</script>
 
 <template>
   <section class="container is-flex is-justify-content-center">
-    <form onSubmit="{handleSubmit}" class="box mt-5">
-      <h1 class="title is-3">You need to register"</h1>
+    <form @submit.prevent="handleSubmit" class="box mt-5">
+      <h1 class="title is-3">Log in to your account</h1>
 
       <div class="field">
-        <label class="label" htmlFor="user-email"> Email </label>
+        <label class="label" for="user-email"> Email </label>
 
         <div class="control has-icons-left">
           <input
+            v-model="email"
             type="email"
             id="user-email"
             name="email"
@@ -19,11 +32,9 @@
           />
 
           <span class="icon is-small is-left">
-            <i class="fas fa-envelope" />
+            <i class="fas fa-envelope"></i>
           </span>
         </div>
-
-        <p class="help is-danger">error message</p>
       </div>
 
       <div class="field">

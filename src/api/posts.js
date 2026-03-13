@@ -1,4 +1,4 @@
-const BASE_URL = 'https://mate-academy.github.io/fe-students-api';
+const BASE_URL = 'https://mate.academy/students-api';
 
 export const getPosts = async (userId) => {
   const response = await fetch(`${BASE_URL}/posts?userId=${userId}`);
