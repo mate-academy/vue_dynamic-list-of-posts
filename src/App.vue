@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { getPosts, createPost, deletePost, updatePost } from './api/posts';
 import { getUserByEmail } from './api/users';
-import { getComments } from './api/comments';
+import { getComments, createComment, deleteComment } from './api/comments';
 import TheNavbar from './components/Layout/TheNavbar.vue';
 import TheSidebar from './components/Layout/TheSidebar.vue';
 import PostList from './components/Posts/PostList.vue';
@@ -64,9 +64,7 @@ const handlePostDelete = async (postId) => {
   isLoading.value = true;
   try {
     await deletePost(postId);
-
     posts.value = posts.value.filter((post) => post.id !== postId);
-
     isSidebarOpen.value = false;
     selectedPost.value = null;
   } catch (error) {
@@ -77,6 +75,12 @@ const handlePostDelete = async (postId) => {
 };
 
 const openPost = async (post) => {
+  if (selectedPost.value?.id === post.id && isSidebarOpen.value) {
+    isSidebarOpen.value = false;
+    selectedPost.value = null;
+    return;
+  }
+
   sidebarMode.value = 'view';
   selectedPost.value = post;
   isSidebarOpen.value = true;
@@ -99,21 +103,6 @@ const openAddForm = () => {
   isSidebarOpen.value = true;
 };
 
-// const handlePostAdd = async (postData) => {
-//   isLoading.value = true;
-//   try {
-//     const newPost = await createPost(postData);
-
-//     posts.value = [newPost, ...posts.value];
-
-//     isSidebarOpen.value = false;
-//   } catch (error) {
-//     errorMessage.value = 'Failed to create the post.';
-//   } finally {
-//     isLoading.value = false;
-//   }
-// };
-
 const openEditForm = () => {
   sidebarMode.value = 'edit';
 };
@@ -128,7 +117,6 @@ const handlePostSave = async (postData) => {
         posts.value[index] = updatedPost;
       }
       selectedPost.value = updatedPost;
-
       sidebarMode.value = 'view';
     } else {
       const newPost = await createPost(postData);
@@ -139,6 +127,27 @@ const handlePostSave = async (postData) => {
     errorMessage.value = 'Failed to save the post.';
   } finally {
     isLoading.value = false;
+  }
+};
+
+const handleCommentAdd = async (commentData) => {
+  try {
+    const newComment = await createComment(commentData);
+    comments.value = [...comments.value, newComment];
+  } catch (error) {
+    errorMessage.value = 'Failed to add comment. Please try again.';
+  }
+};
+
+const handleCommentDelete = async (commentId) => {
+  try {
+    await deleteComment(commentId);
+
+    comments.value = comments.value.filter(
+      (comment) => comment.id !== commentId,
+    );
+  } catch (error) {
+    errorMessage.value = 'Failed to delete comment. Please try again.';
   }
 };
 
@@ -173,6 +182,8 @@ onMounted(() => {
             @save="handlePostSave"
             @edit="openEditForm"
             @delete="handlePostDelete"
+            @add-comment="handleCommentAdd"
+            @delete-comment="handleCommentDelete"
           />
         </div>
       </div>
@@ -184,5 +195,3 @@ onMounted(() => {
     <LoginForm v-else @login="handleLogin" />
   </div>
 </template>
-
-<style></style>

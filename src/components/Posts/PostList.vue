@@ -1,9 +1,7 @@
 <script setup>
 defineProps({
-  posts: {
-    type: Array,
-    required: true,
-  },
+  posts: { type: Array, required: true },
+  selectedPostId: { type: Number, default: null },
 });
 
 const emit = defineEmits(['select', 'add']);
@@ -15,14 +13,14 @@ const emit = defineEmits(['select', 'add']);
       <div class="block">
         <div class="block is-flex is-justify-content-space-between">
           <h2 class="title">Posts</h2>
-          <button type="button" class="button is-link" @click="$emit('add')">
+          <button type="button" class="button is-link" @click="emit('add')">
             Add New Post
           </button>
         </div>
 
         <table
           v-if="posts.length > 0"
-          class="table is-fullwidth is-striped is-hoverable"
+          class="table is-fullwidth is-striped is-hoverable is-narrow"
         >
           <thead>
             <tr class="has-background-link-light">
@@ -33,15 +31,16 @@ const emit = defineEmits(['select', 'add']);
           </thead>
           <tbody>
             <tr v-for="post in posts" :key="post.id">
-              <td class="is-vcentered">{{ post.id }}</td>
-              <td class="is-vcentered">{{ post.title }}</td>
+              <td>{{ post.id }}</td>
+              <td>{{ post.title }}</td>
               <td class="has-text-right is-vcentered">
                 <button
                   type="button"
                   class="button is-link"
-                  @click="$emit('select', post)"
+                  :class="{ 'is-light': post.id === selectedPostId }"
+                  @click="emit('select', post)"
                 >
-                  Open
+                  {{ post.id === selectedPostId ? 'Close' : 'Open' }}
                 </button>
               </td>
             </tr>

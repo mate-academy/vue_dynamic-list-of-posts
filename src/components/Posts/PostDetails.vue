@@ -1,22 +1,24 @@
 <script setup>
+import { ref } from 'vue';
 import AppLoader from '../Base/AppLoader.vue';
+import CommentItem from '../Comments/CommentItem.vue';
+import NoComments from '../Comments/NoComments.vue';
+import WriteCommentBtn from '../Comments/writeCommentBtn.vue';
+import CommentForm from '../Comments/CommentForm.vue';
 
 defineProps({
-  post: {
-    type: Object,
-    required: true,
-  },
-  comments: {
-    type: Array,
-    required: true,
-  },
-  isLoadingComments: {
-    type: Boolean,
-    required: true,
-  },
+  post: { type: Object, required: true },
+  comments: { type: Array, required: true },
+  isLoadingComments: { type: Boolean, required: true },
 });
 
-const emit = defineEmits(['delete', 'edit']);
+const emit = defineEmits(['delete', 'edit', 'add-comment', 'delete-comment']); 
+const isAddingComment = ref(false);
+
+const handleCommentSubmit = (commentData) => {
+  emit('add-comment', commentData);
+  isAddingComment.value = false;
+};
 </script>
 
 <template>
@@ -37,40 +39,35 @@ const emit = defineEmits(['delete', 'edit']);
       </div>
     </div>
 
-    <p class="mt-4" data-cy="PostBody">
-      {{ post.body }}
-    </p>
+    <p class="mt-4" data-cy="PostBody">{{ post.body }}</p>
   </div>
 
   <hr />
 
   <div class="block">
     <p class="title is-5">Comments</p>
-
     <AppLoader v-if="isLoadingComments" />
 
-    <template v-else-if="comments.length > 0">
-      <article
-        v-for="comment in comments"
-        :key="comment.id"
-        class="message is-small"
-      >
-        <div class="message-header">
-          <a :href="'mailto:' + comment.email">
-            {{ comment.name }}
-          </a>
-          <button class="delete is-small" aria-label="delete"></button>
-        </div>
-        <div class="message-body">
-          {{ comment.body }}
-        </div>
-      </article>
+    <template v-else>
+      <template v-if="comments.length > 0">
+        <CommentItem
+          v-for="comment in comments"
+          :key="comment.id"
+          :comment="comment"
+          @delete="emit('delete-comment', $event)"
+        />
+      </template>
+      <NoComments v-else />
+
+      <div class="mt-5">
+        <CommentForm
+          v-if="isAddingComment"
+          :post-id="post.id"
+          @close="isAddingComment = false"
+          @submit="handleCommentSubmit"
+        />
+        <WriteCommentBtn v-else @click="isAddingComment = true" />
+      </div>
     </template>
-
-    <div v-else class="block">
-      <p class="title is-4" data-cy="NoCommentsMessage">No comments yet</p>
-    </div>
-
-    <button type="button" class="button is-link mt-3">Write a comment</button>
   </div>
 </template>

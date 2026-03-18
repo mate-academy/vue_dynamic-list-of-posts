@@ -11,7 +11,14 @@ defineProps({
   userId: { type: Number, required: true },
 });
 
-const emit = defineEmits(['close', 'save', 'delete', 'edit']);
+const emit = defineEmits([
+  'close',
+  'save',
+  'delete',
+  'edit',
+  'add-comment',
+  'delete-comment',
+]);
 </script>
 
 <template>
@@ -32,6 +39,8 @@ const emit = defineEmits(['close', 'save', 'delete', 'edit']);
             :is-loading-comments="isLoadingComments"
             @delete="emit('delete', $event)"
             @edit="emit('edit')"
+            @add-comment="emit('add-comment', $event)"
+            @delete-comment="emit('delete-comment', $event)"
           />
         </template>
 
