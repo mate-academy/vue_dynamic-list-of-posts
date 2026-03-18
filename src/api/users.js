@@ -6,9 +6,23 @@ export const getUserByEmail = async (email) => {
   );
 
   if (!response.ok) {
-    throw new Error(
-      `Server returned ${response.status}: ${response.statusText}`,
-    );
+    throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+  }
+
+  return response.json();
+};
+
+export const createUser = async ({ name, email }) => {
+  const response = await fetch(`${BASE_URL}/users`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8',
+    },
+    body: JSON.stringify({ name, email }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to create user');
   }
 
   return response.json();

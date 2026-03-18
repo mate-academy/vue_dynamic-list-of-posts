@@ -8,17 +8,11 @@ defineProps({
   mode: { type: String, required: true },
   comments: { type: Array, default: () => [] },
   isLoadingComments: { type: Boolean, default: false },
+  isCommentSubmitting: { type: Boolean, default: false },
   userId: { type: Number, required: true },
 });
 
-const emit = defineEmits([
-  'close',
-  'save',
-  'delete',
-  'edit',
-  'add-comment',
-  'delete-comment',
-]);
+const emit = defineEmits(['close', 'save', 'delete', 'edit', 'add-comment', 'delete-comment']);
 </script>
 
 <template>
@@ -37,6 +31,7 @@ const emit = defineEmits([
             :post="post"
             :comments="comments"
             :is-loading-comments="isLoadingComments"
+            :is-comment-submitting="isCommentSubmitting"
             @delete="emit('delete', $event)"
             @edit="emit('edit')"
             @add-comment="emit('add-comment', $event)"
@@ -74,7 +69,7 @@ const emit = defineEmits([
   }
 
   .Sidebar--open {
-    max-width: 66.66%;
+    max-width: 66.66667%; 
   }
 }
 </style>

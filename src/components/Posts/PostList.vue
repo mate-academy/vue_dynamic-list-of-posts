@@ -3,7 +3,6 @@ defineProps({
   posts: { type: Array, required: true },
   selectedPostId: { type: Number, default: null },
 });
-
 const emit = defineEmits(['select', 'add']);
 </script>
 
@@ -11,17 +10,14 @@ const emit = defineEmits(['select', 'add']);
   <div class="tile is-parent is-4-desktop">
     <div class="tile is-child box is-success">
       <div class="block">
-        <div class="block is-flex is-justify-content-space-between">
-          <h2 class="title">Posts</h2>
+        <div class="block is-flex is-justify-content-space-between is-align-items-center">
+          <h2 class="title is-4">Posts</h2>
           <button type="button" class="button is-link" @click="emit('add')">
             Add New Post
           </button>
         </div>
 
-        <table
-          v-if="posts.length > 0"
-          class="table is-fullwidth is-striped is-hoverable is-narrow"
-        >
+        <table v-if="posts.length > 0" class="table is-fullwidth is-striped is-hoverable is-narrow">
           <thead>
             <tr class="has-background-link-light">
               <th>ID</th>
@@ -32,7 +28,7 @@ const emit = defineEmits(['select', 'add']);
           <tbody>
             <tr v-for="post in posts" :key="post.id">
               <td>{{ post.id }}</td>
-              <td>{{ post.title }}</td>
+              <td class="post-title-cell">{{ post.title }}</td>
               <td class="has-text-right is-vcentered">
                 <button
                   type="button"
@@ -51,3 +47,16 @@ const emit = defineEmits(['select', 'add']);
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Narzucamy styl, by tabela nie wypychała Sidebaru */
+.table {
+  table-layout: fixed;
+}
+
+.post-title-cell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+</style>

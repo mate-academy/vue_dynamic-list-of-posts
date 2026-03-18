@@ -23,6 +23,8 @@ defineEmits(['update:modelValue']);
         @input="$emit('update:modelValue', $event.target.value)"
       ></textarea>
     </div>
-    <p v-if="errorText" class="help is-danger" data-cy="ErrorMessage">{{ errorText }}</p>
+    <p v-if="errorText" class="help is-danger" data-cy="ErrorMessage">
+      {{ errorText }}
+    </p>
   </div>
 </template>

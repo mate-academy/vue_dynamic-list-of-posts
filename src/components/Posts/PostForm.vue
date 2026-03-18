@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const props = defineProps({
   userId: { type: Number, required: true },
@@ -11,9 +11,18 @@ const emit = defineEmits(['save', 'cancel']);
 const title = ref(props.post?.title || '');
 const body = ref(props.post?.body || '');
 const isSubmitting = ref(false);
+const errors = ref({ title: '', body: '' });
+
+watch(title, () => (errors.value.title = ''));
+watch(body, () => (errors.value.body = ''));
 
 const handleSubmit = () => {
-  if (!title.value.trim() || !body.value.trim()) return;
+  errors.value = { title: '', body: '' };
+
+  if (!title.value.trim()) errors.value.title = 'Title is required';
+  if (!body.value.trim()) errors.value.body = 'Content is required';
+
+  if (errors.value.title || errors.value.body) return;
 
   isSubmitting.value = true;
 
@@ -42,23 +51,25 @@ const handleSubmit = () => {
           <input
             v-model="title"
             class="input"
+            :class="{ 'is-danger': errors.title }"
             type="text"
             placeholder="Enter post title"
-            required
           />
         </div>
+        <p v-if="errors.title" class="help is-danger">{{ errors.title }}</p>
       </div>
 
       <div class="field">
-        <label class="label">Body</label>
+        <label class="label">Write Post Body</label>
         <div class="control">
           <textarea
             v-model="body"
             class="textarea"
+            :class="{ 'is-danger': errors.body }"
             placeholder="Enter post content"
-            required
           ></textarea>
         </div>
+        <p v-if="errors.body" class="help is-danger">{{ errors.body }}</p>
       </div>
 
       <div class="field is-grouped">
