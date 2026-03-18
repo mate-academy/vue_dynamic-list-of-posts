@@ -5,18 +5,25 @@ defineProps({
     required: true,
   },
 });
+
+const emit = defineEmits(['select', 'add']);
 </script>
 
 <template>
-  <div class="tile is-parent">
+  <div class="tile is-parent is-4-desktop">
     <div class="tile is-child box is-success">
       <div class="block">
         <div class="block is-flex is-justify-content-space-between">
-          <p class="title">Posts</p>
-          <button type="button" class="button is-link">Add New Post</button>
+          <h2 class="title">Posts</h2>
+          <button type="button" class="button is-link" @click="$emit('add')">
+            Add New Post
+          </button>
         </div>
 
-        <table class="table is-fullwidth is-striped is-hoverable is-narrow">
+        <table
+          v-if="posts.length > 0"
+          class="table is-fullwidth is-striped is-hoverable"
+        >
           <thead>
             <tr class="has-background-link-light">
               <th>ID</th>
@@ -26,14 +33,21 @@ defineProps({
           </thead>
           <tbody>
             <tr v-for="post in posts" :key="post.id">
-              <td>{{ post.id }}</td>
-              <td>{{ post.title }}</td>
+              <td class="is-vcentered">{{ post.id }}</td>
+              <td class="is-vcentered">{{ post.title }}</td>
               <td class="has-text-right is-vcentered">
-                <button type="button" class="button is-link">Open</button>
+                <button
+                  type="button"
+                  class="button is-link"
+                  @click="$emit('select', post)"
+                >
+                  Open
+                </button>
               </td>
             </tr>
           </tbody>
         </table>
+        <h3 v-else class="mt-2 has-text-centered">No posts yet.</h3>
       </div>
     </div>
   </div>
