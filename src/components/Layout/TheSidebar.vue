@@ -11,7 +11,7 @@ defineProps({
   userId: { type: Number, required: true },
 });
 
-const emit = defineEmits(['close', 'save', 'delete']);
+const emit = defineEmits(['close', 'save', 'delete', 'edit']);
 </script>
 
 <template>
@@ -31,12 +31,14 @@ const emit = defineEmits(['close', 'save', 'delete']);
             :comments="comments"
             :is-loading-comments="isLoadingComments"
             @delete="emit('delete', $event)"
+            @edit="emit('edit')"
           />
         </template>
 
-        <template v-else-if="mode === 'add'">
+        <template v-else-if="mode === 'add' || mode === 'edit'">
           <PostForm
             :user-id="userId"
+            :post="mode === 'edit' ? post : null"
             @save="emit('save', $event)"
             @cancel="emit('close')"
           />
@@ -49,13 +51,21 @@ const emit = defineEmits(['close', 'save', 'delete']);
 <style scoped>
 .Sidebar {
   overflow: hidden;
+  opacity: 0;
+  transition: all 0.5s ease-in-out;
 }
 
 .Sidebar--open {
   opacity: 1;
+}
 
-  @media (min-width: 769px) {
-    max-width: 50%;
+@media (min-width: 769px) {
+  .Sidebar {
+    max-width: 0;
+  }
+
+  .Sidebar--open {
+    max-width: 66.66%;
   }
 }
 </style>

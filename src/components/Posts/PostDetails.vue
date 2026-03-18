@@ -16,7 +16,7 @@ defineProps({
   },
 });
 
-const emit = defineEmits(['delete']);
+const emit = defineEmits(['delete', 'edit']);
 </script>
 
 <template>
@@ -25,7 +25,7 @@ const emit = defineEmits(['delete']);
       <h2 class="title is-4">#{{ post.id }}: {{ post.title }}</h2>
 
       <div class="is-flex">
-        <span class="icon is-small is-clickable">
+        <span class="icon is-small is-clickable" @click="emit('edit')">
           <i class="fas fa-pen-to-square"></i>
         </span>
         <span

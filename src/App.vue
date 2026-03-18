@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { getPosts, createPost, deletePost } from './api/posts';
+import { getPosts, createPost, deletePost, updatePost } from './api/posts';
 import { getUserByEmail } from './api/users';
 import { getComments } from './api/comments';
 import TheNavbar from './components/Layout/TheNavbar.vue';
@@ -99,16 +99,44 @@ const openAddForm = () => {
   isSidebarOpen.value = true;
 };
 
-const handlePostAdd = async (postData) => {
+// const handlePostAdd = async (postData) => {
+//   isLoading.value = true;
+//   try {
+//     const newPost = await createPost(postData);
+
+//     posts.value = [newPost, ...posts.value];
+
+//     isSidebarOpen.value = false;
+//   } catch (error) {
+//     errorMessage.value = 'Failed to create the post.';
+//   } finally {
+//     isLoading.value = false;
+//   }
+// };
+
+const openEditForm = () => {
+  sidebarMode.value = 'edit';
+};
+
+const handlePostSave = async (postData) => {
   isLoading.value = true;
   try {
-    const newPost = await createPost(postData);
+    if (sidebarMode.value === 'edit') {
+      const updatedPost = await updatePost(postData);
+      const index = posts.value.findIndex((p) => p.id === updatedPost.id);
+      if (index !== -1) {
+        posts.value[index] = updatedPost;
+      }
+      selectedPost.value = updatedPost;
 
-    posts.value = [newPost, ...posts.value];
-
-    isSidebarOpen.value = false;
+      sidebarMode.value = 'view';
+    } else {
+      const newPost = await createPost(postData);
+      posts.value = [...posts.value, newPost];
+      isSidebarOpen.value = false;
+    }
   } catch (error) {
-    errorMessage.value = 'Failed to create the post.';
+    errorMessage.value = 'Failed to save the post.';
   } finally {
     isLoading.value = false;
   }
@@ -142,7 +170,8 @@ onMounted(() => {
             :is-loading-comments="isCommentsLoading"
             :user-id="currentUser.id"
             @close="isSidebarOpen = false"
-            @save="handlePostAdd"
+            @save="handlePostSave"
+            @edit="openEditForm"
             @delete="handlePostDelete"
           />
         </div>

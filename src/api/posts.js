@@ -37,3 +37,19 @@ export const deletePost = async (postId) => {
 
   return true;
 };
+
+export const updatePost = async ({ id, userId, title, body }) => {
+  const response = await fetch(`${BASE_URL}/posts/${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8',
+    },
+    body: JSON.stringify({ userId, title, body }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to update post');
+  }
+
+  return response.json();
+};

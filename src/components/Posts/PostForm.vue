@@ -2,36 +2,38 @@
 import { ref } from 'vue';
 
 const props = defineProps({
-  userId: {
-    type: Number,
-    required: true,
-  },
+  userId: { type: Number, required: true },
+  post: { type: Object, default: null },
 });
 
 const emit = defineEmits(['save', 'cancel']);
 
-const title = ref('');
-const body = ref('');
+const title = ref(props.post?.title || '');
+const body = ref(props.post?.body || '');
 const isSubmitting = ref(false);
 
 const handleSubmit = () => {
-  if (!title.value.trim() || !body.value.trim()) {
-    return;
-  }
+  if (!title.value.trim() || !body.value.trim()) return;
 
   isSubmitting.value = true;
 
-  emit('save', {
+  const postData = {
     userId: props.userId,
     title: title.value,
     body: body.value,
-  });
+  };
+
+  if (props.post) {
+    postData.id = props.post.id;
+  }
+
+  emit('save', postData);
 };
 </script>
 
 <template>
   <div class="content">
-    <h2 class="title is-4">Create new post</h2>
+    <h2 class="title is-4">{{ post ? 'Edit post' : 'Create new post' }}</h2>
 
     <form @submit.prevent="handleSubmit">
       <div class="field">
@@ -66,7 +68,7 @@ const handleSubmit = () => {
             class="button is-link"
             :class="{ 'is-loading': isSubmitting }"
           >
-            Save
+            {{ post ? 'Save changes' : 'Save' }}
           </button>
         </div>
         <div class="control">
