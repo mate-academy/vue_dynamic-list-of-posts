@@ -187,43 +187,47 @@ onMounted(() => {
 
     <main class="section">
       <div class="container">
-        <div v-if="errorMessage" class="notification is-danger">
-          <button class="delete" @click="errorMessage = ''"></button>
-          {{ errorMessage }}
-        </div>
+        <AppLoader v-if="isLoading" />
 
-        <div class="tile is-ancestor">
-          <PostList
-            :posts="posts"
-            :selected-post-id="selectedPost?.id"
-            @select="openPost"
-            @add="
-              sidebarMode = 'add';
-              isSidebarOpen = true;
-              selectedPost = null;
-            "
-          />
+        <template v-else>
+          <div v-if="errorMessage" class="notification is-danger">
+            <button class="delete" @click="errorMessage = ''"></button>
+            {{ errorMessage }}
+          </div>
 
-          <TheSidebar
-            v-if="isSidebarOpen"
-            :post="selectedPost"
-            :is-open="isSidebarOpen"
-            :mode="sidebarMode"
-            :comments="comments"
-            :is-loading-comments="isCommentsLoading"
-            :is-comment-submitting="isCommentSubmitting"
-            :user-id="currentUser.id"
-            @close="
-              isSidebarOpen = false;
-              selectedPost = null;
-            "
-            @save="handlePostSave"
-            @edit="sidebarMode = 'edit'"
-            @delete="handlePostDelete"
-            @add-comment="handleCommentAdd"
-            @delete-comment="handleCommentDelete"
-          />
-        </div>
+          <div class="tile is-ancestor">
+            <PostList
+              :posts="posts"
+              :selected-post-id="selectedPost?.id"
+              @select="openPost"
+              @add="
+                sidebarMode = 'add';
+                isSidebarOpen = true;
+                selectedPost = null;
+              "
+            />
+
+            <TheSidebar
+              v-if="isSidebarOpen"
+              :post="selectedPost"
+              :is-open="isSidebarOpen"
+              :mode="sidebarMode"
+              :comments="comments"
+              :is-loading-comments="isCommentsLoading"
+              :is-comment-submitting="isCommentSubmitting"
+              :user-id="currentUser.id"
+              @close="
+                isSidebarOpen = false;
+                selectedPost = null;
+              "
+              @save="handlePostSave"
+              @edit="sidebarMode = 'edit'"
+              @delete="handlePostDelete"
+              @add-comment="handleCommentAdd"
+              @delete-comment="handleCommentDelete"
+            />
+          </div>
+        </template>
       </div>
     </main>
   </template>

@@ -1,12 +1,12 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import AppLoader from '../Base/AppLoader.vue';
 import CommentItem from '../Comments/CommentItem.vue';
 import NoComments from '../Comments/NoComments.vue';
 import WriteCommentBtn from '../Comments/WriteCommentBtn.vue';
 import CommentForm from '../Comments/CommentForm.vue';
 
-defineProps({
+const props = defineProps({
   post: { type: Object, required: true },
   comments: { type: Array, required: true },
   isLoadingComments: { type: Boolean, required: true },
@@ -15,6 +15,13 @@ defineProps({
 
 const emit = defineEmits(['delete', 'edit', 'add-comment', 'delete-comment']);
 const isAddingComment = ref(false);
+
+watch(
+  () => props.post,
+  () => {
+    isAddingComment.value = false;
+  },
+);
 
 const handleCommentSubmit = (commentData) => {
   emit('add-comment', commentData);
