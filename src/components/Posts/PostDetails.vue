@@ -18,7 +18,6 @@ const isAddingComment = ref(false);
 
 const handleCommentSubmit = (commentData) => {
   emit('add-comment', commentData);
-  isAddingComment.value = false;
 };
 </script>
 

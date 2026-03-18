@@ -83,12 +83,19 @@ const handleLogout = () => {
 
 const handlePostDelete = async (postId) => {
   errorMessage.value = '';
+  const originalPosts = [...posts.value];
+  const lastSelectedPost = selectedPost.value;
+
+  posts.value = posts.value.filter((post) => post.id !== postId);
+  isSidebarOpen.value = false;
+  selectedPost.value = null;
+
   try {
     await deletePost(postId);
-    posts.value = posts.value.filter((post) => post.id !== postId);
-    isSidebarOpen.value = false;
-    selectedPost.value = null;
   } catch (error) {
+    posts.value = originalPosts;
+    selectedPost.value = lastSelectedPost;
+    isSidebarOpen.value = true;
     errorMessage.value = 'Failed to delete the post';
   }
 };
