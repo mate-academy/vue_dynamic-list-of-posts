@@ -10,19 +10,16 @@ form to add new comments. For communication with the server, use the Posts and U
 1. Learn the `.html` files to get all needed layouts;
    - Bulma is required to have all styles
 1. Initially the `App` shows the `Posts table` and `Create new post` button
-
    - show the `<Loader>` while waiting for the API response;
    - show an error notification if `posts` loading fails;
    - if the user has no posts show the `No posts yet` notification.
 
 1. Add the `Sidebar--open` class to the sidebar when user click on `Create new post`;
-
    - the form for new post should be appear there immediately;
    - add validation to the fields;
    - when user click on `Create` component with post details and comments should be appear there immediately ;
 
 1. In the `Post preview` user should see `edit` and `delete` buttons;
-
    - When user click on `Delete`, post should be deleted and sidebar close;
    - When user click on `Edit` show edit post form;
    - When user click on `Save` in edit mode - show post preview in the sidebar;
