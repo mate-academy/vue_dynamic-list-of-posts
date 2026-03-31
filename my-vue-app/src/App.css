@@ -1,0 +1,203 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+@import './variables.css';
+
+/* 1. TARCZA ANTY-DARK MODE */
+:root { color-scheme: light !important; }
+
+html, body {
+  background-color: var(--bg-body) !important;
+  color: var(--text-main) !important;
+  font-family: var(--font-family-main) !important;
+  min-height: 100vh;
+}
+
+* {
+  color: var(--text-main) !important;
+}
+
+/* 2. KARTY (BOX) - EFEKT 3D */
+.box {
+  background-color: var(--bg-card) !important;
+  border-radius: 8px !important;
+  border: 1px solid rgb(242, 240, 240);
+  box-shadow: 0 30px 30px var(--shadow-color), 0 20px 8px var(--shadow-color-deep) !important;
+}
+
+/* 3. TABELA - ZEBRA, KRESKI I EFEKT HOVER */
+.table {
+  background-color: var(--bg-card) !important;
+  border-collapse: collapse !important;
+  width: 100%;
+}
+
+.table thead th {
+  background-color: var(--bg-table-header) !important;
+  color: var(--text-main) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  font-size: var(--font-size-base);
+  padding: 5px 12px !important;
+  border: none !important;
+  border-bottom: 2px solid var(--border-color) !important;
+}
+
+.table td {
+  border-bottom: 1px solid var(--border-light) !important;
+  padding: 12px 12px !important;
+  vertical-align: top !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.table tbody tr:nth-child(odd) td {
+  background-color: var(--bg-card) !important;
+}
+.table tbody tr:nth-child(even) td {
+  background-color: var(--bg-zebra-even) !important;
+}
+
+.table tbody tr:hover td {
+  background-color: var(--bg-hover) !important;
+}
+
+/* 4. POZIOMA LINIA (DETALE POSTA) */
+hr {
+  background-color: var(--border-hr) !important;
+  height: 1px !important;
+  border: none !important;
+  margin: 1.5rem 0 !important;
+}
+
+/* 5. TYTUŁY I ETYKIETY */
+.title, .label, .navbar-item {
+  color: var(--text-main) !important;
+  font-weight: var(--font-weight-semibold) !important;
+}
+
+/* 6. POLA WPISYWANIA */
+input, textarea, .input, .textarea {
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: 0 2px 4px var(--shadow-color-light) !important;
+  border-radius: 6px !important;
+  font-family: var(--font-family-main) !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--text-placeholder) !important;
+}
+
+/* 7. PRZYCISKI  */
+
+/* 1. GŁÓWNY NIEBIESKI PRZYCISK (Add New Post, Create) */
+.button.is-link {
+  background-color: var(--color-primary) !important;
+  color: #ffffff !important;
+  font-weight: var(--font-weight-medium) !important;
+  border-radius: 4px !important;
+  transition: background-color 0.2s ease, color 0.2s ease !important;
+}
+
+/* 2. EFEKT "WCIŚNIĘCIA" DLA ADD NEW POST (Jasny jak Open) */
+button.button.is-link.is-pressed,
+button.button.is-link.is-pressed:hover {
+  background-color: var(--bg-btn-light) !important;
+  color: var(--color-primary) !important;
+  border: none !important;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05) !important;
+}
+
+/* 3. PRZYCISK LOGOUT (Szary pasek u góry) */
+.navbar-item .button.is-light {
+  background-color: var(--bg-btn-light) !important;
+  color: var(--text-main) !important;
+  border: none !important;
+  font-weight: var(--font-weight-medium) !important;
+}
+
+/* 4. PRZYCISKI JASNE-NIEBIESKIE (Open, Cancel) */
+.button.is-link.is-light {
+  background-color: var(--bg-btn-light) !important;
+  color: var(--color-primary) !important;
+  border: none !important;
+  font-weight: var(--font-weight-medium) !important;
+}
+
+form .button.is-light {
+  background-color: var(--bg-btn-light) !important;
+  color: var(--color-primary) !important;
+  border: none !important;
+  font-weight: var(--font-weight-medium) !important;
+}
+
+/* 5. PRZYCISK CLOSE (Aktywny wiersz - Ciemny)*/
+.is-active-indigo {
+  background-color: var(--color-indigo) !important;
+  color: #ffffff !important;
+  font-weight: var(--font-weight-medium) !important;
+  border: none !important;
+}
+
+/* Wymiary przycisków w tabeli */
+.is-active-indigo,
+td .button.is-link.is-light {
+  padding: 8px 20px !important;
+  font-size: var(--font-size-btn) !important;
+  min-width: 90px !important;
+}
+/* 8. IKONY - PRECYZYJNA KOLORYSTYKA */
+
+/* Wszystkie ikony domyślnie są JASNE */
+.icon, .fas, .far, .fab {
+  background-color: transparent !important;
+  color: var(--icon-main) !important;
+  transition: color 0.2s ease !important;
+}
+
+/* Ikona Edycji (Ołówek) */
+.fa-edit {
+  color: var(--text-main) !important;
+}
+
+/* Ikona Usuwania (Kosz) */
+.has-text-danger,
+.has-text-danger .fas,
+.fa-trash {
+  color: var(--color-danger) !important;
+}
+
+/* Ikony wewnątrz pól tekstowych (Login, Email) */
+.control.has-icons-left .icon,
+.control.has-icons-left .fas {
+  color: var(--text-placeholder) !important;
+}
+/* 9. KOMENTARZE */
+.message {
+  border: 1px solid var(--border-color) !important;
+  border-radius: 4px !important;
+  overflow: hidden !important;
+}
+
+.message-header.has-background-dark {
+  background-color: var(--text-main) !important;
+  color: var(--bg-card) !important;
+  border-bottom: none !important;
+}
+
+.message-header p {
+  color: var(--bg-card) !important;
+}
+
+.message-body {
+  background-color: var(--bg-zebra-even) !important;
+  color: var(--text-main) !important;
+  border: none !important;
+}
+
+/* 10. LINIA POD PASKIEM NAWIGACJI */
+.navbar.has-shadow {
+  box-shadow: none !important;
+  border-bottom: 1px solid var(--border-light) !important;
+}
+
+.navbar-item .button, .navbar-item a {
+  text-decoration: none !important;
+}

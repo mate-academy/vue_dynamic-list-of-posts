@@ -1,0 +1,44 @@
+:root {
+  /* Tła */
+  --bg-body: #fff;
+  --bg-card: #fff;
+  --bg-table-header: #f4f6fa;
+  --bg-zebra-even: #f9fafc;
+  --bg-hover: #edf2f7;
+  --bg-btn-light: #dce0f4;
+
+  /* Tekst i Ikony */
+  --text-main: #363636;
+  --icon-main: #aca7a7;
+  --text-placeholder: #d9e1eb;
+  --text-btn-open: #3850b7;
+  --text-btn-close: #ffffff;
+
+  /* Kolory Akcji / Przycisków */
+  --color-primary: #485fc7;
+  --color-indigo: #3949ab;
+  --color-danger: #f14668;
+
+  /* Obramowania i Linie separatorów */
+  --border-color: #e2e8f0;
+  --border-light: #f0f0f0;
+  --border-hr: #ebebeb;
+
+  /* Cienie */
+  --shadow-color: rgba(0, 0, 0, 0.06);
+  --shadow-color-deep: rgba(0, 0, 0, 0.08);
+  --shadow-color-light: rgba(0, 0, 0, 0.02);
+
+  /* Typografia */
+  --font-family-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+
+  /* Wielkości czcionek */
+  --font-size-base: 1rem;
+  --font-size-btn: 0.95rem;
+
+  /* Grubości czcionek (Wagi) */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+}
