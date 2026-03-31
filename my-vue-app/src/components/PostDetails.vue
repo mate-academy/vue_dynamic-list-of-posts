@@ -10,9 +10,12 @@ const isLoading = ref(false);
 const hasError = ref(false);
 const isAddingComment = ref(false);
 
+const commentDeleteErrorId = ref(null); // ID komentarza, którego nie udało się usunąć
+
 const fetchComments = async (postId) => {
   isLoading.value = true;
   hasError.value = false;
+  commentDeleteErrorId.value = null;
   try {
     const response = await fetch(`https://mate.academy/students-api/comments?postId=${postId}`);
     if (!response.ok) throw new Error();
@@ -32,6 +35,7 @@ watch(() => props.post.id, (newId) => {
 }, { immediate: true });
 
 const deleteComment = async (commentId) => {
+  commentDeleteErrorId.value = null; // reset bledu
   const originalComments = [...comments.value];
   comments.value = comments.value.filter(c => c.id !== commentId);
 
@@ -39,14 +43,14 @@ const deleteComment = async (commentId) => {
     const res = await fetch(`https://mate.academy/students-api/comments/${commentId}`, { method: 'DELETE' });
     if (!res.ok) throw new Error();
   } catch {
-    comments.value = originalComments;
-    alert('Failed to delete comment.');
+    comments.value = originalComments; // przywracamy komentarz
+    commentDeleteErrorId.value = commentId; // rejestrujemy błąd dla tego ID
   }
 };
 
 const handleCommentAdded = (newComment) => {
   comments.value.push(newComment);
-  isAddingComment.value = false;
+  // USUNIĘTE isAddingComment.value = false; - wymóg mentora (formularz zostaje otwarty)
 };
 </script>
 
@@ -71,9 +75,17 @@ const handleCommentAdded = (newComment) => {
     <div v-if="hasError" class="notification is-danger">
       CommentsError: Failed to load comments. <button class="button is-small is-light" @click="fetchComments(post.id)">Retry</button>
     </div>
+
+    <div v-if="commentDeleteErrorId" class="notification is-danger mb-4">
+      <button class="delete" @click="commentDeleteErrorId = null"></button>
+      Failed to delete comment.
+      <button class="button is-small is-light ml-2" @click="deleteComment(commentDeleteErrorId)">Retry</button>
+    </div>
+
     <div v-else-if="isLoading" class="has-text-centered py-4">
       <div class="button is-loading is-white is-large"></div>
     </div>
+
     <div v-else>
       <p v-if="comments.length === 0" class="has-text-grey mb-4">No comments yet</p>
 

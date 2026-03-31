@@ -16,6 +16,9 @@ const isEditing = ref(false);
 const isLoading = ref(false);
 const hasError = ref(false);
 
+// Stany błędów akcji
+const postActionError = ref(null);
+
 const handleLogin = (userData) => {
   currentUser.value = { ...userData, id: USER_ID };
   fetchPosts();
@@ -36,6 +39,7 @@ const fetchPosts = async () => {
 };
 
 const handleToggle = (post) => {
+  postActionError.value = null; // reset komunikatu bledu przy przelaczaniu
   if (selectedPost.value?.id === post.id) {
     cancel();
   } else {
@@ -46,51 +50,56 @@ const handleToggle = (post) => {
 };
 
 const cancel = () => {
+  postActionError.value = null;
   selectedPost.value = null;
   isAddingPost.value = false;
   isEditing.value = false;
 };
 
+// Dodawanie i edycja z funkcja Retry
 const handlePostSubmit = async (data) => {
-  if (isEditing.value) {
-    try {
-      const res = await fetch(`https://mate.academy/students-api/posts/${selectedPost.value.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-      const updatedPost = await res.json();
+  postActionError.value = null;
+  try {
+    const method = isEditing.value ? 'PATCH' : 'POST';
+    const url = isEditing.value
+      ? `https://mate.academy/students-api/posts/${selectedPost.value.id}`
+      : `https://mate.academy/students-api/posts`;
+
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify({ ...data, userId: USER_ID })
+    });
+
+    if (!res.ok) throw new Error();
+    const result = await res.json();
+
+    if (isEditing.value) {
       const index = posts.value.findIndex(p => p.id === selectedPost.value.id);
-      posts.value[index] = updatedPost;
-      selectedPost.value = updatedPost;
+      posts.value[index] = result;
+      selectedPost.value = result;
       isEditing.value = false;
-    } catch {
-      alert('Failed to update post.');
-    }
-  } else {
-    try {
-      const res = await fetch(`https://mate.academy/students-api/posts`, {
-        method: 'POST',
-        headers: { 'Content-type': 'application/json' },
-        body: JSON.stringify({ ...data, userId: USER_ID })
-      });
-      const newPost = await res.json();
-      posts.value.push(newPost);
-      selectedPost.value = newPost;
+    } else {
+      posts.value.push(result);
+      selectedPost.value = result;
       isAddingPost.value = false;
-    } catch {
-      alert('Failed to create post.');
     }
+  } catch {
+    // Zapamietujemy funkcje do wywolania ponownego jako wartosc zmiennej
+    postActionError.value = () => handlePostSubmit(data);
   }
 };
 
+// Usuwanie z funkcja Retry
 const deletePost = async (id) => {
+  postActionError.value = null;
   try {
-    await fetch(`https://mate.academy/students-api/posts/${id}`, { method: 'DELETE' });
+    const res = await fetch(`https://mate.academy/students-api/posts/${id}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error();
     posts.value = posts.value.filter(p => p.id !== id);
     cancel();
   } catch {
-    alert('Failed to delete post.');
+    postActionError.value = () => deletePost(id);
   }
 };
 </script>
@@ -117,17 +126,25 @@ const deletePost = async (id) => {
           <div class="columns">
             <div class="column" :class="{ 'is-7': selectedPost || isAddingPost, 'is-12': !selectedPost && !isAddingPost }">
               <PostList
-              :posts="posts"
-              :selectedPostId="selectedPost?.id"
-              :isLoading="isLoading"
-              :hasError="hasError"
-              :isAddingActive="isAddingPost" @toggle="handleToggle"
-              @add="isAddingPost = true; selectedPost = null; isEditing = false"
-              @retry="fetchPosts"
-            />
+                :posts="posts"
+                :selectedPostId="selectedPost?.id"
+                :isLoading="isLoading"
+                :hasError="hasError"
+                :isAddingActive="isAddingPost"
+                @toggle="handleToggle"
+                @add="isAddingPost = true; selectedPost = null; isEditing = false; postActionError = null"
+                @retry="fetchPosts"
+              />
             </div>
 
             <div v-if="isAddingPost || selectedPost" class="column is-5 Sidebar--open">
+
+              <div v-if="postActionError" class="notification is-danger mb-4">
+                <button class="delete" @click="postActionError = null"></button>
+                Action failed.
+                <button class="button is-small is-light ml-2" @click="postActionError()">Retry</button>
+              </div>
+
               <PostForm v-if="isAddingPost || isEditing" :initialPost="isEditing ? selectedPost : null" @submit="handlePostSubmit" @cancel="cancel" />
               <PostDetails v-else-if="selectedPost" :post="selectedPost" @edit="isEditing = true" @delete="deletePost" />
             </div>

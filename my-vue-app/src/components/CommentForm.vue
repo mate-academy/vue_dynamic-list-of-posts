@@ -10,6 +10,7 @@ const commentBody = ref('');
 const errors = ref({ name: false, email: false, body: false });
 const hasSubmitted = ref(false);
 const isSubmitting = ref(false);
+const hasSubmitError = ref(false); // Do obsługi błędu wysyłania
 
 const validateForm = () => {
   errors.value.name = !commentName.value.trim();
@@ -22,11 +23,23 @@ const handleInput = (field) => {
   if (hasSubmitted.value) errors.value[field] = false;
 };
 
+// Funkcja Clear (wymóg mentora)
+const clearForm = () => {
+  commentName.value = '';
+  commentEmail.value = '';
+  commentBody.value = '';
+  errors.value = { name: false, email: false, body: false };
+  hasSubmitted.value = false;
+  hasSubmitError.value = false;
+};
+
 const saveComment = async () => {
   hasSubmitted.value = true;
   if (!validateForm()) return;
 
   isSubmitting.value = true;
+  hasSubmitError.value = false; // reset bledu
+
   try {
     const response = await fetch('https://mate.academy/students-api/comments', {
       method: 'POST',
@@ -43,12 +56,11 @@ const saveComment = async () => {
 
     emit('added', newComment);
 
-    // TYLKO czyścimy body i resetujemy błędy po sukcesie. Formularz nie emituje 'cancel', więc zostaje otwarty!
     commentBody.value = '';
     errors.value.body = false;
     hasSubmitted.value = false;
   } catch {
-    alert('Failed to post comment.');
+    hasSubmitError.value = true;
   } finally {
     isSubmitting.value = false;
   }
@@ -57,6 +69,12 @@ const saveComment = async () => {
 
 <template>
   <form @submit.prevent="saveComment" class="mt-4">
+
+    <div v-if="hasSubmitError" class="notification is-danger is-light p-2 mb-3 is-size-7">
+      Failed to post comment.
+      <button type="button" class="button is-small is-danger ml-2" @click="saveComment">Retry</button>
+    </div>
+
     <div class="field">
       <label class="label is-small">Author Name</label>
       <div class="control has-icons-left">
@@ -85,6 +103,9 @@ const saveComment = async () => {
 
     <div class="buttons">
       <button type="submit" class="button is-link is-small" :class="{'is-loading': isSubmitting}">Add Comment</button>
+
+      <button type="button" class="button is-light is-small" @click="clearForm">Clear</button>
+
       <button type="button" class="button is-white is-small" @click="$emit('cancel')">Cancel</button>
     </div>
   </form>
