@@ -1,21 +1,30 @@
-<style>
-  @import "https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css";
-</style>
-<div data-theme="light" style="color-scheme: light;">
+<script setup>
+defineProps({
+  user: {
+    type: Object,
+    required: true,
+  },
+})
+
+defineEmits(['logout'])
+</script>
+
+<template>
   <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-item">
       <h2 class="is-size-4">Vue List Of Posts</h2>
     </div>
+
     <div class="navbar-end">
       <div class="navbar-item">
         <div class="buttons">
           <div class="mr-5 mb-2">
-            <p>User: {user.name}</p>
+            <p>User: {{ user.name }}</p>
           </div>
 
-          <a class="button is-light"> Logout </a>
+          <button type="button" class="button is-light" @click="$emit('logout')">Logout</button>
         </div>
       </div>
     </div>
   </nav>
-</div>
+</template>

@@ -1,13 +1,18 @@
-<div className="field" data-cy="BodyField">
-  <label className="label" htmlFor="{`comment-${name}`}"> title </label>
-  <div className="control">
-    <textarea
-      id="{`comment-${name}`}"
-      name="name"
-      placeholder="{placeholder}"
-      className="textarea is-danger"
-    ></textarea>
-  </div>
+<style>
+  @import "https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css";
+</style>
+<div data-theme="light" style="color-scheme: light;">
+  <div class="field" data-cy="BodyField">
+    <label class="label" for="{`comment-${name}`}"> title </label>
+    <div class="control">
+      <textarea
+        id="{`comment-${name}`}"
+        name="name"
+        placeholder="{placeholder}"
+        class="textarea is-danger"
+      ></textarea>
+    </div>
 
-  <p className="help is-danger" data-cy="ErrorMessage">error text</p>
+    <p class="help is-danger" data-cy="ErrorMessage">error text</p>
+  </div>
 </div>
