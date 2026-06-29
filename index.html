@@ -1,0 +1,850 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vue Dynamic List of Posts</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      .Sidebar {
+        transition: transform 0.18s ease;
+      }
+      .Sidebar--open {
+        transform: translateX(0);
+      }
+      .Sidebar {
+        transform: translateX(0);
+      }
+      .hidden {
+        display: none;
+      }
+      .lds-ring {
+        display: inline-block;
+        position: relative;
+        width: 48px;
+        height: 48px;
+      }
+      .lds-ring div {
+        box-sizing: border-box;
+        display: block;
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        margin: 6px;
+        border: 4px solid #3273dc;
+        border-radius: 50%;
+        animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        border-color: #3273dc transparent transparent transparent;
+      }
+      .lds-ring div:nth-child(1) {
+        animation-delay: -0.45s;
+      }
+      .lds-ring div:nth-child(2) {
+        animation-delay: -0.3s;
+      }
+      .lds-ring div:nth-child(3) {
+        animation-delay: -0.15s;
+      }
+      @keyframes lds-ring {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .is-clickable {
+        cursor: pointer;
+      }
+      .ml-3 {
+        margin-left: 0.75rem;
+      }
+      .is-vcentered {
+        vertical-align: middle;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+      const { createApp, ref, reactive, computed, watch, onMounted } = Vue;
+
+      // ===== API Service =====
+      const API_BASE = "https://mate.academy/students-api";
+
+      const api = {
+        async getPosts() {
+          const res = await fetch(`${API_BASE}/posts`);
+          if (!res.ok) throw new Error("Failed to load posts");
+          return res.json();
+        },
+
+        async getUsers() {
+          const res = await fetch(`${API_BASE}/users`);
+          if (!res.ok) throw new Error("Failed to load users");
+          return res.json();
+        },
+
+        async getComments(postId) {
+          const res = await fetch(`${API_BASE}/comments?postId=${postId}`);
+          if (!res.ok) throw new Error("Failed to load comments");
+          return res.json();
+        },
+
+        async createPost(post) {
+          const res = await fetch(`${API_BASE}/posts`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json; charset=utf-8" },
+            body: JSON.stringify(post),
+          });
+          if (!res.ok) throw new Error("Failed to create post");
+          return res.json();
+        },
+
+        async updatePost(postId, post) {
+          const res = await fetch(`${API_BASE}/posts/${postId}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json; charset=utf-8" },
+            body: JSON.stringify(post),
+          });
+          if (!res.ok) throw new Error("Failed to update post");
+          return res.json();
+        },
+
+        async deletePost(postId) {
+          const res = await fetch(`${API_BASE}/posts/${postId}`, {
+            method: "DELETE",
+          });
+          if (!res.ok) throw new Error("Failed to delete post");
+          return res.json();
+        },
+
+        async addComment(comment) {
+          const res = await fetch(`${API_BASE}/comments`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json; charset=utf-8" },
+            body: JSON.stringify(comment),
+          });
+          if (!res.ok) throw new Error("Failed to add comment");
+          return res.json();
+        },
+
+        async deleteComment(commentId) {
+          const res = await fetch(`${API_BASE}/comments/${commentId}`, {
+            method: "DELETE",
+          });
+          if (!res.ok) throw new Error("Failed to delete comment");
+          return res.json();
+        },
+      };
+
+      // ===== Vue App =====
+      createApp({
+        template: `
+          <section class="section">
+            <div class="container">
+              <!-- Header -->
+              <nav class="navbar" role="navigation" aria-label="main navigation">
+                <div class="navbar-item">
+                  <h2 class="is-size-4">Vue List Of Posts</h2>
+                </div>
+                <div class="navbar-end">
+                  <div class="navbar-item">
+                    <div class="buttons">
+                      <div class="mr-5 mb-2">
+                        <p>User: {{ currentUser?.name || 'Loading...' }}</p>
+                      </div>
+                      <a class="button is-light"> Logout </a>
+                    </div>
+                  </div>
+                </div>
+              </nav>
+
+              <div class="columns mt-5">
+                <!-- Main Posts Section -->
+                <div class="column is-two-thirds">
+                  <div class="tile is-parent">
+                    <div class="tile is-child box is-success">
+                      <div class="block">
+                        <div class="block is-flex is-justify-content-space-between">
+                          <p class="title">Posts</p>
+                          <button
+                            @click="showAddPostForm"
+                            type="button"
+                            class="button is-link"
+                          >
+                            Create new post
+                          </button>
+                        </div>
+
+                        <!-- Posts Loader -->
+                        <div
+                          v-if="postsLoading"
+                          class="is-flex is-justify-content-center is-align-items-center mt-2"
+                        >
+                          <div class="lds-ring">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                          </div>
+                        </div>
+
+                        <!-- Posts Error -->
+                        <div
+                          v-if="postsError && !postsLoading"
+                          class="notification is-danger"
+                        >
+                          {{ postsError }}
+                          <button @click="loadPosts" class="button is-small is-light ml-3">Retry</button>
+                        </div>
+
+                        <!-- No Posts -->
+                        <div
+                          v-if="!postsLoading && !postsError && posts.length === 0"
+                          class="notification is-warning"
+                        >
+                          No posts yet
+                        </div>
+
+                        <!-- Posts Table -->
+                        <table
+                          v-if="!postsLoading && !postsError && posts.length > 0"
+                          class="table is-fullwidth is-striped is-hoverable is-narrow"
+                        >
+                          <thead>
+                            <tr class="has-background-link-light">
+                              <th>ID</th>
+                              <th>Title</th>
+                              <th class="has-text-right">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr v-for="post in posts" :key="post.id">
+                              <td>{{ post.id }}</td>
+                              <td>{{ post.title }}</td>
+                              <td class="has-text-right is-vcentered">
+                                <button @click="openPostPreview(post)" class="button is-link">Open</button>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="column">
+                  <div :class="['tile is-parent is-8-desktop Sidebar', { 'Sidebar--open': sidebarOpen }]">
+                    <div class="tile is-child box is-success">
+                      <div class="content">
+                        <!-- Add Post Form -->
+                        <div v-if="sidebarMode === 'addPost'">
+                          <h2 class="title is-5">Create Post</h2>
+                          <form @submit.prevent="createPost">
+                            <div class="field">
+                              <label class="label">Title</label>
+                              <div class="control">
+                                <input 
+                                  v-model="form.title" 
+                                  @input="form.errors.title = ''"
+                                  class="input" 
+                                  :class="{ 'is-danger': form.errors.title }"
+                                  name="title" 
+                                />
+                              </div>
+                              <p v-if="form.errors.title" class="help is-danger">{{ form.errors.title }}</p>
+                            </div>
+                            <div class="field">
+                              <label class="label">Body</label>
+                              <div class="control">
+                                <textarea 
+                                  v-model="form.body" 
+                                  @input="form.errors.body = ''"
+                                  class="textarea" 
+                                  :class="{ 'is-danger': form.errors.body }"
+                                  name="body"
+                                ></textarea>
+                              </div>
+                              <p v-if="form.errors.body" class="help is-danger">{{ form.errors.body }}</p>
+                            </div>
+                            <div class="field is-grouped">
+                              <div class="control">
+                                <button :class="['button is-link', { 'is-loading': form.isSubmitting }]">Create</button>
+                              </div>
+                              <div class="control">
+                                <button @click.prevent="closeSidebar" type="button" class="button is-light">Cancel</button>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+
+                        <!-- Edit Post Form -->
+                        <div v-if="sidebarMode === 'editPost' && selectedPost">
+                          <h2 class="title is-5">Edit Post #{{ selectedPost.id }}</h2>
+                          <form @submit.prevent="updatePost">
+                            <div class="field">
+                              <label class="label">Title</label>
+                              <div class="control">
+                                <input 
+                                  v-model="form.title" 
+                                  @input="form.errors.title = ''"
+                                  class="input" 
+                                  :class="{ 'is-danger': form.errors.title }"
+                                  name="title" 
+                                />
+                              </div>
+                              <p v-if="form.errors.title" class="help is-danger">{{ form.errors.title }}</p>
+                            </div>
+                            <div class="field">
+                              <label class="label">Body</label>
+                              <div class="control">
+                                <textarea 
+                                  v-model="form.body" 
+                                  @input="form.errors.body = ''"
+                                  class="textarea" 
+                                  :class="{ 'is-danger': form.errors.body }"
+                                  name="body"
+                                ></textarea>
+                              </div>
+                              <p v-if="form.errors.body" class="help is-danger">{{ form.errors.body }}</p>
+                            </div>
+                            <div class="field is-grouped">
+                              <div class="control">
+                                <button :class="['button is-link', { 'is-loading': form.isSubmitting }]">Save</button>
+                              </div>
+                              <div class="control">
+                                <button @click.prevent="openPostPreview(selectedPost)" type="button" class="button is-light">Cancel</button>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+
+                        <!-- Post Preview -->
+                        <div v-if="sidebarMode === 'preview' && selectedPost" class="block">
+                          <div class="is-flex is-justify-content-space-between is-align-items-center">
+                            <h2>#{{ selectedPost.id }}: {{ selectedPost.title }}</h2>
+                            <div class="is-flex">
+                              <span @click="editPost(selectedPost)" class="icon is-small is-right is-clickable">
+                                <i class="fas fa-pen-to-square"></i>
+                              </span>
+                              <span @click="confirmDeletePost(selectedPost)" class="icon is-small is-right has-text-danger is-clickable ml-3">
+                                <i class="fas fa-trash"></i>
+                              </span>
+                            </div>
+                          </div>
+                          <p data-cy="PostBody">{{ selectedPost.body }}</p>
+
+                          <!-- Comments Section -->
+                          <div class="block mt-5">
+                            <p class="title is-6">Comments</p>
+
+                            <!-- Comments Loader -->
+                            <div v-if="commentsLoading" class="is-flex is-justify-content-center is-align-items-center mt-2">
+                              <div class="lds-ring">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                              </div>
+                            </div>
+
+                            <!-- Comments Error -->
+                            <div v-if="commentsError && !commentsLoading" class="notification is-danger">
+                              {{ commentsError }}
+                              <button @click="loadComments(selectedPost.id)" class="button is-small is-light ml-3">Retry</button>
+                            </div>
+
+                            <!-- Pending Comment Operations Retry -->
+                            <div v-if="hasPendingCommentOps" class="notification is-warning mb-3">
+                              <div class="is-flex is-justify-content-space-between is-align-items-center">
+                                <span>
+                                  {{ commentRetryQueue.length }} comment operation(s) failed. 
+                                  <button @click="retryPendingCommentOps" :disabled="isRetrying" class="button is-small is-light ml-2">
+                                    <span v-if="!isRetrying">Retry Now</span>
+                                    <span v-else><i class="fas fa-spinner fa-spin"></i> Retrying...</span>
+                                  </button>
+                                </span>
+                              </div>
+                            </div>
+
+                            <!-- No Comments -->
+                            <div v-if="!commentsLoading && !commentsError && comments.length === 0" class="notification is-warning">
+                              No comments yet
+                            </div>
+
+                            <!-- Comments List -->
+                            <div v-if="!commentsLoading && !commentsError && comments.length > 0" class="block">
+                              <article v-for="comment in comments" :key="comment.id" class="message is-small mb-3">
+                                <div class="message-header">
+                                  <a :href="'mailto:' + comment.email">{{ comment.name }}</a>
+                                  <button 
+                                    @click="deleteComment(comment)" 
+                                    :disabled="comment.isDeleting"
+                                    type="button" 
+                                    class="delete is-small" 
+                                    aria-label="delete"
+                                  ></button>
+                                </div>
+                                <div class="message-body">{{ comment.body }}</div>
+                              </article>
+                            </div>
+
+                            <!-- Write Comment Button / Form Toggle -->
+                            <div v-if="!commentFormVisible && !commentsLoading && !commentsError" class="mt-4">
+                              <button @click="showCommentForm" type="button" class="button is-link">Write a comment</button>
+                            </div>
+
+                            <!-- Comment Form -->
+                            <form v-if="commentFormVisible && selectedPost" @submit.prevent="addComment" class="mt-4">
+                              <div class="field">
+                                <label class="label">Name</label>
+                                <div class="control has-icons-left">
+                                  <input 
+                                    v-model="commentForm.name" 
+                                    @input="commentForm.errors.name = ''"
+                                    type="text" 
+                                    class="input" 
+                                    :class="{ 'is-danger': commentForm.errors.name }"
+                                    placeholder="Your name"
+                                  />
+                                  <span class="icon is-small is-left">
+                                    <i class="fas fa-user"></i>
+                                  </span>
+                                  <span v-if="commentForm.errors.name" class="icon is-small is-right has-text-danger">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                  </span>
+                                </div>
+                                <p v-if="commentForm.errors.name" class="help is-danger">{{ commentForm.errors.name }}</p>
+                              </div>
+
+                              <div class="field">
+                                <label class="label">Email</label>
+                                <div class="control has-icons-left">
+                                  <input 
+                                    v-model="commentForm.email" 
+                                    @input="commentForm.errors.email = ''"
+                                    type="email" 
+                                    class="input" 
+                                    :class="{ 'is-danger': commentForm.errors.email }"
+                                    placeholder="Your email"
+                                  />
+                                  <span class="icon is-small is-left">
+                                    <i class="fas fa-envelope"></i>
+                                  </span>
+                                  <span v-if="commentForm.errors.email" class="icon is-small is-right has-text-danger">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                  </span>
+                                </div>
+                                <p v-if="commentForm.errors.email" class="help is-danger">{{ commentForm.errors.email }}</p>
+                              </div>
+
+                              <div class="field">
+                                <label class="label">Comment</label>
+                                <div class="control">
+                                  <textarea 
+                                    v-model="commentForm.body" 
+                                    @input="commentForm.errors.body = ''"
+                                    class="textarea" 
+                                    :class="{ 'is-danger': commentForm.errors.body }"
+                                    placeholder="Your comment"
+                                  ></textarea>
+                                </div>
+                                <p v-if="commentForm.errors.body" class="help is-danger">{{ commentForm.errors.body }}</p>
+                              </div>
+
+                              <div class="field is-grouped">
+                                <div class="control">
+                                  <button :class="['button is-link', { 'is-loading': commentForm.isSubmitting }]">Submit</button>
+                                </div>
+                                <div class="control">
+                                  <button @click.prevent="hideCommentForm" type="button" class="button is-light">Clear</button>
+                                </div>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+
+                        <!-- Default Sidebar Message -->
+                        <div v-if="!sidebarMode" class="block">
+                          <p class="title is-5">Sidebar</p>
+                          <p class="help">Open a post or create a new one.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        `,
+
+        setup() {
+          // State
+          const posts = ref([]);
+          const postsLoading = ref(true);
+          const postsError = ref("");
+          const currentUser = ref(null);
+          const sidebarOpen = ref(false);
+          const sidebarMode = ref(""); // '', 'addPost', 'editPost', 'preview'
+          const selectedPost = ref(null);
+          const comments = ref([]);
+          const commentsLoading = ref(false);
+          const commentsError = ref("");
+          const commentFormVisible = ref(false);
+          const commentRetryQueue = ref([]); // for retry handling
+
+          const form = reactive({
+            title: "",
+            body: "",
+            isSubmitting: false,
+            errors: { title: "", body: "" },
+          });
+
+          const commentForm = reactive({
+            name: "",
+            email: "",
+            body: "",
+            isSubmitting: false,
+            errors: { name: "", email: "", body: "" },
+          });
+
+          const isRetrying = ref(false);
+
+          // Computed
+          const hasPendingCommentOps = computed(
+            () => commentRetryQueue.value.length > 0,
+          );
+
+          // Methods
+          const loadPosts = async () => {
+            postsLoading.value = true;
+            postsError.value = "";
+            try {
+              posts.value = await api.getPosts();
+            } catch (err) {
+              postsError.value = err.message || "Failed to load posts";
+            } finally {
+              postsLoading.value = false;
+            }
+          };
+
+          const loadCurrentUser = async () => {
+            try {
+              const users = await api.getUsers();
+              currentUser.value = users[0] || { id: 1, name: "User" };
+            } catch (err) {
+              console.error("Failed to load user:", err);
+              currentUser.value = { id: 1, name: "User" };
+            }
+          };
+
+          const loadComments = async (postId) => {
+            commentsLoading.value = true;
+            commentsError.value = "";
+            commentFormVisible.value = false;
+            try {
+              comments.value = await api.getComments(postId);
+            } catch (err) {
+              commentsError.value = err.message || "Failed to load comments";
+            } finally {
+              commentsLoading.value = false;
+            }
+          };
+
+          const showAddPostForm = () => {
+            form.title = "";
+            form.body = "";
+            form.errors = { title: "", body: "" };
+            sidebarMode.value = "addPost";
+            sidebarOpen.value = true;
+          };
+
+          const createPost = async () => {
+            form.errors = { title: "", body: "" };
+            let valid = true;
+
+            if (!form.title.trim()) {
+              form.errors.title = "Title is required";
+              valid = false;
+            }
+            if (!form.body.trim()) {
+              form.errors.body = "Body is required";
+              valid = false;
+            }
+
+            if (!valid) return;
+
+            form.isSubmitting = true;
+            try {
+              const newPost = await api.createPost({
+                title: form.title.trim(),
+                body: form.body.trim(),
+                userId: currentUser.value.id,
+              });
+              posts.value.unshift(newPost);
+              selectedPost.value = newPost;
+              sidebarMode.value = "preview";
+              commentFormVisible.value = false;
+              await loadComments(newPost.id);
+            } catch (err) {
+              form.errors.title = err.message || "Failed to create post";
+            } finally {
+              form.isSubmitting = false;
+            }
+          };
+
+          const editPost = (post) => {
+            form.title = post.title;
+            form.body = post.body;
+            form.errors = { title: "", body: "" };
+            sidebarMode.value = "editPost";
+          };
+
+          const updatePost = async () => {
+            form.errors = { title: "", body: "" };
+            let valid = true;
+
+            if (!form.title.trim()) {
+              form.errors.title = "Title is required";
+              valid = false;
+            }
+            if (!form.body.trim()) {
+              form.errors.body = "Body is required";
+              valid = false;
+            }
+
+            if (!valid) return;
+
+            form.isSubmitting = true;
+            try {
+              const updated = await api.updatePost(selectedPost.value.id, {
+                title: form.title.trim(),
+                body: form.body.trim(),
+              });
+              const idx = posts.value.findIndex(
+                (p) => p.id === selectedPost.value.id,
+              );
+              if (idx >= 0) {
+                posts.value[idx] = updated;
+              }
+              selectedPost.value = updated;
+              sidebarMode.value = "preview";
+            } catch (err) {
+              form.errors.title = err.message || "Failed to update post";
+            } finally {
+              form.isSubmitting = false;
+            }
+          };
+
+          const confirmDeletePost = async (post) => {
+            if (!confirm("Are you sure you want to delete this post?")) return;
+            try {
+              await api.deletePost(post.id);
+              posts.value = posts.value.filter((p) => p.id !== post.id);
+              closeSidebar();
+            } catch (err) {
+              postsError.value = err.message || "Failed to delete post";
+            }
+          };
+
+          const addComment = async () => {
+            commentForm.errors = { name: "", email: "", body: "" };
+            let valid = true;
+
+            if (!commentForm.name.trim()) {
+              commentForm.errors.name = "Name is required";
+              valid = false;
+            }
+            if (!commentForm.email.trim()) {
+              commentForm.errors.email = "Email is required";
+              valid = false;
+            }
+            if (!commentForm.body.trim()) {
+              commentForm.errors.body = "Comment is required";
+              valid = false;
+            }
+
+            if (!valid) return;
+
+            commentForm.isSubmitting = true;
+            try {
+              const newComment = await api.addComment({
+                name: commentForm.name.trim(),
+                email: commentForm.email.trim(),
+                body: commentForm.body.trim(),
+                postId: selectedPost.value.id,
+              });
+              comments.value.push(newComment);
+              commentForm.body = "";
+              commentForm.errors = { name: "", email: "", body: "" };
+              hideCommentForm();
+            } catch (err) {
+              commentRetryQueue.value.push({
+                type: "add",
+                data: {
+                  name: commentForm.name.trim(),
+                  email: commentForm.email.trim(),
+                  body: commentForm.body.trim(),
+                  postId: selectedPost.value.id,
+                },
+              });
+              alert(
+                "Failed to add comment. You can retry using the retry button.",
+              );
+            } finally {
+              commentForm.isSubmitting = false;
+            }
+          };
+
+          const deleteComment = async (comment) => {
+            const index = comments.value.indexOf(comment);
+            if (index < 0) return;
+
+            // Optimistic delete
+            comments.value.splice(index, 1);
+            comment.isDeleting = true;
+
+            try {
+              await api.deleteComment(comment.id);
+            } catch (err) {
+              // Restore comment on failure
+              comments.value.splice(index, 0, comment);
+              commentRetryQueue.value.push({
+                type: "delete",
+                data: comment,
+              });
+              alert(
+                "Failed to delete comment. You can retry using the retry button.",
+              );
+            } finally {
+              comment.isDeleting = false;
+            }
+          };
+
+          const openPostPreview = async (post) => {
+            selectedPost.value = post;
+            sidebarMode.value = "preview";
+            commentFormVisible.value = false;
+            sidebarOpen.value = true;
+            await loadComments(post.id);
+          };
+
+          const showCommentForm = () => {
+            commentForm.name = "";
+            commentForm.email = "";
+            commentForm.body = "";
+            commentForm.errors = { name: "", email: "", body: "" };
+            commentFormVisible.value = true;
+          };
+
+          const hideCommentForm = () => {
+            commentFormVisible.value = false;
+            commentForm.errors = { name: "", email: "", body: "" };
+          };
+
+          const closeSidebar = () => {
+            sidebarOpen.value = false;
+            sidebarMode.value = "";
+            selectedPost.value = null;
+            commentFormVisible.value = false;
+          };
+
+          const retryPendingCommentOps = async () => {
+            if (isRetrying.value || commentRetryQueue.value.length === 0)
+              return;
+
+            isRetrying.value = true;
+            const queue = [...commentRetryQueue.value];
+            commentRetryQueue.value = [];
+
+            let successCount = 0;
+            let failedOps = [];
+
+            for (const op of queue) {
+              try {
+                if (op.type === "add") {
+                  const newComment = await api.addComment(op.data);
+                  comments.value.push(newComment);
+                  successCount++;
+                } else if (op.type === "delete") {
+                  await api.deleteComment(op.data.id);
+                  successCount++;
+                }
+              } catch (err) {
+                failedOps.push(op);
+              }
+            }
+
+            // Put failed operations back in queue for retry
+            commentRetryQueue.value.push(...failedOps);
+            isRetrying.value = false;
+
+            if (successCount > 0 && failedOps.length === 0) {
+              alert(
+                `Successfully retried ${successCount} comment operation(s)!`,
+              );
+            } else if (successCount > 0) {
+              alert(
+                `Retried ${successCount} operation(s), but ${failedOps.length} still failed.`,
+              );
+            } else if (failedOps.length > 0) {
+              alert(
+                `Failed to retry ${failedOps.length} operation(s). Please try again.`,
+              );
+            }
+          };
+
+          // Initialize
+          onMounted(async () => {
+            await loadCurrentUser();
+            await loadPosts();
+          });
+
+          return {
+            posts,
+            postsLoading,
+            postsError,
+            currentUser,
+            sidebarOpen,
+            sidebarMode,
+            selectedPost,
+            comments,
+            commentsLoading,
+            commentsError,
+            commentFormVisible,
+            commentRetryQueue,
+            hasPendingCommentOps,
+            isRetrying,
+            form,
+            commentForm,
+            loadPosts,
+            showAddPostForm,
+            createPost,
+            editPost,
+            updatePost,
+            confirmDeletePost,
+            addComment,
+            deleteComment,
+            openPostPreview,
+            showCommentForm,
+            hideCommentForm,
+            closeSidebar,
+            loadComments,
+            retryPendingCommentOps,
+          };
+        },
+      }).mount("#app");
+    </script>
+  </body>
+</html>
