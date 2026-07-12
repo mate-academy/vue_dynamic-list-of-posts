@@ -1,21 +1,3 @@
-<script setup>
-defineProps({
-  posts: {
-    type: Array,
-    default: () => [],
-  },
-  currentPost: {
-    type: Object,
-    default: null,
-  },
-  isLoading: Boolean,
-  errorMessagePosts: String,
-  errorMessageGetUser: String,
-});
-
-defineEmits(["add-post", "select-post"]);
-</script>
-
 <template>
   <div class="tile is-parent PostsBlock">
     <div class="tile is-child box is-success">
@@ -47,12 +29,8 @@ defineEmits(["add-post", "select-post"]);
                 <button
                   @click="$emit('select-post', post)"
                   type="button"
-                  class="button is-link"
-                  :class="
-                    currentPost?.id === post.id
-                      ? 'is-light'
-                      : 'button is-link'
-                  "
+                  class="button"
+                  :class="currentPost?.id === post.id ? 'is-light' : 'is-link'"
                 >
                   {{ currentPost?.id === post.id ? "Close" : "Open" }}
                 </button>
@@ -71,11 +49,24 @@ defineEmits(["add-post", "select-post"]);
         >
           No posts yet
         </p>
-
-        <p class="help is-danger" v-if="errorMessageGetUser">
-          {{ errorMessageGetUser }}
-        </p>
       </div>
     </div>
   </div>
 </template>
+
+<script setup>
+defineProps({
+  posts: {
+    type: Array,
+    default: () => [],
+  },
+  currentPost: {
+    type: Object,
+    default: null,
+  },
+  isLoading: Boolean,
+  errorMessagePosts: String,
+});
+
+defineEmits(["add-post", "select-post"]);
+</script>

@@ -1,19 +1,9 @@
-<script setup>
-defineProps({
-  loginInput: String,
-  errorMessageLogin: String,
-  loadingLogin: Boolean,
-});
-
-defineEmits(["submit", "input"]);
-</script>
-
 <template>
   <form @submit.prevent="$emit('submit')" class="box mt-5">
     <h1 class="title is-3">Get your userId</h1>
 
     <div class="field">
-      <label class="label" htmlFor="user-email"> Email </label>
+      <label class="label" for="user-email"> Email </label>
 
       <div class="control has-icons-left">
         <input
@@ -50,3 +40,12 @@ defineEmits(["submit", "input"]);
   </form>
 </template>
 
+<script setup>
+defineProps({
+  loginInput: String,
+  errorMessageLogin: String,
+  loadingLogin: Boolean,
+});
+
+defineEmits(["submit", "input"]);
+</script>

@@ -23,7 +23,7 @@ import RegisterForm from "./components/RegisterForm.vue";
 
 const posts = ref([]);
 const errorMessagePosts = ref("");
-const errorMessageGetUser = ref("");
+const errorMessageComments = ref("");
 const errorMessageDeletePost = ref("");
 const errorMessageEditPost = ref("");
 const errorMessageDeleteComment = ref("");
@@ -264,11 +264,12 @@ const getUser = async (post) => {
 
   loadingComments.value = true;
   currentPost.value = post;
+  errorMessageComments.value = "";
 
   try {
     comments.value = await getComments(post.id);
   } catch (e) {
-    errorMessageGetUser.value = "Failed to load comments. Please try again";
+    errorMessageComments.value = "Failed to load comments. Please try again";
   } finally {
     loadingComments.value = false;
   }
@@ -287,16 +288,17 @@ const deleteCurrentPost = async () => {
 };
 
 const deleteCurrentComment = async (commentId) => {
-  const deletedComment = comments.value.find(
+  const deletedIndex = comments.value.findIndex(
     (comment) => comment.id === commentId,
   );
+  const deletedComment = comments.value[deletedIndex];
 
   comments.value = comments.value.filter((comment) => comment.id !== commentId);
 
   try {
     await deleteComment(commentId);
   } catch {
-    comments.value.push(deletedComment);
+    comments.value.splice(deletedIndex, 0, deletedComment);
 
     errorMessageDeleteComment.value = "Failed to delete comment";
   }
@@ -379,7 +381,7 @@ const editCurrentPost = () => {
   showUpdatePost.value = true;
 };
 
-const udpateCurrentPost = async () => {
+const updateCurrentPost = async () => {
   loadingPostEditing.value = true;
 
   try {
@@ -393,6 +395,7 @@ const udpateCurrentPost = async () => {
     await loadPost();
 
     comments.value = await getComments(updatedPost.id);
+    currentPost.value = updatedPost;
   } catch (e) {
     errorMessageEditPost.value = "Failed to save changes. Please try again";
   } finally {
@@ -406,7 +409,7 @@ const udpateCurrentPost = async () => {
   }
 };
 
-const resetUpadateCurrentPost = async () => {
+const resetUpdateCurrentPost = async () => {
   currentPost.value = editingPost.value;
 
   showUpdatePost.value = false;
@@ -442,7 +445,6 @@ onMounted(loadPost);
           :current-post="currentPost"
           :is-loading="isLoading"
           :error-message-posts="errorMessagePosts"
-          :error-message-get-user="errorMessageGetUser"
           @add-post="showFormAddPost"
           @select-post="getUser"
         />
@@ -466,6 +468,7 @@ onMounted(loadPost);
               :post="currentPost"
               :comments="comments"
               :loading-comments="loadingComments"
+              :error-message-comments="errorMessageComments"
               :write-comment="writeComment"
               :author-name="authorName"
               :author-email="authorEmail"
@@ -502,8 +505,8 @@ onMounted(loadPost);
               :edit-body="editBody"
               :loading-post-editing="loadingPostEditing"
               :error-message-reset-edit="errorMessageResetEdit"
-              @submit="udpateCurrentPost"
-              @cancel="resetUpadateCurrentPost"
+              @submit="updateCurrentPost"
+              @cancel="resetUpdateCurrentPost"
               @title-input="handleEditTitleChange"
               @body-input="handleEditBodyChange"
             />

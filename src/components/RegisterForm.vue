@@ -1,20 +1,9 @@
-<script setup>
-defineProps({
-  loginInput: String,
-  userName: String,
-  errorMessageRegister: String,
-  loadingRegister: Boolean,
-});
-
-defineEmits(["submit", "input"]);
-</script>
-
 <template>
   <form @submit.prevent="$emit('submit')" class="box mt-5">
     <h1 class="title is-3">You need to register</h1>
 
     <div class="field">
-      <label class="label" htmlFor="user-email"> Email </label>
+      <label class="label" for="user-email"> Email </label>
 
       <div class="control has-icons-left">
         <input
@@ -34,7 +23,7 @@ defineEmits(["submit", "input"]);
       </div>
 
       <div class="field">
-        <label class="label" htmlFor="user-name"> Your Name </label>
+        <label class="label" for="user-name"> Your Name </label>
 
         <div class="control has-icons-left">
           <input
@@ -42,7 +31,7 @@ defineEmits(["submit", "input"]);
             id="user-name"
             class="input"
             placeholder="Enter your name"
-            minlength="{4}"
+            minlength="4"
             :class="{ 'is-danger': errorMessageRegister }"
             :value="userName"
             @input="$emit('input', $event)"
@@ -71,3 +60,14 @@ defineEmits(["submit", "input"]);
     </div>
   </form>
 </template>
+
+<script setup>
+defineProps({
+  loginInput: String,
+  userName: String,
+  errorMessageRegister: String,
+  loadingRegister: Boolean,
+});
+
+defineEmits(["submit", "input"]);
+</script>

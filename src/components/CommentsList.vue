@@ -1,19 +1,8 @@
-<script setup>
-defineProps({
-  comments: {
-    type: Array,
-    default: () => [],
-  },
-});
-
-defineEmits(["delete-comment"]);
-</script>
-
 <template>
   <div v-for="comment of comments" :key="comment.id">
     <article class="message is-small">
       <div class="message-header">
-        <a href="mailto:2342@gmail.com" data-cy="CommentAuthor">{{
+        <a :href="'mailto:' + comment.email" data-cy="CommentAuthor">{{
           comment.name
         }}</a
         ><button
@@ -30,3 +19,14 @@ defineEmits(["delete-comment"]);
     </article>
   </div>
 </template>
+
+<script setup>
+defineProps({
+  comments: {
+    type: Array,
+    default: () => [],
+  },
+});
+
+defineEmits(["delete-comment"]);
+</script>

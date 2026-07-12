@@ -1,14 +1,3 @@
-<script setup>
-defineProps({
-  editTitle: String,
-  editBody: String,
-  loadingPostEditing: Boolean,
-  errorMessageResetEdit: String,
-});
-
-defineEmits(["submit", "cancel", "title-input", "body-input"]);
-</script>
-
 <template>
   <div class="tile is-child">
     <div class="content">
@@ -71,3 +60,14 @@ defineEmits(["submit", "cancel", "title-input", "body-input"]);
     </div>
   </div>
 </template>
+
+<script setup>
+defineProps({
+  editTitle: String,
+  editBody: String,
+  loadingPostEditing: Boolean,
+  errorMessageResetEdit: String,
+});
+
+defineEmits(["submit", "cancel", "title-input", "body-input"]);
+</script>

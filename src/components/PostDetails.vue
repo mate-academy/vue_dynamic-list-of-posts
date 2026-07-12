@@ -1,45 +1,3 @@
-<script setup>
-import Loader from "./Loader.vue";
-import CommentsList from "./CommentsList.vue";
-import CommentForm from "./CommentForm.vue";
-
-defineProps({
-  post: {
-    type: Object,
-    required: true,
-  },
-  comments: {
-    type: Array,
-    default: () => [],
-  },
-  loadingComments: Boolean,
-  writeComment: Boolean,
-  authorName: String,
-  authorEmail: String,
-  authorBody: String,
-  errorMessageAuthorName: String,
-  errorMessageAuthorEmail: String,
-  errorMessageAuthorBody: String,
-  commentWriteError: String,
-  errorMessageDeletePost: String,
-  errorMessageEditPost: String,
-  errorMessageDeleteComment: String,
-  loadingAddComment: Boolean,
-});
-
-defineEmits([
-  "edit-post",
-  "delete-post",
-  "delete-comment",
-  "write-comment",
-  "add-comment",
-  "cancel-write-comment",
-  "author-name-input",
-  "author-email-input",
-  "author-body-input",
-]);
-</script>
-
 <template>
   <div class="tile is-child">
     <div class="content">
@@ -66,6 +24,14 @@ defineEmits([
         <Loader v-if="loadingComments" />
 
         <div v-else class="block">
+          <p
+            v-if="errorMessageComments"
+            class="help is-danger"
+            data-cy="CommentsError"
+          >
+            {{ errorMessageComments }}
+          </p>
+
           <p
             v-if="comments.length === 0 && writeComment === false"
             class="title is-4"
@@ -112,3 +78,46 @@ defineEmits([
     </div>
   </div>
 </template>
+
+<script setup>
+import Loader from "./Loader.vue";
+import CommentsList from "./CommentsList.vue";
+import CommentForm from "./CommentForm.vue";
+
+defineProps({
+  post: {
+    type: Object,
+    required: true,
+  },
+  comments: {
+    type: Array,
+    default: () => [],
+  },
+  loadingComments: Boolean,
+  errorMessageComments: String,
+  writeComment: Boolean,
+  authorName: String,
+  authorEmail: String,
+  authorBody: String,
+  errorMessageAuthorName: String,
+  errorMessageAuthorEmail: String,
+  errorMessageAuthorBody: String,
+  commentWriteError: String,
+  errorMessageDeletePost: String,
+  errorMessageEditPost: String,
+  errorMessageDeleteComment: String,
+  loadingAddComment: Boolean,
+});
+
+defineEmits([
+  "edit-post",
+  "delete-post",
+  "delete-comment",
+  "write-comment",
+  "add-comment",
+  "cancel-write-comment",
+  "author-name-input",
+  "author-email-input",
+  "author-body-input",
+]);
+</script>

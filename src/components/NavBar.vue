@@ -1,11 +1,3 @@
-<script setup>
-defineProps({
-  userName: String,
-});
-
-defineEmits(["logout"]);
-</script>
-
 <template>
   <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-item">
@@ -26,3 +18,11 @@ defineEmits(["logout"]);
     </div>
   </nav>
 </template>
+
+<script setup>
+defineProps({
+  userName: String,
+});
+
+defineEmits(["logout"]);
+</script>

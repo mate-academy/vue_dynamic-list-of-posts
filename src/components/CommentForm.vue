@@ -1,21 +1,3 @@
-<script setup>
-defineProps({
-  authorName: String,
-  authorEmail: String,
-  authorBody: String,
-  errorMessageAuthorName: String,
-  errorMessageAuthorEmail: String,
-  errorMessageAuthorBody: String,
-  commentWriteError: String,
-  errorMessageDeletePost: String,
-  errorMessageEditPost: String,
-  errorMessageDeleteComment: String,
-  loadingAddComment: Boolean,
-});
-
-defineEmits(["submit", "cancel", "name-input", "email-input", "body-input"]);
-</script>
-
 <template>
   <form @submit.prevent="$emit('submit')" @reset.prevent="$emit('cancel')">
     <div class="field">
@@ -125,3 +107,21 @@ defineEmits(["submit", "cancel", "name-input", "email-input", "body-input"]);
     </div>
   </form>
 </template>
+
+<script setup>
+defineProps({
+  authorName: String,
+  authorEmail: String,
+  authorBody: String,
+  errorMessageAuthorName: String,
+  errorMessageAuthorEmail: String,
+  errorMessageAuthorBody: String,
+  commentWriteError: String,
+  errorMessageDeletePost: String,
+  errorMessageEditPost: String,
+  errorMessageDeleteComment: String,
+  loadingAddComment: Boolean,
+});
+
+defineEmits(["submit", "cancel", "name-input", "email-input", "body-input"]);
+</script>

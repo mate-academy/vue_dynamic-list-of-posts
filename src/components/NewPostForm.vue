@@ -1,23 +1,10 @@
-<script setup>
-defineProps({
-  title: String,
-  body: String,
-  errorTitle: String,
-  errorBody: String,
-  loadingWriteComment: Boolean,
-  errorWriteComment: String,
-});
-
-defineEmits(["submit", "cancel", "title-input", "body-input"]);
-</script>
-
 <template>
   <div class="tile is-child">
     <form @submit.prevent="$emit('submit')">
       <h1 class="title is-3">Create new post</h1>
 
       <div class="field">
-        <label class="label" htmlFor="title"> Title </label>
+        <label class="label" for="title"> Title </label>
 
         <div class="control has-icons-left">
           <input
@@ -50,12 +37,12 @@ defineEmits(["submit", "cancel", "title-input", "body-input"]);
       </p>
 
       <div class="field" data-cy="BodyField">
-        <label class="label" htmlFor="{`comment-${name}`}">
+        <label class="label" for="post-body">
           Write Post Body
         </label>
         <div class="control">
           <textarea
-            id="{`comment-${name}`}"
+            id="post-body"
             name="name"
             placeholder="Post body"
             class="textarea"
@@ -78,7 +65,7 @@ defineEmits(["submit", "cancel", "title-input", "body-input"]);
             :class="{ 'is-loading': loadingWriteComment }"
             :disabled="loadingWriteComment"
           >
-            {{ loadingWriteComment ? "" : "Write a comment" }}
+            {{ loadingWriteComment ? "" : "Create post" }}
           </button>
         </div>
 
@@ -96,6 +83,18 @@ defineEmits(["submit", "cancel", "title-input", "body-input"]);
   </div>
 </template>
 
+<script setup>
+defineProps({
+  title: String,
+  body: String,
+  errorTitle: String,
+  errorBody: String,
+  loadingWriteComment: Boolean,
+  errorWriteComment: String,
+});
+
+defineEmits(["submit", "cancel", "title-input", "body-input"]);
+</script>
 
 <style scoped>
 .right {
