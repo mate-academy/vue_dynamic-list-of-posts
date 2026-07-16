@@ -28,8 +28,6 @@ function submit() {
     return
   }
 
-  loading.value = true
-
   emit('create', {
     name: name.value,
     email: email.value,
@@ -37,11 +35,11 @@ function submit() {
   })
 
   body.value = ''
-
-  loading.value = false
 }
 
 function clear() {
+  name.value = ''
+  email.value = ''
   body.value = ''
 
   errors.value = {
@@ -98,7 +96,6 @@ function clear() {
       <button
         type="submit"
         class="button is-primary"
-        :class="{ 'is-loading': loading }"
       >
         Add
       </button>

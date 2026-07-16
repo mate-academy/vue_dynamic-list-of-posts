@@ -21,8 +21,8 @@ async function loadPosts() {
     error.value = false
 
     const response = await fetch(
-  'https://mate.academy/students-api/posts?userId=1'
-)
+      'https://mate.academy/students-api/posts?userId=1'
+    )
 
     if (!response.ok) {
       throw new Error()
@@ -74,8 +74,8 @@ async function createPost(post) {
 
   posts.value.unshift(newPost)
 
-  editing.value = false
   selectedPost.value = newPost
+  editing.value = false
 }
 
 async function saveEdit(data) {
@@ -120,7 +120,6 @@ async function deletePost() {
 
   selectedPost.value = null
   sidebarOpen.value = false
-  editing.value = false
 }
 </script>
 
@@ -163,23 +162,25 @@ async function deletePost() {
         v-if="sidebarOpen"
         class="Sidebar--open"
       >
+
         <PostForm
           v-if="!selectedPost"
           @create="createPost"
         />
 
-       <EditPostForm
-  v-if="editing && selectedPost"
-  :post="selectedPost"
-  @save="saveEdit"
-/>
+        <EditPostForm
+          v-if="editing && selectedPost"
+          :post="selectedPost"
+          @save="saveEdit"
+        />
 
-<PostPreview
-  v-else-if="selectedPost"
-  :post="selectedPost"
-  @delete="deletePost"
-  @edit="editPost"
-/>
+        <PostPreview
+          v-else-if="selectedPost"
+          :post="selectedPost"
+          @delete="deletePost"
+          @edit="editPost"
+        />
+
       </Sidebar>
 
     </div>

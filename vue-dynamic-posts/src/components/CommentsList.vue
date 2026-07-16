@@ -28,8 +28,9 @@ async function loadComments() {
     }
 
     comments.value = await response.json()
-  } catch {
+  } catch (err) {
     error.value = true
+    console.error(err)
   } finally {
     loading.value = false
   }
@@ -51,11 +52,17 @@ async function createComment(comment) {
       },
     )
 
+    if (!response.ok) {
+      throw new Error()
+    }
+
     const newComment = await response.json()
 
     comments.value.push(newComment)
-  } catch (error) {
-    console.error(error)
+
+    showForm.value = false
+  } catch (err) {
+    console.error(err)
   }
 }
 
@@ -71,8 +78,8 @@ async function deleteComment(id) {
         method: 'DELETE',
       },
     )
-  } catch (error) {
-    console.error(error)
+  } catch (err) {
+    console.error(err)
   }
 }
 
@@ -106,7 +113,9 @@ watch(
       :key="comment.id"
       class="box"
     >
-      <strong>{{ comment.name }}</strong>
+      <strong>
+        {{ comment.name }}
+      </strong>
 
       <p class="mb-3">
         {{ comment.body }}
