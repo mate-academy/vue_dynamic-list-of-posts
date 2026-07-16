@@ -1,7 +1,10 @@
 <script setup>
 import { ref, watch } from 'vue'
+
 import Loader from './Loader.vue'
 import CommentForm from './CommentForm.vue'
+
+const API_URL = 'https://mate-academy.github.io/fe-students-api'
 
 const props = defineProps({
   postId: Number,
@@ -20,7 +23,7 @@ async function loadComments() {
     showForm.value = false
 
     const response = await fetch(
-      `https://mate.academy/students-api/comments?postId=${props.postId}`,
+      `${API_URL}/comments?postId=${props.postId}`,
     )
 
     if (!response.ok) {
@@ -39,7 +42,7 @@ async function loadComments() {
 async function createComment(comment) {
   try {
     const response = await fetch(
-      'https://mate.academy/students-api/comments',
+      `${API_URL}/comments`,
       {
         method: 'POST',
         headers: {
@@ -52,15 +55,9 @@ async function createComment(comment) {
       },
     )
 
-    if (!response.ok) {
-      throw new Error()
-    }
-
     const newComment = await response.json()
 
     comments.value.push(newComment)
-
-    showForm.value = false
   } catch (err) {
     console.error(err)
   }
@@ -73,7 +70,7 @@ async function deleteComment(id) {
 
   try {
     await fetch(
-      `https://mate.academy/students-api/comments/${id}`,
+      `${API_URL}/comments/${id}`,
       {
         method: 'DELETE',
       },
@@ -86,12 +83,15 @@ async function deleteComment(id) {
 watch(
   () => props.postId,
   loadComments,
-  { immediate: true },
+  {
+    immediate: true,
+  },
 )
 </script>
 
 <template>
   <Loader v-if="loading" />
+
 
   <div
     v-else-if="error"
@@ -100,6 +100,7 @@ watch(
     CommentsError
   </div>
 
+
   <div
     v-else-if="comments.length === 0"
     class="notification"
@@ -107,19 +108,24 @@ watch(
     No comments
   </div>
 
+
   <div v-else>
+
     <article
       v-for="comment in comments"
       :key="comment.id"
       class="box"
     >
+
       <strong>
         {{ comment.name }}
       </strong>
 
+
       <p class="mb-3">
         {{ comment.body }}
       </p>
+
 
       <button
         class="button is-small is-danger"
@@ -127,10 +133,14 @@ watch(
       >
         Delete
       </button>
+
     </article>
+
   </div>
 
+
   <div class="mt-5">
+
     <button
       v-if="!showForm"
       class="button is-link"
@@ -139,9 +149,12 @@ watch(
       Write a comment
     </button>
 
+
     <CommentForm
       v-else
       @create="createComment"
     />
+
   </div>
+
 </template>

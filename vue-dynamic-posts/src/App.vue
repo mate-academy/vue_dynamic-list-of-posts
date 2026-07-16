@@ -7,6 +7,8 @@ import PostForm from './components/PostForm.vue'
 import PostPreview from './components/PostPreview.vue'
 import EditPostForm from './components/EditPostForm.vue'
 
+const API_URL = 'https://mate-academy.github.io/fe-students-api'
+
 const posts = ref([])
 const loading = ref(false)
 const error = ref(false)
@@ -21,7 +23,7 @@ async function loadPosts() {
     error.value = false
 
     const response = await fetch(
-      'https://mate.academy/students-api/posts?userId=1'
+      `${API_URL}/posts?userId=1`,
     )
 
     if (!response.ok) {
@@ -57,7 +59,7 @@ function editPost() {
 
 async function createPost(post) {
   const response = await fetch(
-    'https://mate.academy/students-api/posts',
+    `${API_URL}/posts`,
     {
       method: 'POST',
       headers: {
@@ -80,7 +82,7 @@ async function createPost(post) {
 
 async function saveEdit(data) {
   const response = await fetch(
-    `https://mate.academy/students-api/posts/${selectedPost.value.id}`,
+    `${API_URL}/posts/${selectedPost.value.id}`,
     {
       method: 'PATCH',
       headers: {
@@ -108,7 +110,7 @@ async function deletePost() {
   }
 
   await fetch(
-    `https://mate.academy/students-api/posts/${selectedPost.value.id}`,
+    `${API_URL}/posts/${selectedPost.value.id}`,
     {
       method: 'DELETE',
     },

@@ -10,11 +10,17 @@ const emit = defineEmits(['save'])
 const title = ref(props.post.title)
 const body = ref(props.post.body)
 
-function save() {
+const loading = ref(false)
+
+async function save() {
+  loading.value = true
+
   emit('save', {
     title: title.value,
     body: body.value,
   })
+
+  loading.value = false
 }
 </script>
 
@@ -29,6 +35,7 @@ function save() {
       <input
         v-model="title"
         class="input"
+        type="text"
       >
     </div>
 
@@ -45,7 +52,10 @@ function save() {
     </div>
 
 
-    <button class="button is-primary">
+    <button
+      class="button is-primary"
+      :class="{ 'is-loading': loading }"
+    >
       Save
     </button>
 
