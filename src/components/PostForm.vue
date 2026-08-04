@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const props = defineProps({
   post: {
@@ -10,10 +10,22 @@ const props = defineProps({
 
 const emit = defineEmits(['submit', 'cancel']);
 
-const title = ref('');
-const body = ref('');
+const title = ref(props.post?.title || '');
+const body = ref(props.post?.body || '');
+
 const titleError = ref('');
 const bodyError = ref('');
+
+watch(
+  () => props.post,
+  newPost => {
+    title.value = newPost?.title || '';
+    body.value = newPost?.body || '';
+    titleError.value = '';
+    bodyError.value = '';
+  },
+  { immediate: true },
+);
 
 const submit = () => {
   titleError.value = '';
@@ -36,8 +48,10 @@ const submit = () => {
     body: body.value.trim(),
   });
 
-  title.value = '';
-  body.value = '';
+  if (!props.post) {
+    title.value = '';
+    body.value = '';
+  }
 };
 </script>
 

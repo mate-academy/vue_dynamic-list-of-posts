@@ -232,7 +232,7 @@ const deleteComment = async (commentId) => {
 
         <div
           v-if="isSidebarOpen"
-          class="column is-half"
+          class="column is-half Sidebar Sidebar--open"
         >
           <Sidebar
             :selected-post="selectedPost"

@@ -1,6 +1,6 @@
 import { client } from '@/utils/http';
 
-export const getPosts = (userId) => {
+export const getPosts = userId => {
   return client.get(`/posts?userId=${userId}`)
     .then(response => response.data);
 };
@@ -20,7 +20,7 @@ export const updatePost = ({ id, title, body }) => {
   }).then(response => response.data);
 };
 
-export const deletePost = (postId) => {
+export const deletePost = postId => {
   return client.delete(`/posts/${postId}`)
     .then(response => response.data);
 };
