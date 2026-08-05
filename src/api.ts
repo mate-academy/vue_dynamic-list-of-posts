@@ -1,7 +1,4 @@
-// API documentation required by the task. Its “Base URL” section points to
-// the server URL below, which is the endpoint that accepts CRUD requests.
 export const API_URL = 'https://mate-academy.github.io/fe-students-api';
-const API_SERVER_URL = 'https://mate.academy/students-api';
 
 export type User = { id: number; name: string; email: string };
 export type Post = { id: number; userId: number; title: string; body: string };
@@ -14,7 +11,7 @@ export type Comment = {
 };
 
 const request = async <T>(path: string, options?: RequestInit): Promise<T> => {
-  const response = await fetch(`${API_SERVER_URL}${path}`, {
+  const response = await fetch(`${API_URL}${path}`, {
     ...options,
     headers: { 'Content-Type': 'application/json', ...options?.headers },
   });
