@@ -15,7 +15,7 @@
           type="text"
           class="input"
           :class="{ 'is-danger': errors.title }"
-          @input="errors.title = ''"
+          @input="clearError('title')"
         />
       </div>
 
@@ -41,7 +41,7 @@
           v-model="body"
           class="textarea"
           :class="{ 'is-danger': errors.body }"
-          @input="errors.body = ''"
+          @input="clearError('body')"
         ></textarea>
       </div>
 
@@ -109,7 +109,23 @@ export default {
     };
   },
 
+  watch: {
+    post(newPost) {
+      this.title = newPost.title;
+      this.body = newPost.body;
+
+      this.errors = {
+        title: '',
+        body: '',
+      };
+    },
+  },
+
   methods: {
+    clearError(field) {
+      this.errors[field] = '';
+    },
+
     handleSubmit() {
       this.errors = {
         title: '',

@@ -3,38 +3,29 @@
     class="tile is-parent is-8-desktop Sidebar"
     :class="{ 'Sidebar--open': isOpen }"
   >
-    <div class="tile is-child box is-success">
-      <div class="tile is-child box is-success">
-        <div class="content">
-          <button
-            type="button"
-            class="delete is-pulled-right"
-            aria-label="close"
-            @click="$emit('close')"
-          ></button>
+    <div class="tile is-child box">
+      <div class="content">
+        <EditPost
+          v-if="isEditing && post"
+          :post="post"
+          :is-submitting="isUpdatingPost"
+          @save="$emit('save', $event)"
+          @cancel="$emit('cancel-edit')"
+        />
 
-          <EditPost
-            v-if="isEditing && post"
-            :post="post"
-            :is-submitting="isUpdatingPost"
-            @save="$emit('save', $event)"
-            @cancel="$emit('cancel-edit')"
-          />
+        <AddPost
+          v-else-if="isCreating"
+          :is-submitting="isSubmitting"
+          @create="$emit('create', $event)"
+          @cancel="$emit('close')"
+        />
 
-          <AddPost
-            v-else-if="isCreating"
-            :is-submitting="isSubmitting"
-            @create="$emit('create', $event)"
-            @cancel="$emit('close')"
-          />
-
-          <PostPreview
-            v-else-if="post"
-            :post="post"
-            @edit="$emit('edit', $event)"
-            @delete="$emit('delete', $event)"
-          />
-        </div>
+        <PostPreview
+          v-else-if="post"
+          :post="post"
+          @edit="$emit('edit', $event)"
+          @delete="$emit('delete', $event)"
+        />
       </div>
     </div>
   </div>

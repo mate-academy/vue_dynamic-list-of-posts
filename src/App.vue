@@ -1,52 +1,57 @@
 <template>
-  <div>
-    <main class="section">
-      <div class="container">
-        <div class="tile is-ancestor">
-          <div
-            v-if="isLoading"
-            class="tile is-parent"
-          >
-            <div class="tile is-child box">
-              Loading...
-            </div>
-          </div>
+  <main class="section">
+    <div class="container">
+      <div class="tile is-ancestor">
+        <Loader v-if="isLoading" />
 
-          <div
-            v-else-if="error"
-            class="notification is-danger"
-          >
-            Failed to load posts
-          </div>
-
-         <PostsList
-           v-else
-           :posts="posts"
-           @add="openCreatePost"
-           @open="openPost"
-          />
-   
-          <Sidebar
-            :is-open="isSidebarOpen"
-            :is-creating="isCreating"
-            :is-editing="isEditing"
-            :is-submitting="isCreatingPost"
-            :is-updating-post="isUpdatingPost"
-            :post="selectedPost"
-            @close="closeSidebar"
-            @create="handleCreatePost"
-            @edit="handleEditPost"
-            @delete="handleDeletePost"
-            @save="handleUpdatePost"
-            @cancel-edit="cancelEdit"
-          />
+        <div
+          v-else-if="error"
+          class="notification is-danger"
+        >
+          Failed to load posts
         </div>
+
+        <div
+          v-else
+          class="tile is-parent"
+        >
+          <div class="tile is-child">
+            <div
+              v-if="actionError"
+              class="notification is-danger"
+            >
+              {{ actionError }}
+            </div>
+
+            <PostsList
+              :posts="posts"
+              @add="openCreatePost"
+              @open="openPost"
+            />
+          </div>
+        </div>
+
+        <Sidebar
+          :is-open="isSidebarOpen"
+          :is-creating="isCreating"
+          :is-editing="isEditing"
+          :is-submitting="isCreatingPost"
+          :is-updating-post="isUpdatingPost"
+          :post="selectedPost"
+          @close="closeSidebar"
+          @create="handleCreatePost"
+          @edit="handleEditPost"
+          @delete="handleDeletePost"
+          @save="handleUpdatePost"
+          @cancel-edit="cancelEdit"
+        />
       </div>
-    </main>
-  </div>
+    </div>
+  </main>
 </template>
 
 <script>
+import Loader from './components/Loader.vue';
 import PostsList from './components/PostsList.vue';
 import Sidebar from './components/Sidebar.vue';
 
@@ -61,6 +66,7 @@ export default {
   name: 'App',
 
   components: {
+    Loader,
     PostsList,
     Sidebar,
   },
@@ -86,6 +92,8 @@ export default {
       isUpdatingPost: false,
 
       selectedPost: null,
+
+      actionError: '',
     };
   },
 
@@ -101,6 +109,8 @@ export default {
 
   methods: {
     openCreatePost() {
+      this.actionError = '';
+
       this.selectedPost = null;
       this.isCreating = true;
       this.isEditing = false;
@@ -108,6 +118,8 @@ export default {
     },
 
     openPost(post) {
+      this.actionError = '';
+
       this.selectedPost = post;
       this.isCreating = false;
       this.isEditing = false;
@@ -119,9 +131,11 @@ export default {
       this.isCreating = false;
       this.isEditing = false;
       this.selectedPost = null;
+      this.actionError = '';
     },
 
     async handleCreatePost(post) {
+      this.actionError = '';
       this.isCreatingPost = true;
 
       try {
@@ -132,15 +146,20 @@ export default {
 
         this.posts.push(newPost);
 
-        this.closeSidebar();
+        this.selectedPost = newPost;
+        this.isCreating = false;
+        this.isEditing = false;
+        this.isSidebarOpen = true;
       } catch (error) {
-        console.error(error);
+        this.actionError = 'Failed to create post';
       } finally {
         this.isCreatingPost = false;
       }
     },
 
     async handleDeletePost(post) {
+      this.actionError = '';
+
       try {
         await deletePost(post.id);
 
@@ -150,11 +169,13 @@ export default {
 
         this.closeSidebar();
       } catch (error) {
-        console.error(error);
+        this.actionError = 'Failed to delete post';
       }
     },
 
     handleEditPost(post) {
+      this.actionError = '';
+
       this.selectedPost = post;
       this.isCreating = false;
       this.isEditing = true;
@@ -166,6 +187,7 @@ export default {
     },
 
     async handleUpdatePost(post) {
+      this.actionError = '';
       this.isUpdatingPost = true;
 
       try {
@@ -182,7 +204,7 @@ export default {
         this.selectedPost = updatedPost;
         this.isEditing = false;
       } catch (error) {
-        console.error(error);
+        this.actionError = 'Failed to update post';
       } finally {
         this.isUpdatingPost = false;
       }

@@ -70,7 +70,7 @@
           type="button"
           class="button is-link is-light"
           :disabled="isSubmitting"
-          @click="$emit('cancel')"
+          @click="handleCancel"
         >
           Cancel
         </button>
@@ -109,6 +109,16 @@ export default {
       this.errors[field] = '';
     },
 
+    clearForm() {
+      this.title = '';
+      this.body = '';
+
+      this.errors = {
+        title: '',
+        body: '',
+      };
+    },
+
     handleSubmit() {
       this.errors = {
         title: '',
@@ -131,6 +141,13 @@ export default {
         title: this.title.trim(),
         body: this.body.trim(),
       });
+
+      this.clearForm();
+    },
+
+    handleCancel() {
+      this.clearForm();
+      this.$emit('cancel');
     },
   },
 };
