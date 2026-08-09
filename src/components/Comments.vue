@@ -1,17 +1,17 @@
 <template>
   <div class="block">
     <div
+      v-if="error"
+      class="notification is-danger"
+    >
+      {{ error }}
+    </div>
+
+    <div
       v-if="isLoading"
       class="notification is-info"
     >
       Loading comments...
-    </div>
-
-    <div
-      v-else-if="error"
-      class="notification is-danger"
-    >
-      Failed to load comments
     </div>
 
     <div
@@ -93,7 +93,7 @@ export default {
     return {
       comments: [],
       isLoading: true,
-      error: false,
+      error: '',
       showForm: false,
       isSubmitting: false,
     };
@@ -103,7 +103,7 @@ export default {
     try {
       this.comments = await getComments(this.postId);
     } catch (error) {
-      this.error = true;
+      this.error = 'Failed to load comments';
     } finally {
       this.isLoading = false;
     }
@@ -111,6 +111,8 @@ export default {
 
   methods: {
     async deleteComment(comment) {
+      this.error = '';
+
       this.comments = this.comments.filter(
         currentComment => currentComment.id !== comment.id,
       );
@@ -118,11 +120,14 @@ export default {
       try {
         await deleteCommentApi(comment.id);
       } catch (error) {
-        console.error(error);
+        this.comments.push(comment);
+
+        this.error = 'Failed to delete comment';
       }
     },
 
     async handleCreateComment(comment) {
+      this.error = '';
       this.isSubmitting = true;
 
       try {
@@ -134,10 +139,8 @@ export default {
         this.comments.push(newComment);
 
         this.$refs.writeComment.clearComment();
-
-        this.showForm = false;
       } catch (error) {
-        console.error(error);
+        this.error = 'Failed to create comment';
       } finally {
         this.isSubmitting = false;
       }

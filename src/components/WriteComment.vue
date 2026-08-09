@@ -139,6 +139,10 @@ export default {
     },
 
     clearForm() {
+      this.name = '';
+      this.email = '';
+      this.body = '';
+
       this.errors = {
         name: '',
         email: '',
