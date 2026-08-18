@@ -47,3 +47,67 @@ form to add new comments. For communication with the server, use the Posts and U
 1. Implement comment deletion
    - Delete the commnet immediately not waiting for the server response to improve the UX.
 1. (\*) Handle `Add` and `Delete` errors so the user can retry
+
+---
+
+## Implemented solution
+
+This repository contains a complete Vue 3 implementation of the assignment using the Composition API and reusable components.
+
+### Highlights
+
+- Login and on-demand user registration against the Mate Students API.
+- User-specific post loading with loading, empty, error, and retry states.
+- Create, edit, and delete post flows in the required sidebar.
+- Comment loading with loading, empty, error, and retry states.
+- Reusable validated fields and a dedicated new-comment form.
+- Optimistic comment deletion with safe rollback on request failure.
+- Protection against stale async responses when the user changes posts during a request.
+- Stable `data-cy` hooks for automated end-to-end tests.
+- Responsive Bulma-based UI.
+
+### Project structure
+
+```text
+src/
+├── api/                 # HTTP client and Mate API resources
+├── components/          # Reusable Vue SFCs
+├── utils/               # Pure validation helpers
+├── App.vue              # Application orchestration/state
+├── main.js              # Vue bootstrap
+└── styles.css            # Application-specific styling
+
+tests/
+├── api.test.js           # API contract tests with mocked fetch
+├── source-contract.test.js
+└── validation.test.js
+```
+
+### Requirements
+
+- Node.js 20 or newer
+- npm
+
+### Run locally
+
+```bash
+npm install
+npm run dev
+```
+
+The app uses `https://mate.academy/students-api` by default. To point it at another compatible API, copy `.env.example` to `.env` and change `VITE_API_URL`.
+
+### Verification
+
+```bash
+npm test
+npm run lint
+npm run build
+```
+
+Or run the complete quality gate:
+
+```bash
+npm run check
+```
+

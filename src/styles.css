@@ -1,0 +1,211 @@
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #263238;
+  background: #f5f7fb;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  background: #f5f7fb;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+.app-shell {
+  min-height: 100vh;
+}
+
+.app-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 0.35rem clamp(1rem, 3vw, 2rem);
+  border-bottom: 1px solid #e8edf5;
+  box-shadow: 0 3px 18px rgb(24 47 79 / 6%);
+}
+
+.login-shell {
+  min-height: 100vh;
+  align-items: center;
+  padding: 2rem 1rem;
+}
+
+.login-card {
+  width: min(100%, 430px);
+}
+
+.app-main {
+  padding: clamp(1rem, 2.5vw, 2rem);
+}
+
+.app-layout {
+  max-width: 1440px;
+  margin-inline: auto;
+  align-items: flex-start;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-3 {
+  gap: 0.75rem;
+}
+
+.Sidebar {
+  overflow: hidden;
+  opacity: 0;
+  transform: translateX(16px);
+  pointer-events: none;
+  transition:
+    max-width 0.35s ease,
+    opacity 0.25s ease,
+    transform 0.35s ease;
+}
+
+.Sidebar--open {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.sidebar-card {
+  min-height: 240px;
+}
+
+.loader-wrap {
+  display: flex;
+  min-height: 140px;
+  align-items: center;
+  justify-content: center;
+}
+
+.lds-ring {
+  position: relative;
+  display: inline-block;
+  width: 64px;
+  height: 64px;
+}
+
+.lds-ring div {
+  position: absolute;
+  display: block;
+  width: 52px;
+  height: 52px;
+  margin: 6px;
+  border: 6px solid #3273dc;
+  border-color: #3273dc transparent transparent;
+  border-radius: 50%;
+  box-sizing: border-box;
+  animation: lds-ring 1.05s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.icon-button {
+  display: inline-grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #485fc7;
+  cursor: pointer;
+}
+
+.icon-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.icon-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.preserve-lines {
+  white-space: pre-line;
+}
+
+.comments-list {
+  max-height: 52vh;
+  padding-right: 0.25rem;
+  overflow-y: auto;
+}
+
+.comment-form {
+  box-shadow: none;
+  border: 1px solid #e8edf5;
+}
+
+.floating-notification {
+  position: fixed;
+  top: 5rem;
+  right: 1rem;
+  z-index: 40;
+  width: min(420px, calc(100vw - 2rem));
+  box-shadow: 0 8px 28px rgb(0 0 0 / 14%);
+}
+
+@media (min-width: 769px) {
+  .Sidebar {
+    max-width: 0;
+    padding-inline: 0;
+  }
+
+  .Sidebar--open {
+    max-width: 66.6667%;
+    padding-inline: 0.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .Sidebar {
+    max-height: 0;
+    padding-block: 0;
+  }
+
+  .Sidebar--open {
+    max-height: 3000px;
+    padding-block: 0.75rem;
+  }
+
+  .app-navbar .navbar-end {
+    display: block;
+  }
+
+  .app-navbar .navbar-item {
+    padding-inline: 0.75rem;
+  }
+}
