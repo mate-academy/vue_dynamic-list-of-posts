@@ -1,3 +1,5 @@
+[DEMO](https://pdabizha.github.io/vue_dynamic-list-of-posts/)
+
 # Vue Dynamic List of Posts
 
 Implement the App with ability to show posts of a current logged-in user.
