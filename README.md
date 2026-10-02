@@ -1,5 +1,11 @@
 # Vue Dynamic List of Posts
 
+[DEMO LINK](https://AndrzejFront.github.io/vue_dynamic-list-of-posts/)
+
+The app uses Mate API user `4506`. Run `npm install` and `npm run dev` locally.
+Use `npm test` for the interaction tests and `npm run build` for the production build.
+Publish the production build to GitHub Pages with `npm run deploy`.
+
 Implement the App with ability to show posts of a current logged-in user.
 The user should be able to create a new post with their userId. Each post can
 be opened in the sidebar with its comments, can be edited and deleted. There should delete a comment and a
