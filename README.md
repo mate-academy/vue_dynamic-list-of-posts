@@ -47,3 +47,23 @@ form to add new comments. For communication with the server, use the Posts and U
 1. Implement comment deletion
    - Delete the commnet immediately not waiting for the server response to improve the UX.
 1. (\*) Handle `Add` and `Delete` errors so the user can retry
+
+## Running the completed project
+
+Install dependencies and start the Vite development server:
+
+```bash
+npm install
+npm run dev
+```
+
+For a production build:
+
+```bash
+npm run build
+npm run preview
+```
+
+The application uses the Mate Academy Students API at `https://mate.academy/students-api`.
+
+The supplied `.html` layout files are intentionally retained in the repository as the original visual/markup references for the implementation.

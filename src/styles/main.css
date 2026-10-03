@@ -1,0 +1,55 @@
+html,
+body {
+  display: block;
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+#app {
+  display: block;
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.Sidebar {
+  overflow: hidden;
+  opacity: 0;
+  transition-property: max-width, opacity;
+  transition-duration: 0.5s;
+  transition-timing-function: ease-in-out;
+}
+
+.Sidebar--open {
+  opacity: 1;
+}
+
+@media (min-width: 769px) {
+  .Sidebar {
+    max-width: 0;
+  }
+
+  .Sidebar--open {
+    max-width: 50%;
+  }
+}
+
+.form-error {
+  margin-top: 0.75rem;
+}
+
+.post-title {
+  overflow-wrap: anywhere;
+}
+
+.empty-state {
+  margin-top: 1rem;
+}
+
+.retry-button {
+  margin-top: 0.75rem;
+}
