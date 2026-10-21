@@ -1,0 +1,65 @@
+
+.tile.is-ancestor:last-child {
+  margin-bottom: -.75rem;
+}
+
+
+
+.tile.is-ancestor.custom-layout-container {
+  margin-left: -.75rem;
+  margin-right: -.75rem;
+  margin-top: -.75rem;
+  /* display: flex !important;
+  width: 100%;
+  flex-direction: column;
+  align-items: stretch; */
+  
+  @media screen and (min-width: 769px) {
+    width: 100%;
+    display: flex !important;
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+}
+
+.tile.is-parent {
+  padding: .75rem;
+}
+
+.tile.is-child {
+  margin: 0 !important;
+  
+}
+
+@media screen and (min-width: 769px), print {
+  .tile:not(.is-child) {
+    display: flex;
+  }
+}
+
+.tile {
+    align-items: stretch;
+    display: block;
+    flex-basis: 0;
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.main-table-tile,
+.main-content-tile {
+  flex: 1 1 100% !important;
+  width: 100%;
+  transition: all 0.5s ease-in-out;
+}
+
+.message-body {
+  white-space: pre-line;
+}
+
+.tile.is-child.box {
+  width: 100% !important;
+}
+
+.button.is-link {
+  height: 2.5em;
+}
