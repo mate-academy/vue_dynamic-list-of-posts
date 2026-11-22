@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from "vue";
+import Loader from "./components/Loader.vue";
+import CommentForm from "./components/CommentForm.vue";
 import { getUserByEmail, createUser } from "./api/users";
 import {
   getPostsByUser,
@@ -37,27 +39,17 @@ const showSidebar = ref(false);
 const comments = ref([]);
 const commentsLoading = ref(false);
 const commentsError = ref("");
-const commentName = ref("");
-const commentEmail = ref("");
-const commentBody = ref("");
 const commentCreating = ref(false);
 const commentError = ref("");
-const commentFieldErrors = ref({
-  name: "",
-  email: "",
-  body: "",
-});
+const commentSuccessCount = ref(0);
 const showCommentForm = ref(false);
 
 async function openPost(post) {
   selectedPost.value = post;
+  showPostForm.value = false;
   showSidebar.value = true;
   showCommentForm.value = false;
-  commentFieldErrors.value = {
-    name: "",
-    email: "",
-    body: "",
-  };
+
   commentError.value = "";
 
   comments.value = [];
@@ -72,6 +64,24 @@ async function openPost(post) {
   } finally {
     commentsLoading.value = false;
   }
+}
+
+function startCreatingPost() {
+  selectedPost.value = null;
+  showSidebar.value = true;
+  showPostForm.value = true;
+  showCommentForm.value = false;
+  isEditingPost.value = false;
+
+  postTitle.value = "";
+  postBody.value = "";
+  postError.value = "";
+}
+
+function cancelCreatingPost() {
+  showPostForm.value = false;
+  showSidebar.value = false;
+  postError.value = "";
 }
 
 function startEditingPost() {
@@ -136,78 +146,20 @@ async function handleDeletePost() {
   }
 }
 
-function validateCommentEmail() {
-  const value = commentEmail.value.trim();
-
-  if (!value) {
-    commentFieldErrors.value.email = "Email is required";
-  } else if (!/^\S+@\S+\.\S+$/.test(value)) {
-    commentFieldErrors.value.email = "Enter a valid email";
-  } else {
-    commentFieldErrors.value.email = "";
-  }
-}
-
-function validateCommentName() {
-  if (!commentName.value.trim()) {
-    commentFieldErrors.value.name = "Name is required";
-  } else {
-    commentFieldErrors.value.name = "";
-  }
-}
-
-function validateCommentBody() {
-  if (!commentBody.value.trim()) {
-    commentFieldErrors.value.body = "Comment is required";
-  } else {
-    commentFieldErrors.value.body = "";
-  }
-}
-
-async function handleCreateComment() {
+async function handleCreateComment(commentData) {
   commentError.value = "";
-
-  commentFieldErrors.value = {
-    name: "",
-    email: "",
-    body: "",
-  };
-
-  if (!commentName.value.trim()) {
-    commentFieldErrors.value.name = "Name is required";
-  }
-
-  if (!commentEmail.value.trim()) {
-    commentFieldErrors.value.email = "Email is required";
-  } else if (!/^\S+@\S+\.\S+$/.test(commentEmail.value)) {
-    commentFieldErrors.value.email = "Enter a valid email";
-  }
-
-  if (!commentBody.value.trim()) {
-    commentFieldErrors.value.body = "Comment is required";
-  }
-
-  if (
-    commentFieldErrors.value.name ||
-    commentFieldErrors.value.email ||
-    commentFieldErrors.value.body
-  ) {
-    return;
-  }
-
   commentCreating.value = true;
 
   try {
     const response = await createComment({
       postId: selectedPost.value.id,
-      name: commentName.value,
-      email: commentEmail.value,
-      body: commentBody.value,
+      name: commentData.name,
+      email: commentData.email,
+      body: commentData.body,
     });
 
     comments.value.push(response.data);
-    commentBody.value = "";
-    showCommentForm.value = false;
+    commentSuccessCount.value += 1;
   } catch {
     commentError.value = "Could not create comment. Please try again.";
   } finally {
@@ -368,68 +320,20 @@ async function handleRegister() {
       <div class="columns">
         <div class="column" :class="showSidebar ? 'is-4' : 'is-12'">
           <div class="box">
-            <div v-if="showPostForm" class="box post-form">
-              <h2 class="title is-4">Add a new post</h2>
-
-              <form @submit.prevent="handleCreatePost">
-                <div class="field">
-                  <label class="label" for="post-title">Title</label>
-                  <input
-                    id="post-title"
-                    v-model="postTitle"
-                    class="input"
-                    type="text"
-                    required
-                  />
-                </div>
-
-                <div class="field">
-                  <label class="label" for="post-body">Body</label>
-                  <textarea
-                    id="post-body"
-                    v-model="postBody"
-                    class="textarea"
-                    required
-                  ></textarea>
-                </div>
-
-                <p v-if="postError" class="help is-danger mb-3">
-                  {{ postError }}
-                </p>
-
-                <div class="field is-grouped">
-                  <button
-                    type="submit"
-                    class="button is-link"
-                    :class="{ 'is-loading': postCreating }"
-                    :disabled="postCreating"
-                  >
-                    Create
-                  </button>
-
-                  <button
-                    type="button"
-                    class="button is-link is-light"
-                    @click="showPostForm = false"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            </div>
-
             <div class="block is-flex is-justify-content-space-between">
               <p class="title">Posts</p>
               <button
                 type="button"
                 class="button is-link"
-                @click="showPostForm = true"
+                @click="startCreatingPost"
               >
                 Add New Post
               </button>
             </div>
 
-            <div v-if="postsLoading">Loading posts...</div>
+            <div v-if="postsLoading">
+              <Loader />
+            </div>
             <div v-else-if="postsError" class="notification is-danger">
               {{ postsError }}
             </div>
@@ -465,6 +369,78 @@ async function handleRegister() {
             </table>
           </div>
         </div>
+
+        <div
+  v-if="showSidebar && showPostForm"
+  class="column is-8"
+>
+  <div class="tile is-parent Sidebar Sidebar--open post-sidebar">
+    <div class="tile is-child box">
+      <div class="content">
+        <div class="is-flex is-justify-content-space-between">
+          <h2 class="title is-4">Add a new post</h2>
+
+          <button
+            type="button"
+            class="delete"
+            aria-label="Close"
+            @click="cancelCreatingPost"
+          ></button>
+        </div>
+
+        <form
+          class="post-form"
+          @submit.prevent="handleCreatePost"
+        >
+          <div class="field">
+            <label class="label" for="post-title">Title</label>
+            <input
+              id="post-title"
+              v-model="postTitle"
+              class="input"
+              type="text"
+              required
+            />
+          </div>
+
+          <div class="field">
+            <label class="label" for="post-body">Body</label>
+            <textarea
+              id="post-body"
+              v-model="postBody"
+              class="textarea"
+              required
+            ></textarea>
+          </div>
+
+          <p v-if="postError" class="help is-danger mb-3">
+            {{ postError }}
+          </p>
+
+          <div class="field is-grouped">
+            <button
+              type="submit"
+              class="button is-link"
+              :class="{ 'is-loading': postCreating }"
+              :disabled="postCreating"
+            >
+              Create
+            </button>
+
+            <button
+              type="button"
+              class="button is-light"
+              :disabled="postCreating"
+              @click="cancelCreatingPost"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
         <div v-if="showSidebar && selectedPost" class="column is-8">
           <div class="tile is-parent Sidebar Sidebar--open post-sidebar">
@@ -508,7 +484,11 @@ async function handleRegister() {
                   </p>
                 </div>
 
-               <form v-else class="post-form" @submit.prevent="handleUpdatePost">
+                <form
+                  v-else
+                  class="post-form"
+                  @submit.prevent="handleUpdatePost"
+                >
                   <div class="field">
                     <label class="label">Title</label>
                     <input
@@ -556,8 +536,8 @@ async function handleRegister() {
 
               <h3 class="title is-5">Comments</h3>
 
-              <div v-if="commentsLoading" class="has-text-centered">
-                Loading comments...
+              <div v-if="commentsLoading">
+                <Loader />
               </div>
 
               <div v-else-if="commentsError" class="notification is-danger">
@@ -597,94 +577,18 @@ async function handleRegister() {
                   class="button is-link"
                   @click="showCommentForm = true"
                 >
-                  Add comment
+                  Write a comment
                 </button>
 
-                <form
+                <CommentForm
                   v-if="showCommentForm"
-                  class="box mt-3"
-                  novalidate
-                  @submit.prevent="handleCreateComment"
-                >
-                  <h4 class="title is-5">Write a comment</h4>
-
-                  <div class="field">
-                    <label class="label">Name</label>
-                    <input
-                      v-model="commentName"
-                      class="input"
-                      :class="{ 'is-danger': commentFieldErrors.name }"
-                      type="text"
-                      required
-                      @input="validateCommentName"
-                    />
-                    <p v-if="commentFieldErrors.name" class="help is-danger">
-                      {{ commentFieldErrors.name }}
-                    </p>
-                  </div>
-
-                  <div class="field">
-                    <label class="label">Email</label>
-                    <input
-                      v-model="commentEmail"
-                      class="input"
-                      :class="{ 'is-danger': commentFieldErrors.email }"
-                      type="email"
-                      required
-                      @input="validateCommentEmail"
-                    />
-                    <p v-if="commentFieldErrors.email" class="help is-danger">
-                      {{ commentFieldErrors.email }}
-                    </p>
-                  </div>
-
-                  <div class="field">
-                    <label class="label">Comment</label>
-                    <textarea
-                      v-model="commentBody"
-                      class="textarea"
-                      :class="{ 'is-danger': commentFieldErrors.body }"
-                      required
-                      @input="validateCommentBody"
-                    ></textarea>
-                    <p v-if="commentFieldErrors.body" class="help is-danger">
-                      {{ commentFieldErrors.body }}
-                    </p>
-                  </div>
-
-                  <p v-if="commentError" class="help is-danger mb-3">
-                    {{ commentError }}
-                  </p>
-
-                  <div class="field is-grouped">
-                    <button
-                      type="submit"
-                      class="button is-link"
-                      :class="{ 'is-loading': commentCreating }"
-                      :disabled="commentCreating"
-                    >
-                      Send
-                    </button>
-
-                    <button
-                      type="button"
-                      class="button is-light"
-                      @click="showCommentForm = false"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      class="button is-light"
-                      @click="
-                        commentError = '';
-                        commentFieldErrors = { name: '', email: '', body: '' };
-                      "
-                    >
-                      Clear errors
-                    </button>
-                  </div>
-                </form>
+                  :is-loading="commentCreating"
+                  :error="commentError"
+                  :success-count="commentSuccessCount"
+                  @submit="handleCreateComment"
+                  @cancel="showCommentForm = false"
+                  @clear-error="commentError = ''"
+                />
               </div>
             </div>
           </div>
