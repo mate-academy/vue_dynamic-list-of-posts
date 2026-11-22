@@ -41,6 +41,7 @@ const commentsLoading = ref(false);
 const commentsError = ref("");
 const commentCreating = ref(false);
 const commentError = ref("");
+const commentDeleteError = ref("");
 const commentSuccessCount = ref(0);
 const showCommentForm = ref(false);
 
@@ -51,7 +52,7 @@ async function openPost(post) {
   showCommentForm.value = false;
 
   commentError.value = "";
-
+  commentDeleteError.value = "";
   comments.value = [];
   commentsError.value = "";
   commentsLoading.value = true;
@@ -170,13 +171,15 @@ async function handleCreateComment(commentData) {
 async function handleDeleteComment(commentId) {
   const previousComments = [...comments.value];
 
+  commentDeleteError.value = "";
+
   comments.value = comments.value.filter((comment) => comment.id !== commentId);
 
   try {
     await deleteComment(commentId);
   } catch {
     comments.value = previousComments;
-    commentError.value = "Could not delete comment. Please try again.";
+    commentDeleteError.value = "Could not delete comment. Please try again.";
   }
 }
 
@@ -370,77 +373,71 @@ async function handleRegister() {
           </div>
         </div>
 
-        <div
-  v-if="showSidebar && showPostForm"
-  class="column is-8"
->
-  <div class="tile is-parent Sidebar Sidebar--open post-sidebar">
-    <div class="tile is-child box">
-      <div class="content">
-        <div class="is-flex is-justify-content-space-between">
-          <h2 class="title is-4">Add a new post</h2>
+        <div v-if="showSidebar && showPostForm" class="column is-8">
+          <div class="tile is-parent Sidebar Sidebar--open post-sidebar">
+            <div class="tile is-child box">
+              <div class="content">
+                <div class="is-flex is-justify-content-space-between">
+                  <h2 class="title is-4">Add a new post</h2>
 
-          <button
-            type="button"
-            class="delete"
-            aria-label="Close"
-            @click="cancelCreatingPost"
-          ></button>
+                  <button
+                    type="button"
+                    class="delete"
+                    aria-label="Close"
+                    @click="cancelCreatingPost"
+                  ></button>
+                </div>
+
+                <form class="post-form" @submit.prevent="handleCreatePost">
+                  <div class="field">
+                    <label class="label" for="post-title">Title</label>
+                    <input
+                      id="post-title"
+                      v-model="postTitle"
+                      class="input"
+                      type="text"
+                      required
+                    />
+                  </div>
+
+                  <div class="field">
+                    <label class="label" for="post-body">Body</label>
+                    <textarea
+                      id="post-body"
+                      v-model="postBody"
+                      class="textarea"
+                      required
+                    ></textarea>
+                  </div>
+
+                  <p v-if="postError" class="help is-danger mb-3">
+                    {{ postError }}
+                  </p>
+
+                  <div class="field is-grouped">
+                    <button
+                      type="submit"
+                      class="button is-link"
+                      :class="{ 'is-loading': postCreating }"
+                      :disabled="postCreating"
+                    >
+                      Create
+                    </button>
+
+                    <button
+                      type="button"
+                      class="button is-light"
+                      :disabled="postCreating"
+                      @click="cancelCreatingPost"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
-
-        <form
-          class="post-form"
-          @submit.prevent="handleCreatePost"
-        >
-          <div class="field">
-            <label class="label" for="post-title">Title</label>
-            <input
-              id="post-title"
-              v-model="postTitle"
-              class="input"
-              type="text"
-              required
-            />
-          </div>
-
-          <div class="field">
-            <label class="label" for="post-body">Body</label>
-            <textarea
-              id="post-body"
-              v-model="postBody"
-              class="textarea"
-              required
-            ></textarea>
-          </div>
-
-          <p v-if="postError" class="help is-danger mb-3">
-            {{ postError }}
-          </p>
-
-          <div class="field is-grouped">
-            <button
-              type="submit"
-              class="button is-link"
-              :class="{ 'is-loading': postCreating }"
-              :disabled="postCreating"
-            >
-              Create
-            </button>
-
-            <button
-              type="button"
-              class="button is-light"
-              :disabled="postCreating"
-              @click="cancelCreatingPost"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
 
         <div v-if="showSidebar && selectedPost" class="column is-8">
           <div class="tile is-parent Sidebar Sidebar--open post-sidebar">
@@ -535,6 +532,13 @@ async function handleRegister() {
               <hr />
 
               <h3 class="title is-5">Comments</h3>
+              <p
+                v-if="commentDeleteError"
+                class="notification is-danger is-light mb-3"
+                role="alert"
+              >
+                {{ commentDeleteError }}
+              </p>
 
               <div v-if="commentsLoading">
                 <Loader />
@@ -586,7 +590,6 @@ async function handleRegister() {
                   :error="commentError"
                   :success-count="commentSuccessCount"
                   @submit="handleCreateComment"
-                  @cancel="showCommentForm = false"
                   @clear-error="commentError = ''"
                 />
               </div>

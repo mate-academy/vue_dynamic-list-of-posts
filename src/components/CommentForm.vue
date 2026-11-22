@@ -16,7 +16,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["submit", "cancel", "clear-error"]);
+const emit = defineEmits(["submit", "clear-error"]);
 
 const name = ref("");
 const email = ref("");
@@ -147,15 +147,6 @@ watch(
         :disabled="isLoading"
       >
         Send
-      </button>
-
-      <button
-        type="button"
-        class="button is-light"
-        :disabled="isLoading"
-        @click="emit('cancel')"
-      >
-        Cancel
       </button>
 
       <button
