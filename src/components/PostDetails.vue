@@ -106,7 +106,6 @@ function handlePostFormCancel(): void {
 
 function handleCommentAdded(newComment: Comment): void {
   comments.value = [...comments.value, newComment];
-  showCommentForm.value = false;
 }
 
 const showNoComments = computed(

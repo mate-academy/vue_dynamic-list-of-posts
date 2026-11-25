@@ -159,7 +159,7 @@ function handleCancel(): void {
       <div class="field is-grouped">
         <div class="control">
           <button type="submit" class="button is-link" :class="{ 'is-loading': loading }" :disabled="loading">
-            Save
+            {{ isEditing ? 'Save' : 'Create' }}
           </button>
         </div>
         <div class="control">
